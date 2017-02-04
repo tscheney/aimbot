@@ -1,0 +1,8 @@
+prefix=/home/robot/catkin_ws/install
+
+Name: soccersim
+Description: Description of soccersim
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/robot/catkin_ws/install/lib 
+Requires: roscpp rospy std_msgs std_srvs geometry_msgs message_runtime gazebo_ros soccerref

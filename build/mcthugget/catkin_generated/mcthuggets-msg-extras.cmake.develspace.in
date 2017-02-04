@@ -1,0 +1,2 @@
+set(mcthuggets_MESSAGE_FILES "/home/robot/catkin_ws/src/mcthugget/msg/BallState.msg;/home/robot/catkin_ws/src/mcthugget/msg/RobotState.msg;/home/robot/catkin_ws/src/mcthugget/msg/PIDInfo.msg")
+set(mcthuggets_SERVICE_FILES "")
