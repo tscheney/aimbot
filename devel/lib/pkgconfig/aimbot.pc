@@ -1,8 +1,0 @@
-prefix=/home/robot/catkin_ws/devel
-
-Name: aimbot
-Description: Description of aimbot
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/robot/catkin_ws/devel/lib 
-Requires: 
