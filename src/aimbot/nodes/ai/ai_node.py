@@ -19,66 +19,15 @@ _ally_number = 1
 # to keep track of current state
 _game_state = GameState()
 
-# initialize vision positions
-_me = Pose2D()
-_ally = Pose2D()
-_opp1 = Pose2D()
-_opp2 = Pose2D()
-_ball = Pose2D()
-
-# -------------------
-
-def _handle_me(msg):
-    global _me
-    #msg.x = -msg.x
-    #msg.y = -msg.y
-    #msg.theta = msg.theta - 1.57
-    _me = msg
-
-
-def _handle_ally(msg):
-    global _ally
-    #msg.x = -msg.x
-    #msg.y = -msg.y
-    #msg.theta = msg.theta - 1.57
-    _ally = msg
-
-
-def _handle_opp1(msg):
-    global _opp1
-    #msg.x = -msg.x
-    #msg.y = -msg.y
-    #msg.theta = msg.theta - 1.57
-    _opp1 = msg
-
-
-def _handle_opp2(msg):
-    global _opp2
-    #msg.x = -msg.x
-    #msg.y = -msg.y
-    #msg.theta = msg.theta - 1.57
-    _opp2 = msg
-
-
-def _handle_ball(msg):
-    global _ball
-    #msg.x = -msg.x
-    #msg.y = -msg.y
-    #msg.theta = msg.theta - 1.57
-    _ball = msg
-
-
 def _handle_game_state(msg):
     global _game_state
     _game_state = msg
-
 
 me = Position()
 ally = Position()
 opp1 = Position()
 opp2 = Position()
 ball = Position()
-
 
 def main():
     rospy.init_node('ai', anonymous=False)
