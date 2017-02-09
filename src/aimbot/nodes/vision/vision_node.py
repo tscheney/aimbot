@@ -54,6 +54,8 @@ def main():
         pubOpp2.publish(opp2Pos.export())
         pubBall.publish(ballPos.export())
 
+        rate.sleep()
+
 
 
 if __name__ == '__main__':
