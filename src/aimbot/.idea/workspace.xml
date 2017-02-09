@@ -35,16 +35,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="robot (old).launch" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/launch/robot (old).launch">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="11" lean-forward="true" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="package.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.xml">
           <provider selected="true" editor-type-id="text-editor">
@@ -59,9 +49,21 @@
         <entry file="file://$PROJECT_DIR$/nodes/ai/ai_node.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="210">
-              <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+              <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
               <folding>
                 <element signature="e#23#35#0" expanded="true" />
+                <marker date="1486671708672" expanded="true" signature="546:3241" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="796:892" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="1356:1753" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2102:3241" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2112:2245" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2470:2742" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2537:2622" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2659:2742" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2757:2918" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2770:2829" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="2929:3035" ph="..." />
+                <marker date="1486671708672" expanded="true" signature="3091:3155" ph="..." />
               </folding>
             </state>
           </provider>
@@ -95,16 +97,6 @@
               <folding>
                 <element signature="e#23#35#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vision_node (0.2).py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nodes/vision/vision_node (0.2).py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-664">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -159,8 +151,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="385" />
-    <option name="y" value="114" />
+    <option name="x" value="547" />
+    <option name="y" value="68" />
     <option name="width" value="1025" />
     <option name="height" value="986" />
   </component>
@@ -446,7 +438,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="385" y="114" width="1025" height="986" extended-state="0" />
+    <frame x="547" y="68" width="1025" height="986" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23317073" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -510,6 +502,18 @@
           <caret line="95" column="34" lean-forward="true" selection-start-line="95" selection-start-column="34" selection-end-line="95" selection-end-column="34" />
           <folding>
             <element signature="e#23#35#0" expanded="true" />
+            <marker date="1486671708672" expanded="true" signature="546:3241" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="796:892" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="1356:1753" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2102:3241" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2112:2245" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2470:2742" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2537:2622" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2659:2742" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2757:2918" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2770:2829" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2929:3035" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="3091:3155" ph="..." />
           </folding>
         </state>
       </provider>
@@ -607,9 +611,21 @@
     <entry file="file://$PROJECT_DIR$/nodes/ai/ai_node.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
-          <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding>
             <element signature="e#23#35#0" expanded="true" />
+            <marker date="1486671708672" expanded="true" signature="546:3241" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="796:892" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="1356:1753" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2102:3241" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2112:2245" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2470:2742" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2537:2622" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2659:2742" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2757:2918" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2770:2829" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="2929:3035" ph="..." />
+            <marker date="1486671708672" expanded="true" signature="3091:3155" ph="..." />
           </folding>
         </state>
       </provider>
