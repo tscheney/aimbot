@@ -11,29 +11,36 @@
     <arg name="other_side" value="home" if="$(eval team_side == 'away')" />
 
     <!-- Hardware agnostic code -->
-    <node name="ai" pkg="aimbot" type="ai_node.py" output="screen">
-        <remap from="me" to="myvision/$(arg team_side)$(arg my_number)" />
-        <remap from="ally" to="myvision/$(arg team_side)$(arg ally_number)" />
-        <remap from="opp1" to="myvision/$(arg other_side)1" />
-        <remap from="opp2" to="myvision/$(arg other_side)2" />
-        <remap from="ball" to="myvision/ball" />
+
+   <node name="myvision" pkg="aimbot" type="vision_node.py" output="screen">
+        <remap from="ally1" to="/vision/$(arg team_side)1" />
+        <remap from="ally2" to="/vision/$(arg team_side)2" />
+        <remap from="opp1" to="/vision/$(arg other_side)1" />
+        <remap from="opp2" to="/vision/$(arg other_side)2" />
+        <remap from="ball" to="/vision/ball" />
+
+        <remap from="ally1pub" to="/myvision/$(arg team_side)1" />
+        <remap from="ally2pub" to="/myvision/$(arg team_side)2" />
+        <remap from="opp1pub" to="/myvision/$(arg other_side)1" />
+        <remap from="opp2pub" to="/myvision/$(arg other_side)2" />
+        <remap from="ballpub" to="/myvision/ball" />
     </node>
+
+    <node name="ai" pkg="aimbot" type="ai_node.py" output="screen">
+        <remap from="me" to="/myvision/$(arg team_side)$(arg my_number)" />
+        <remap from="ally" to="/myvision/$(arg team_side)$(arg ally_number)" />
+        <remap from="opp1" to="/myvision/$(arg other_side)1" />
+        <remap from="opp2" to="/myvision/$(arg other_side)2" />
+        <remap from="ball" to="/myvision/ball" />
+    </node>
+
     <node name="controller" pkg="aimbot" type="controller_node.py" output="screen">
         <!-- The controller needs to know which vision msg to listen to -->
-        <remap from="me" to="myvision/$(arg team_side)$(arg my_number)" />
+        <remap from="me" to="/myvision/$(arg team_side)$(arg my_number)" />
         <!-- For simulation, remap the output -->
         <remap from="vel_cmds" to="/$(arg team_side)$(arg my_number)/command" />
     </node>
 
 
-    <node name="myvision" pkg="aimbot" type="vision_node.py" output="screen">
-        <remap from="myvision" to="/myvision/$" />
-
-        <remap from="ally1_oriented" to="myvision/$(arg team_side)1" />
-        <remap from="ally2_oriented" to="myvision/$(arg team_side)2" />
-        <remap from="opp1_oriented" to="myvision/$(arg other_side)1" />
-        <remap from="opp2_oriented" to="myvision/$(arg other_side)2" />
-        <remap from="ball_oriented" to="myvision/ball" />
-    </node>
 
 </launch>

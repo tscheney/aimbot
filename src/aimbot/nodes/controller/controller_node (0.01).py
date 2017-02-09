@@ -34,7 +34,13 @@ def main():
 
     # Subscribe to my current state (from the vision node)
     # and my desired state (from the ai node)
-    rospy.Subscriber('me', Pose2D, _handle_me)
+
+
+
+    #rospy.Subscriber('me', Pose2D, _handle_me)
+    pubMe = rospy.Publisher('me', Pose2D, queue_size=10)
+
+
     rospy.Subscriber('desired_position', Pose2D, _handle_desired_position)
 
     # Publish velocity commands from PID controller

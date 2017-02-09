@@ -7,18 +7,14 @@ class Position:
         self.y = 0
         self.theta = 0
 
-    def msgHandler(self, msg,team_side, game_state):
-        self.importMsg(msg)
-        self.handleFlip(team_side, game_state)
-
     def importMsg(self, msg):
         self.x = msg.x
         self.y = msg.y
         self.theta = msg.theta
 
     def invert(self):
-        self.x = -1*self.x
-        self.y = -1*self.y
+        self.x = -self.x
+        self.y = -self.y
         if self.theta < 180:
             self.theta += 180
         else:
@@ -26,7 +22,7 @@ class Position:
 
     def handleFlip(self, team_side, game_state):
         # Invert if away or second half
-       if (team_side != 'home') ^ bool(game_state.second_half):
+        if ((team_side == 'away') ^ (game_state.second_half == 'True')):
             self.invert()
 
     def export(self, ):

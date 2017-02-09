@@ -3,6 +3,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D
 from soccerref.msg import GameState
+from Position import Position
 
 import numpy as np
 
@@ -72,6 +73,13 @@ def _handle_game_state(msg):
     _game_state = msg
 
 
+me = Position()
+ally = Position()
+opp1 = Position()
+opp2 = Position()
+ball = Position()
+
+
 def main():
     rospy.init_node('ai', anonymous=False)
 
@@ -87,17 +95,17 @@ def main():
     _ally_number = int(rospy.get_namespace().split('/')[-2][-1])
 
     # Subscribe to Robot and Ball positions
-    #rospy.Subscriber('me',   Pose2D, _handle_me  )
-    #rospy.Subscriber('ally', Pose2D, _handle_ally)
-    #rospy.Subscriber('opp1', Pose2D, _handle_opp1)
-    #rospy.Subscriber('opp2', Pose2D, _handle_opp2)
-    #rospy.Subscriber('ball', Pose2D, _handle_ball)
+    rospy.Subscriber('me',   Pose2D, lambda msg: me.importMsg(msg))
+    rospy.Subscriber('ally', Pose2D, lambda msg: ally.importMsg(msg))
+    rospy.Subscriber('opp1', Pose2D, lambda msg: opp1.importMsg(msg))
+    rospy.Subscriber('opp2', Pose2D, lambda msg: opp2.importMsg(msg))
+    rospy.Subscriber('ball', Pose2D, lambda msg: ball.importMsg(msg))
 
-    rospy.Subscriber('ally1_oriented', Pose2D, _handle_me)
-    rospy.Subscriber('ally2_oriented', Pose2D, _handle_ally)
-    rospy.Subscriber('opp1_oriented', Pose2D, _handle_opp1)
-    rospy.Subscriber('opp2_oriented', Pose2D, _handle_opp2)
-    rospy.Subscriber('ball_oriented', Pose2D, _handle_ball)
+    #rospy.Subscriber('ally1_oriented', Pose2D, _handle_me)
+    #rospy.Subscriber('ally2_oriented', Pose2D, _handle_ally)
+    #rospy.Subscriber('opp1_oriented', Pose2D, _handle_opp1)
+    #rospy.Subscriber('opp2_oriented', Pose2D, _handle_opp2)
+    #rospy.Subscriber('ball_oriented', Pose2D, _handle_ball)
 
 
 
@@ -116,7 +124,7 @@ def main():
 
         # Based on the state of the game and the positions of the players,
         # run the AI and return commanded positions for this robot
-        cmds = ai.strategize(_me, _ally, _opp1, _opp2, _ball, _game_state)
+        cmds = ai.strategize(me.export(), ally.export(), opp1.export(), opp2.export(), ball.export(), _game_state)
 
         # Get a message ready to send
         msg = Pose2D()           
@@ -145,6 +153,7 @@ def main():
         # If we shouldn't play and the field doesn't need to be
         # reset, then the AI node is out of a job.
         if _game_state.play or _game_state.reset_field:
+            #print('hellow world')
             pub.publish(msg)
 
         # Wait however long it takes to make this tick at 100Hz

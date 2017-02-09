@@ -4,18 +4,10 @@ import rospy
 
 from geometry_msgs.msg import Pose2D
 from soccerref.msg import GameState
-
+from Position import Position
 import numpy as np
 
 _gamestate = GameState()
-
-_team_side = None
-
-_pub_ally1 = None
-_pub_ally2 = None
-_pub_opp1 = None
-_pub_opp2 = None
-_pub_ball = None
 
 
 def _handle_gamestate(msg):
@@ -23,56 +15,44 @@ def _handle_gamestate(msg):
     _gamestate = msg
 
 
-def _handle_vision(msg, obj):
-
-    if (_team_side != 'home') ^ bool(_gamestate.second_half):
-        msg.x = -1*msg.x
-        msg.y = -1*msg.y
-
-        if msg.theta < 180:
-            msg.theta += 180
-        else:
-            msg.theta -= 180
-
-
-    if obj == 'ally1':
-        _pub_ally1.publish(msg)
-    elif obj == 'ally2':
-        _pub_ally2.publish(msg) 
-    elif obj == 'opp1':
-        _pub_opp1.publish(msg)
-    elif obj == 'opp2':
-        _pub_opp2.publish(msg)
-    elif obj == 'ball':
-        _pub_ball.publish(msg)
-
-
 def main():
-    rospy.init_node('vision', anonymous=False)
+    ally1Pos = Position()
+    ally2Pos = Position()
+    opp1Pos = Position()
+    opp2Pos = Position()
+    ballPos = Position()
 
-    global _team_side
+    # are we home or away?
     param_name = rospy.search_param('team_side')
-    _team_side = rospy.get_param(param_name, 'home')
+    team_side = rospy.get_param(param_name, 'home')
 
-    rospy.Subscriber('ally1', Pose2D, lambda msg: _handle_vision(msg, 'ally1'))
-    rospy.Subscriber('ally2', Pose2D, lambda msg: _handle_vision(msg, 'ally2'))
-    rospy.Subscriber('opp1', Pose2D, lambda msg: _handle_vision(msg, 'opp1'))
-    rospy.Subscriber('opp2', Pose2D, lambda msg: _handle_vision(msg, 'opp2'))
-    rospy.Subscriber('ball', Pose2D, lambda msg: _handle_vision(msg, 'ball'))
+    # init our vision node
+    rospy.init_node('myvision', anonymous=False)
+
+    # subscribe to global vision
+    rospy.Subscriber('ally1', Pose2D, lambda msg: ally1Pos.msgHandler(msg, team_side, _gamestate))
+    rospy.Subscriber('ally2', Pose2D, lambda msg: ally2Pos.msgHandler(msg, team_side, _gamestate))
+    rospy.Subscriber('opp1', Pose2D, lambda msg: opp1Pos.msgHandler(msg, team_side, _gamestate))
+    rospy.Subscriber('opp2', Pose2D, lambda msg: opp2Pos.msgHandler(msg, team_side, _gamestate))
+    rospy.Subscriber('ball', Pose2D, lambda msg: ballPos.msgHandler(msg, team_side, _gamestate))
 
     rospy.Subscriber('/game_state', GameState, _handle_gamestate)
 
-    # This is our publisher that tells the controller where we want to be
-    global _pub_ally1, _pub_ally2, _pub_opp1, _pub_opp2, _pub_ball 
-    _pub_ally1 = rospy.Publisher('ally1_oriented', Pose2D, queue_size=10)
-    _pub_ally2 = rospy.Publisher('ally2_oriented', Pose2D, queue_size=10)
-    _pub_opp1 = rospy.Publisher('opp1_oriented', Pose2D, queue_size=10)
-    _pub_opp2 = rospy.Publisher('opp2_oriented', Pose2D, queue_size=10)
-    _pub_ball = rospy.Publisher('ball_oriented', Pose2D, queue_size=10)
+    pubAlly1 = rospy.Publisher('ally1pub', Pose2D, queue_size=10)
+    pubAlly2 = rospy.Publisher('ally2pub', Pose2D, queue_size=10)
+    pubOpp1 = rospy.Publisher('opp1pub', Pose2D, queue_size=10)
+    pubOpp2 = rospy.Publisher('opp2pub', Pose2D, queue_size=10)
+    pubBall = rospy.Publisher('ballpub', Pose2D, queue_size=10)
+
+
 
     rate = rospy.Rate(100) # 100 Hz
     while not rospy.is_shutdown():
-        pass
+        pubAlly1.publish(ally1Pos.export())
+        pubAlly2.publish(ally2Pos.export())
+        pubOpp1.publish(opp1Pos.export())
+        pubOpp2.publish(opp2Pos.export())
+        pubBall.publish(ballPos.export())
 
 
 
