@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
-
 from geometry_msgs.msg import Pose2D
 from soccerref.msg import GameState
+
+#from aimbot.game.Position import Position
 from Position import Position
-import numpy as np
 
 _gamestate = GameState()
 
@@ -55,7 +55,6 @@ def main():
         pubBall.publish(ballPos.export())
 
         rate.sleep()
-
 
 
 if __name__ == '__main__':

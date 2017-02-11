@@ -3,11 +3,10 @@
 import rospy
 from geometry_msgs.msg import Pose2D
 from soccerref.msg import GameState
-from Position import Position
-
-import numpy as np
 
 from AI import AI
+#from aimbot.game.Position import Position
+from Position import Position
 
 #### Global vars ####
 

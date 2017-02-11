@@ -29,7 +29,6 @@ class AI(object):
         return (x_c, y_c, theta_c)
 
 
-
     def rush_goal(self, me, ball):
         # Use numpy to create vectors
         ballvec = np.array([[ball.x], [ball.y]])
