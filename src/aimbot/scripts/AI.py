@@ -19,8 +19,9 @@ class AI(object):
     def strategize(self, me, ally, opp1, opp2, ball, game_state):
         if self.ally1:
             # rush ball
-            cmds = self.rush_goal(me, ball)
-            cmds = self.move_square(me)
+            #cmds = self.rush_goal(me, ball)
+            #cmds = self.move_square(me)
+            cmds = self.rotate(me)
         else:
             # be a goalie (i.e., follow line on ball)
             if ball.x < 0:
@@ -108,3 +109,10 @@ class AI(object):
         # else:
         # return pos <= (desired - error) and pos >= (desired + error)
 
+    def rotate(self, me):
+        theta = me.theta
+        if (theta + 10) < 360:
+            theta += 40
+        else:
+            theta = 0
+        return (me.x, me.y, theta)
