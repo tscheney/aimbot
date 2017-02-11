@@ -41,7 +41,8 @@ def main():
     global _ally_number
     # An exteremely brittle way of getting the robot number
     # Try setting as a rosparam instead?
-    _ally_number = int(rospy.get_namespace().split('/')[-2][-1])
+    _ally_number = int(rospy.get_namespace().split('/')[-2][-1]
+                       )
 
     # Subscribe to Robot and Ball positions
     rospy.Subscriber('me',   Pose2D, lambda msg: me.importMsg(msg))
