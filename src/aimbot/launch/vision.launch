@@ -1,0 +1,6 @@
+
+<launch>
+
+    <node name="aimbot_vision" pkg="aimbot" type="aimbot_vision" output="screen"></node>
+
+</launch>

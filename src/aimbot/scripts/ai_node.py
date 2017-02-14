@@ -76,7 +76,11 @@ def main():
         cmds = ai.strategize(me.export(), ally.export(), opp1.export(), opp2.export(), ball.export(), _game_state)
 
         # Get a message ready to send
-        msg = Pose2D()           
+        msg = Pose2D()
+
+        #print(me.export().x)
+
+        print("hello world")
 
         if _game_state.reset_field:
             # Send robot to home

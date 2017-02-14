@@ -4,6 +4,8 @@
     <arg name="team_side" default="home" />
     <arg name="my_number" default="1" />
     <arg name="ally_number" default="2" />
+    <arg name="sim_mode" default="true" />
+    <arg name="vision_prefix" default = "/vision" />
 
     <!-- using which side of the field we are on, determine the appropriate -->
     <!-- connections to the output of the vision system -->
@@ -13,11 +15,13 @@
     <!-- Hardware agnostic code -->
 
    <node name="myvision" pkg="aimbot" type="vision_node.py" output="screen">
-        <remap from="ally1" to="/vision/$(arg team_side)1" />
-        <remap from="ally2" to="/vision/$(arg team_side)2" />
-        <remap from="opp1" to="/vision/$(arg other_side)1" />
-        <remap from="opp2" to="/vision/$(arg other_side)2" />
-        <remap from="ball" to="/vision/ball" />
+
+        <remap from="ally1" to="$(arg vision_prefix)/$(arg team_side)1" />
+        <remap from="ally2" to="$(arg vision_prefix)/$(arg team_side)2" />
+        <remap from="opp1" to="$(arg vision_prefix)/$(arg other_side)1" />
+        <remap from="opp2" to="$(arg vision_prefix)/$(arg other_side)2" />
+        <remap from="ball" to="$(arg vision_prefix)/ball" />
+
 
         <remap from="ally1pub" to="/myvision/$(arg team_side)1" />
         <remap from="ally2pub" to="/myvision/$(arg team_side)2" />

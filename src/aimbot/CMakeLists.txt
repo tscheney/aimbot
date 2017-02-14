@@ -29,10 +29,10 @@ catkin_package(CATKIN_DEPENDS roscpp rospy std_msgs std_srvs geometry_msgs messa
 
 
 # Declare C++ executables
-add_executable(aimbot_vision_sim src/vision.cpp)
-add_dependencies(aimbot_vision_sim ${PROJECT_NAME}_generate_messages_cpp)
+add_executable(aimbot_vision src/vision.cpp)
+add_dependencies(aimbot_vision ${PROJECT_NAME}_generate_messages_cpp)
 find_package( OpenCV REQUIRED )
-target_link_libraries(aimbot_vision_sim ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(aimbot_vision ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
 # Specify additional locations of header files
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})

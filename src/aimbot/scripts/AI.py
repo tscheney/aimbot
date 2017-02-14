@@ -4,7 +4,8 @@ import time as time
 field_width = 3.53
 
 state = 0
-
+counter = 0
+i = 0
 
 class AI(object):
     def __init__(self, team_side, ally_number):
@@ -17,17 +18,46 @@ class AI(object):
         self.ally1 = (ally_number == 1)
 
     def strategize(self, me, ally, opp1, opp2, ball, game_state):
+        global counter
+        global i
         if self.ally1:
-            # rush ball
-            #cmds = self.rush_goal(me, ball)
-            #cmds = self.move_square(me)
-            cmds = self.rotate(me)
+            cmds = (me.x, me.y, me.theta)
         else:
-            # be a goalie (i.e., follow line on ball)
-            if ball.x < 0:
-                cmds = self.follow_ball_on_line(ball, -1.25)
+            cmds = (ally.x, ally.y, ally.theta)
+        if(game_state.play):
+            if self.ally1:
+                # rush ball
+                #cmds = self.rush_goal(me, ball)
+                print('counter is', counter)
+                if(counter == 0):
+                    print('move in square')
+                    if(i < 5):
+                        i += 1
+                        cmds = self.move_square(me)
+                        time.sleep(3)
+                    else:
+                        counter = 1
+                        i = 0
+                elif(counter == 1):
+                    print('rotate')
+                    if (i < 500):
+                        i += 1
+                        cmds = self.rotate(me)
+                    else:
+                        counter = 2
+                        i = 0
+                elif(counter == 2):
+                    print('move to center')
+                    cmds = self.move_to_center()
+                    counter = 0
+                else:
+                    counter = 0
             else:
-                cmds = self.follow_ball_on_line(ball, 0)
+                # be a goalie (i.e., follow line on ball)
+                if ball.x < 0:
+                    cmds = self.follow_ball_on_line(ball, -1.25)
+                else:
+                    cmds = self.follow_ball_on_line(ball, 0)
 
         return cmds
 
@@ -68,11 +98,11 @@ class AI(object):
     def move_square(self, me):
         desired = 0.15
         error = 0.03
-        print(me.x, ',', me.y)
+        #print(me.x, ',', me.y)
         global state
 
         # transistions
-        time.sleep(3)
+        #time.sleep(3)
         # if (self.tolerance(me.x, -desired, error) and self.tolerance(me.y, -desired, error)):
         #    state = 3
         # elif (self.tolerance(me.x, -desired, error) and self.tolerance(me.y, desired, error)):
@@ -88,7 +118,7 @@ class AI(object):
         #    state = 0
 
 
-        print(state)
+        print('state is: ',state)
         # actions
         if (state == 0):  # going to upper right
             state = 1
