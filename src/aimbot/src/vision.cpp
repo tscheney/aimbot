@@ -105,6 +105,8 @@ Point2d imageToWorldCoordinates(Point2d point_i)
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
+
+
     try
     {
         Mat frame = cv_bridge::toCvShare(msg, "bgr8")->image; // msg -> to open cv frame
