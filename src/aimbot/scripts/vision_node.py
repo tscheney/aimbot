@@ -29,7 +29,8 @@ def main():
     team_side = rospy.get_param(param_name, 'home')
 
     # init our vision node
-    rospy.init_node('myvision', anonymous=False)
+    #rospy.init_node('myvision', anonymous=False)
+    rospy.init_node('vision_pub', anonymous=False)
 
     # subscribe to global vision
     rospy.Subscriber('ally1', Pose2D, lambda msg: ally1Pos.msgHandler(msg, team_side, _gamestate))
@@ -50,6 +51,8 @@ def main():
 
     rate = rospy.Rate(100) # 100 Hz
     while not rospy.is_shutdown():
+
+        print('hello world')
         pubAlly1.publish(ally1Pos.export())
         pubAlly2.publish(ally2Pos.export())
         pubOpp1.publish(opp1Pos.export())

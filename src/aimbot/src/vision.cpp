@@ -165,9 +165,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
         robotPose.x = robotCenter.x;
         robotPose.y = robotCenter.y;
         robotPose.theta = angle;
-        printf("x: %lf\n", robotPose.x);
-        printf("y: %lf\n", robotPose.y);
-        printf("th: %lf\n", robotPose.theta);
+        //printf("x: %lf\n", robotPose.x);
+        //printf("y: %lf\n", robotPose.y);
+        //printf("th: %lf\n", robotPose.theta);
 
         home1_pub.publish(robotPose);
 

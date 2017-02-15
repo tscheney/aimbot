@@ -42,6 +42,7 @@ def main():
 
     rate = rospy.Rate(int(1/_ctrl_period))
     while not rospy.is_shutdown():
+        print('hello world')
 
         (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
 

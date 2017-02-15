@@ -66,12 +66,13 @@
            <remap from="vel_cmds" to="command" />
        </node>
 
-       <node name="motor" pkg="aimbot" type="motor_node.py" output="screen">
+               <node name="motor" pkg="aimbot" type="motor_node.py" output="screen">
            <!-- The controller needs to know which vision msg to listen to -->
            <remap from="me" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/$(arg team_side)$(arg my_number)" />
            <!-- For simulation, remap the output -->
            <remap from="vel_cmds" to="command" />
        </node>
+
 
 
     </group>
