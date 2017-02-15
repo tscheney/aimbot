@@ -35,16 +35,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Position.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/Position.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="43" column="18" lean-forward="false" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ai_node.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/ai_node.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -82,8 +72,18 @@
       <file leaf-file-name="robot.launch" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/launch/robot.launch">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="640">
-              <caret line="73" column="14" lean-forward="false" selection-start-line="73" selection-start-column="14" selection-end-line="73" selection-end-column="14" />
+            <state relative-caret-position="355">
+              <caret line="54" column="119" lean-forward="true" selection-start-line="54" selection-start-column="119" selection-end-line="54" selection-end-column="119" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -439,14 +439,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/vision.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2700">
-          <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/launch/robot.launch">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -759,6 +751,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/launch/comp.launch">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -769,8 +769,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/launch/robot.launch">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="73" column="14" lean-forward="false" selection-start-line="73" selection-start-column="14" selection-end-line="73" selection-end-column="14" />
+        <state relative-caret-position="355">
+          <caret line="54" column="119" lean-forward="true" selection-start-line="54" selection-start-column="119" selection-end-line="54" selection-end-column="119" />
           <folding />
         </state>
       </provider>
