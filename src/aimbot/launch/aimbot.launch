@@ -15,7 +15,16 @@
 
         <!-- Set ROS parameters that the code can access -->
         <param name="team_side" type="string" value="$(arg team_side)" />
-        
+
+        <group if="$(eval sim_mode == 0)">
+            <group ns="aimbot_central">
+                <include file="$(find aimbot)/launch/comp.launch"
+                    <arg name="team_side" value="$(arg team_side)" />
+                </include>
+                <include file="$(find aimbot)/launch/vision.launch">
+            </group>
+        </group>
+
         <group ns="ally1">
             <!-- Start the robot up -->
             <include file="$(find aimbot)/launch/robot.launch">
@@ -42,15 +51,6 @@
                 </group>
             </include>
         </group>
-
-
-        <group if="$(eval sim_mode == 0)">
-            <include file="$(find aimbot)/launch/vision.launch">
-            </include>
-
-
-        </group>
-
 
 
     </group>

@@ -1,0 +1,27 @@
+<launch>
+    <arg name="team_side" default="home" />
+
+    <!-- using which side of the field we are on, determine the appropriate -->
+    <!-- connections to the output of the vision system -->
+    <arg name="other_side" value="away" if="$(eval team_side == 'home')" />
+    <arg name="other_side" value="home" if="$(eval team_side == 'away')" />
+
+
+
+        <node name="aimbot_vision" pkg="aimbot" type="vision_node.py" output="screen">
+            <remap from="ally1" to="/vision/$(arg team_side)1" />
+            <remap from="ally2" to="/vision/$(arg team_side)2" />
+            <remap from="opp1" to="/vision/$(arg other_side)1" />
+            <remap from="opp2" to="/vision/$(arg other_side)2" />
+            <remap from="ball" to="/vision/ball" />
+
+
+            <!-- /aimbot_$(arg team_side)/aimbot_central/aimbot_vision -->
+
+            <remap from="ally1pub" to="$(arg team_side)1" />
+            <remap from="ally2pub" to="$(arg team_side)2" />
+            <remap from="opp1pub" to="$(arg other_side)1" />
+            <remap from="opp2pub" to="$(arg other_side)2" />
+            <remap from="ballpub" to="ball" />
+        </node>
+</launch>
