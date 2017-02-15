@@ -52,16 +52,16 @@
 
     <group if="$(eval sim_mode == 0)">
        <node name="ai" pkg="aimbot" type="ai_node.py" output="screen">
-           <remap from="me" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg team_side)$(arg my_number)" />
-           <remap from="ally" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg team_side)$(arg ally_number)" />
-           <remap from="opp1" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg other_side)1" />
-           <remap from="opp2" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg other_side)2" />
-           <remap from="ball" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/ball" />
+           <remap from="me" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/$(arg team_side)$(arg my_number)" />
+           <remap from="ally" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/$(arg team_side)$(arg ally_number)" />
+           <remap from="opp1" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/$(arg other_side)1" />
+           <remap from="opp2" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/$(arg other_side)2" />
+           <remap from="ball" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/ball" />
        </node>
 
        <node name="controller" pkg="aimbot" type="controller_node.py" output="screen">
            <!-- The controller needs to know which vision msg to listen to -->
-           <remap from="me" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg team_side)$(arg my_number)" />
+           <remap from="me" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/$(arg team_side)$(arg my_number)" />
            <!-- For simulation, remap the output -->
            <remap from="vel_cmds" to="/$(arg team_side)$(arg my_number)/command" />
        </node>

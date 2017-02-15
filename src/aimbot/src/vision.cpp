@@ -163,11 +163,40 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
         robotPose.x = robotCenter.x;
         robotPose.y = robotCenter.y;
         robotPose.theta = angle;
-        //printf("x: %lf\n", robotPose.x);
-        //printf("y: %lf\n", robotPose.y);
-        //printf("th: %lf\n", robotPose.theta);
+        printf("x: %lf\n", robotPose.x);
+        printf("y: %lf\n", robotPose.y);
+        printf("th: %lf\n", robotPose.theta);
 
         home1_pub.publish(robotPose);
+
+
+
+
+
+        // junk
+
+        geometry_msgs::Pose2D fakePose;
+
+        fakePose.x = 12;
+        fakePose.y = 12;
+        fakePose.theta = 12;
+        home2_pub.publish(fakePose);
+
+        fakePose.x = 21;
+        fakePose.y = 21;
+        fakePose.theta = 21;
+        away1_pub.publish(fakePose);
+
+        fakePose.x = 22;
+        fakePose.y = 22;
+        fakePose.theta = 22;
+        away2_pub.publish(fakePose);
+
+        fakePose.x = 0;
+        fakePose.y = 0;
+        fakePose.theta = 180;
+        ball_pub.publish(fakePose);
+
         }
         else
         {
@@ -215,7 +244,11 @@ int main(int argc, char **argv)
     image_transport::ImageTransport it(nh);
     image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, imageCallback);
 
-    home1_pub = nh.advertise<geometry_msgs::Pose2D>("/vision/home1", 5);
+    home1_pub = nh.advertise<geometry_msgs::Pose2D>("home1", 5);
+    home2_pub = nh.advertise<geometry_msgs::Pose2D>("home2", 5);
+    away1_pub = nh.advertise<geometry_msgs::Pose2D>("away1", 5);
+    away2_pub = nh.advertise<geometry_msgs::Pose2D>("away2", 5);
+    ball_pub = nh.advertise<geometry_msgs::Pose2D>("ball", 5);
 
     // Create Vision Publishers
     //home1_pub = nh.advertise<geometry_msgs::Pose2D>("/vision/home1", 5);

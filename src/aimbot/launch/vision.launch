@@ -1,4 +1,20 @@
 
 <launch>
-    <node name="aimbot_vision" pkg="aimbot" type="aimbot_vision" output="screen"></node>
+    <arg name="team_side" default="home" />
+
+
+    <!-- using which side of the field we are on, determine the appropriate -->
+    <!-- connections to the output of the vision system -->
+    <arg name="other_side" value="away" if="$(eval team_side == 'home')" />
+    <arg name="other_side" value="home" if="$(eval team_side == 'away')" />
+
+    <group ns="aimbot_vision">
+        <node name="aimbot_vision" pkg="aimbot" type="aimbot_vision" output="screen">
+            <remap from="home1" to="$(arg team_side)1" />
+            <remap from="home2" to="$(arg team_side)2" />
+            <remap from="away1" to="$(arg other_side)1" />
+            <remap from="away2" to="$(arg other_side)1" />
+            <remap from="ball" to="ball" />
+        </node>
+    </group>
 </launch>

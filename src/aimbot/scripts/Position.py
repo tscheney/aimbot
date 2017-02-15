@@ -12,9 +12,9 @@ class Position:
     def msgHandler(self, msg,team_side, game_state):
         self.importMsg(msg)
         self.handleFlip(team_side, game_state)
-        print('x:',self.x)
-        print('y:', self.y)
-        print('th:', self.theta)
+        #print('x:',self.x)
+        #print('y:', self.y)
+        #print('th:', self.theta)
 
     def importMsg(self, msg):
         self.x = msg.x

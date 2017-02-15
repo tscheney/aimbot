@@ -80,8 +80,6 @@ def main():
 
         #print(me.export().x)
 
-        print("hello world")
-
         if _game_state.reset_field:
             # Send robot to home
             if _ally_number == 1:
