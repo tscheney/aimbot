@@ -52,7 +52,7 @@ def rotationM(theta):
 # -------------------
 
 def _handle_vel(msg):
-    global _v
+    global v
     vx = msg.linear.x
     vy = msg.linear.y
     vth= msg.angular.z

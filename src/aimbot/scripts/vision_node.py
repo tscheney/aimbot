@@ -51,8 +51,6 @@ def main():
 
     rate = rospy.Rate(100) # 100 Hz
     while not rospy.is_shutdown():
-
-        print('hello world')
         pubAlly1.publish(ally1Pos.export())
         pubAlly2.publish(ally2Pos.export())
         pubOpp1.publish(opp1Pos.export())
