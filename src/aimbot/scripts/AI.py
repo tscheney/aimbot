@@ -24,6 +24,7 @@ class AI(object):
             cmds = (me.x, me.y, me.theta)
         else:
             cmds = (ally.x, ally.y, ally.theta)
+        print(game_state.play)
         if(game_state.play):
             if self.ally1:
                 # rush ball

@@ -22,7 +22,7 @@
             <remap from="ally2pub" to="$(arg team_side)2" />
             <remap from="opp1pub" to="$(arg other_side)1" />
             <remap from="opp2pub" to="$(arg other_side)2" />
-            <remap from="ballpub" to="ball" />
+            <remap from="ballpub" to="/aimbot_$(arg team_side)/aimbot_central/vision_pub/ball" />
         </node>
      </group>
 </launch>

@@ -13,8 +13,8 @@
             <remap from="home1" to="$(arg team_side)1" />
             <remap from="home2" to="$(arg team_side)2" />
             <remap from="away1" to="$(arg other_side)1" />
-            <remap from="away2" to="$(arg other_side)1" />
-            <remap from="ball" to="ball" />
+            <remap from="away2" to="$(arg other_side)2" />
+            <remap from="ball" to="/aimbot_home/aimbot_central/aimbot_vision/ball" />
         </node>
     </group>
 </launch>

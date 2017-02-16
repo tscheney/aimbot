@@ -45,7 +45,7 @@ def main():
     pubAlly2 = rospy.Publisher('ally2pub', Pose2D, queue_size=10)
     pubOpp1 = rospy.Publisher('opp1pub', Pose2D, queue_size=10)
     pubOpp2 = rospy.Publisher('opp2pub', Pose2D, queue_size=10)
-    pubBall = rospy.Publisher('ballpub', Pose2D, queue_size=10)
+    #pubBall = rospy.Publisher('ballpub', Pose2D, queue_size=10)
 
 
 
@@ -55,7 +55,7 @@ def main():
         pubAlly2.publish(ally2Pos.export())
         pubOpp1.publish(opp1Pos.export())
         pubOpp2.publish(opp2Pos.export())
-        pubBall.publish(ballPos.export())
+        #pubBall.publish(ballPos.export())
 
         rate.sleep()
 
