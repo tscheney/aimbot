@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+    <group ns="team">
+        <node name="team" pkg="aimbot" type="team_node.py" output="screen"/>
+    </group>
+
+</launch>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- declare arg to be passed in -->
+    <arg name="team_side" default="home" />
+    <arg name="sim_mode" default="true" />
+    <arg name="two_robots" default="true" />
+
+    <!-- Outputs to either real world or simulation -->
+    <arg name="vel_cmd_ally1" default="vel_cmds" />
+    <arg name="vel_cmd_ally2" default="vel_cmds" />
+    <arg name="kick_ally1" default="kick" />
+    <arg name="kick_ally2" default="kick" />
+    <arg name="is_robot" default="true" />
+
+
+    <group ns="aimbot_$(arg team_side)">
+        <include file="$(find aimbot)/launch/game.launch">
+            <arg name="team_side" value="$(arg team_side)" />
+        </include>
+
+        <include file="$(find aimbot)/launch/team.launch" />
+    </group>
+
+</launch>

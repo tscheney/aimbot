@@ -36,3 +36,42 @@ class Robot(Moving):
             cmdvec = p
 
         return (cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+
+
+    def go_to(self, x, y):
+        return (x, y, 0)
+
+    def move_to_center(self):
+        return self.go_to(0, 0)
+
+    def move_square(self, me):
+        global state
+
+        print('state is: ',state)
+        # actions
+        if (state == 0):  # going to upper right
+            state = 1
+            return self.go_to(0.15, 0.15)
+        elif (state == 1):  # going to lower right
+            state = 2
+            return self.go_to(0.15, -0.15)
+        elif (state == 2):  # going to lower left
+            state = 3
+            return self.go_to(-0.15, -0.15)
+        elif (state == 3):  # going to upper left
+            state = 0
+            return self.go_to(-0.15, 0.15)
+
+    def tolerance(self, pos, desired, error):
+        # if(pos >= 0):
+        return pos >= (desired - error) and pos <= (desired + error)
+        # else:
+        # return pos <= (desired - error) and pos >= (desired + error)
+
+    def rotate(self, me):
+        theta = me.theta
+        if (theta + 10) < 360:
+            theta += 40
+        else:
+            theta = 0
+        return (me.x, me.y, theta)

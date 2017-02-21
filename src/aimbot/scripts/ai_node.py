@@ -44,11 +44,11 @@ def main():
                        )
 
     # Subscribe to Robot and Ball positions
-    rospy.Subscriber('me',   Pose2D, lambda msg: me.importMsg(msg))
-    rospy.Subscriber('ally', Pose2D, lambda msg: ally.importMsg(msg))
-    rospy.Subscriber('opp1', Pose2D, lambda msg: opp1.importMsg(msg))
-    rospy.Subscriber('opp2', Pose2D, lambda msg: opp2.importMsg(msg))
-    rospy.Subscriber('ball', Pose2D, lambda msg: ball.importMsg(msg))
+    rospy.Subscriber('me', Pose2D, lambda msg: me.import_msg(msg))
+    rospy.Subscriber('ally', Pose2D, lambda msg: ally.import_msg(msg))
+    rospy.Subscriber('opp1', Pose2D, lambda msg: opp1.import_msg(msg))
+    rospy.Subscriber('opp2', Pose2D, lambda msg: opp2.import_msg(msg))
+    rospy.Subscriber('ball', Pose2D, lambda msg: ball.import_msg(msg))
 
     #rospy.Subscriber('ally1_oriented', Pose2D, _handle_me)
     #rospy.Subscriber('ally2_oriented', Pose2D, _handle_ally)

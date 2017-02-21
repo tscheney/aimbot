@@ -72,7 +72,7 @@ def main():
     # Subscribe to my current state (from the vision node)
     # and my desired state (from the ai node)
     rospy.Subscriber('vel_cmds', Twist, _handle_vel)
-    rospy.Subscriber('me', Pose2D, lambda msg: me.importMsg(msg))
+    rospy.Subscriber('me', Pose2D, lambda msg: me.import_msg(msg))
 
     rate = rospy.Rate(int(1/_ctrl_period))
     while not rospy.is_shutdown():

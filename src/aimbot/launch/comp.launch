@@ -9,11 +9,11 @@
 
      <group ns="vision_pub">
         <node name="vision_pub" pkg="aimbot" type="vision_node.py" output="screen">
-            <remap from="ally1" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg team_side)1" />
-            <remap from="ally2" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg team_side)2" />
-            <remap from="opp1" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg other_side)1" />
-            <remap from="opp2" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/$(arg other_side)2" />
-            <remap from="ball" to="/aimbot_$(arg team_side)/aimbot_central/aimbot_vision/ball" />
+            <remap from="ally1" to="/aimbot_$(arg team_side)/vision/$(arg team_side)1" />
+            <remap from="ally2" to="/aimbot_$(arg team_side)/vision/$(arg team_side)2" />
+            <remap from="opp1" to="/aimbot_$(arg team_side)/vision/$(arg other_side)1" />
+            <remap from="opp2" to="/aimbot_$(arg team_side)/vision/$(arg other_side)2" />
+            <remap from="ball" to="/aimbot_$(arg team_side)/vision/ball" />
 
 
             <!-- /aimbot_$(arg team_side)/aimbot_central/aimbot_vision -->

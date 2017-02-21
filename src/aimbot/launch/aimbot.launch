@@ -17,11 +17,11 @@
         <!-- Set ROS parameters that the code can access -->
         <param name="team_side" type="string" value="$(arg team_side)" />
         <group if="$(eval is_robot == 0)">
-            <group ns="aimbot_central" if="$(eval sim_mode == 0)">
+
                 <include file="$(find aimbot)/launch/vision.launch">
                     <arg name="team_side" value="$(arg team_side)" />
                 </include>
-
+            <group ns="aimbot_central" if="$(eval sim_mode == 0)">
                 <include file="$(find aimbot)/launch/comp.launch">
                     <arg name="team_side" value="$(arg team_side)" />
                 </include>

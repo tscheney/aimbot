@@ -33,11 +33,11 @@ def main():
     rospy.init_node('vision_pub', anonymous=False)
 
     # subscribe to global vision
-    rospy.Subscriber('ally1', Pose2D, lambda msg: ally1Pos.msgHandler(msg, team_side, _gamestate))
-    rospy.Subscriber('ally2', Pose2D, lambda msg: ally2Pos.msgHandler(msg, team_side, _gamestate))
-    rospy.Subscriber('opp1', Pose2D, lambda msg: opp1Pos.msgHandler(msg, team_side, _gamestate))
-    rospy.Subscriber('opp2', Pose2D, lambda msg: opp2Pos.msgHandler(msg, team_side, _gamestate))
-    rospy.Subscriber('ball', Pose2D, lambda msg: ballPos.msgHandler(msg, team_side, _gamestate))
+    rospy.Subscriber('ally1', Pose2D, lambda msg: ally1Pos.import_msg_raw(msg, team_side, _gamestate))
+    rospy.Subscriber('ally2', Pose2D, lambda msg: ally2Pos.import_msg_raw(msg, team_side, _gamestate))
+    rospy.Subscriber('opp1', Pose2D, lambda msg: opp1Pos.import_msg_raw(msg, team_side, _gamestate))
+    rospy.Subscriber('opp2', Pose2D, lambda msg: opp2Pos.import_msg_raw(msg, team_side, _gamestate))
+    rospy.Subscriber('ball', Pose2D, lambda msg: ballPos.import_msg_raw(msg, team_side, _gamestate))
 
     rospy.Subscriber('/game_state', GameState, _handle_gamestate)
 

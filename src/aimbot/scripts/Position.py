@@ -9,14 +9,14 @@ class Position:
         self.y = 0
         self.theta = 0
 
-    def msgHandler(self, msg,team_side, game_state):
-        self.importMsg(msg)
+    def import_msg_raw(self, msg, team_side, game_state):
+        self.import_msg(msg)
         self.handleFlip(team_side, game_state)
         #print('x:',self.x)
         #print('y:', self.y)
         #print('th:', self.theta)
 
-    def importMsg(self, msg):
+    def import_msg(self, msg):
         self.x = msg.x
         self.y = msg.y
         self.theta = msg.theta
