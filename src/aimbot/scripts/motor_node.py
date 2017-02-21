@@ -30,7 +30,7 @@ r3 = (0, -0.1, 0)
 
 s1 = (0, 1, 0)
 s2 = (0, 1, 0)
-s3 = (1, 0, 0)
+s3 = (1, 0, 0) #assuming that the back wheel pushes the robot to the right
 
 R = 0.04 # radius of the wheels (guess)
 
@@ -78,7 +78,7 @@ def main():
     while not rospy.is_shutdown():
         R = rotationM(me.export().theta)
         Omega = np.dot(np.dot(M, R),v)
-
+        print('hello world')
         print(Omega)
         # Wait however long it takes to make this tick at proper control period
         rate.sleep()
