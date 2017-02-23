@@ -9,7 +9,6 @@ def main():
     rospy.init_node('game', anonymous=False)
     game = Game()
     game.subscribe()
-    game.init_publsihers()
 
     rate = rospy.Rate(100)  # 100 Hz
     while not rospy.is_shutdown():

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- declare arg to be passed in -->
+    <arg name="team_side" default="home" />
+
+    <group ns="aimbot_$(arg team_side)">
+        <include file="$(find aimbot)/launch/game.launch" />
+
+        <include file="$(find aimbot)/launch/team.launch" />
+    </group>
+
+</launch>

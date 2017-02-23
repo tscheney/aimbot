@@ -1,67 +1,31 @@
 <?xml version="1.0"?>
+
 <launch>
     <!-- declare arg to be passed in -->
     <arg name="team_side" default="home" />
     <arg name="sim_mode" default="true" />
-    <arg name="two_robots" default="true" />
 
     <!-- Outputs to either real world or simulation -->
     <arg name="vel_cmd_ally1" default="vel_cmds" />
     <arg name="vel_cmd_ally2" default="vel_cmds" />
     <arg name="kick_ally1" default="kick" />
     <arg name="kick_ally2" default="kick" />
-    <arg name="is_robot" default="true" />
 
-    <group ns="aimbot_$(arg team_side)">
+    <param name="team_side" type="string" value="$(arg team_side)" />
+    <param name="sim_mode" type="string" value="$(arg sim_mode)" />
 
-        <!-- Set ROS parameters that the code can access -->
-        <param name="team_side" type="string" value="$(arg team_side)" />
-        <group if="$(eval is_robot == 0)">
+    <include file="$(find aimbot)/launch/central.launch">
+        <arg name="team_side" value="$(arg team_side)" />
+    </include>
 
-                <include file="$(find aimbot)/launch/vision.launch">
-                    <arg name="team_side" value="$(arg team_side)" />
-                </include>
-            <group ns="aimbot_central" if="$(eval sim_mode == 0)">
-                <include file="$(find aimbot)/launch/comp.launch">
-                    <arg name="team_side" value="$(arg team_side)" />
-                </include>
-            </group>
-        </group>
+    <include file="$(find aimbot)/launch/robot.launch">
+        <arg name="team_side" value="$(arg team_side)" />
+        <arg name="num" value="1" />
+    </include>
 
-        <group if="$(eval is_robot == 1)">
-            <group ns="ally1">
-                <!-- Start the robot up -->
-                <include file="$(find aimbot)/launch/robot.launch">
-                    <arg name="my_number" value="1" />
-                    <arg name="ally_number" value="2" />
-                    <arg name="team_side" value="$(arg team_side)" />
-                    <arg name="sim_mode" value="$(arg sim_mode)" />
-                    <group if="$(eval sim_mode == 0)">
-                        <arg name="vision_prefix" value = "aimbot_vision" />
-                    </group>
-                </include>
-            </group>
-
-            <!-- start up ally2 -->
-            <group ns="ally2" if="$(arg two_robots)">
-                <!-- Start the robot up -->
-                <include file="$(find aimbot)/launch/robot.launch">
-                    <arg name="my_number" value="2" />
-                    <arg name="ally_number" value="1" />
-                    <arg name="team_side" value="$(arg team_side)" />
-                    <arg name="sim_mode" value="$(arg sim_mode)" />
-                    <group if="$(eval sim_mode == 0)">
-                        <arg name="vision_prefix" value = "aimbot_vision" />
-                    </group>
-                </include>
-            </group>
-        </group>
-
-
-    </group>
-
-
-
-
+    <include file="$(find aimbot)/launch/robot.launch">
+        <arg name="team_side" value="$(arg team_side)" />
+        <arg name="num" value="2" />
+    </include>
 
 </launch>

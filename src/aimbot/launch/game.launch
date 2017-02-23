@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node name="game" pkg="aimbot" type="game_node.py" output="screen"/>
+
+</launch>

@@ -3,6 +3,8 @@ from geometry_msgs.msg import Pose2D
 from soccerref.msg import GameState
 from Position import Position
 from GameStateObj import GameStateObj
+import time as time
+
 
 
 from Moving import Moving
@@ -18,23 +20,52 @@ class Game:
         self.ball = Moving()
         self.oppTeam = [Moving(), Moving()]
         self.num_robots = 2
+        self.num_opp_robots = 2
         self.game_state = GameStateObj()
         self.team_side = rospy.get_param(rospy.search_param('team_side'), 'home')
         self.sim_mode = self.sim_mode = rospy.get_param(rospy.search_param('sim_mode'), True)
-        self.positions = dict(ally1=Position(), ally2=Position, opp1=Position(), opp2=Position(), ball=Position())
+        self.positions = dict() #ally1=Position(), ally2=Position, opp1=Position(), opp2=Position(), ball=Position()
         self.publishers = dict()
+        self.n = 0
+        self.init_pos()
+        self.init_publsihers()
+
+
+    def init_pos(self):
+        """Init the position dictionary"""
+        # Add ally positions to dictionary
+        for i in range(1, self.num_robots + 1):
+            name = 'ally' + str(i)
+            self.positions[name] = Position()
+
+        # Add opponent positions to dictionary
+        for i in range(1, self.num_opp_robots + 1):
+            name = 'opp' + str(i)
+            self.positions[name] = Position()
+
+        # Add ball position to dictionary
+        name = 'ball'
+        self.positions[name] = Position()
+
 
     def game_to_team(self):
         """"Returns a dictionary which translates home and away to ally and opp"""
         trans = dict()
 
-        for i in range(0, self.num_robots):
+        # translate for allies
+        for i in range(1, self.num_robots + 1):
             if (self.team_side == 'home'):
                 trans['ally' + str(i)] = 'home' + str(i)
-                trans['opp' + str(i)] = 'away' + str(i)
             else:
                 trans['ally' + str(i)] = 'away' + str(i)
+
+        # translate for opponents
+        for i in range(1, self.num_opp_robots + 1):
+            if (self.team_side == 'home'):
+                trans['opp' + str(i)] = 'away' + str(i)
+            else:
                 trans['opp' + str(i)] = 'home' + str(i)
+
         trans['ball'] = 'ball'
         return trans
 
@@ -53,9 +84,9 @@ class Game:
 
         self.publishers['game_state'].publish(self.game_state.export())
 
-
     def vision_sub(self):
         """Sets up the subscription to the raw vision"""
+        print(self.sim_mode)
         if self.sim_mode: # if sim mode, look at the simulation vision
             namespace = "/vision/"
         else: # if not sim mode, look at our vision
@@ -63,8 +94,35 @@ class Game:
 
         game_to_team = self.game_to_team()
         # Uses the dictionary of position objects to subscribe to all the vision topics
-        for name, pos in self.positions.items():
-            rospy.Subscriber(namespace + game_to_team[pos], Pose2D, lambda msg: pos.import_msg_raw(msg, self.team_side, self.game_state))
+        #print(self.positions)
+
+        #for name, pos in self.positions.iteritems():
+            #exec("name%d = name" % (n)) in locals()
+            #eval("name%d" % (n))
+        #    rospy.Subscriber(namespace + game_to_team[name], Pose2D, lambda msg: self.positions[name].import_msg_raw(msg, self.team_side, self.game_state))
+
+
+        ## Apparently Ros can't handle subscriptions that hanppen in a for loop, so we have to do them one-by-one for now
+        # the issue is when the self.positions[x] have the same variable x
+        name = "ally1"
+        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                         lambda msg: self.positions["ally1"].import_msg_raw(msg, self.team_side, self.game_state))
+
+        name = "ally2"
+        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                         lambda msg: self.positions["ally2"].import_msg_raw(msg, self.team_side, self.game_state))
+
+        name = "opp1"
+        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                         lambda msg: self.positions["opp1"].import_msg_raw(msg, self.team_side, self.game_state))
+
+        name = "opp2"
+        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                         lambda msg: self.positions["opp2"].import_msg_raw(msg, self.team_side, self.game_state))
+
+        name = "ball"
+        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                         lambda msg: self.positions["ball"].import_msg_raw(msg, self.team_side, self.game_state))
 
     def init_vision_pub(self):
         """Inits publishers for the correctly oriented positions"""
@@ -72,13 +130,14 @@ class Game:
 
         # Adds position publishers to the publishers dictionary
         for name, pos in self.positions.items():
-            self.publishers[name] = pubAlly1 = rospy.Publisher(namespace + name, Pose2D, queue_size=10)
+            self.publishers[name] = rospy.Publisher(namespace + name, Pose2D, queue_size=10)
 
     def vision_pub(self):
         """Publishes the correctly oriented positions"""
-
         # publishes positions
+
         for name, pos in self.positions.items():
+            #print(name, pos.x, pos.y, pos.theta)
             self.publishers[name].publish(self.positions[name].export())
 
     def subscribe(self):

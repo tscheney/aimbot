@@ -31,7 +31,7 @@ class Position:
 
     def handleFlip(self, team_side, game_state):
         # Invert if away or second half
-       if (team_side != 'home') ^ bool(game_state.second_half):
+        if (team_side != 'home') ^ bool(game_state.second_half):
             self.invert()
 
     def export(self, ):
