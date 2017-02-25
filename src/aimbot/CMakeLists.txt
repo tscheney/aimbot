@@ -29,7 +29,7 @@ catkin_package(CATKIN_DEPENDS roscpp rospy std_msgs std_srvs geometry_msgs messa
 
 
 # Declare C++ executables
-add_executable(raw_vision src/raw_vision_node.cpp)
+add_executable(raw_vision src/raw_vision_node.cpp src/vision.cpp src/opencvsliders.cpp)
 add_dependencies(raw_vision ${PROJECT_NAME}_generate_messages_cpp)
 find_package( OpenCV REQUIRED )
 target_link_libraries(raw_vision ${OpenCV_LIBS} ${catkin_LIBRARIES})

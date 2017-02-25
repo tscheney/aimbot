@@ -9,7 +9,6 @@
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "raw_vision");
-    ros::NodeHandle nh;
 
      // create vision object
     Vision vision = Vision();

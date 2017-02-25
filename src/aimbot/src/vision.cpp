@@ -1,13 +1,27 @@
 
 #include "vision.h"
 
-Vision()
+string Vision::space = "/aimbot_home/raw_vision/";
+string Vision::GUI_NAME = "Soccer Overhead Camera";
+float Vision::FIELD_WIDTH = 3.53;  // in meters
+float Vision::FIELD_HEIGHT = 2.39; 
+float Vision::ROBOT_RADIUS = 0.10;
+float Vision::FIELD_WIDTH_PIXELS = 577.0; // measured from threshold of goal to goal
+float Vision::FIELD_HEIGHT_PIXELS = 388.0; // measured from inside of wall to wall
+float Vision::CAMERA_WIDTH = 640.0;
+float Vision::CAMERA_HEIGHT = 480.0;
+
+Vision::Vision()
 {
+    //initConstants();
     initSliders();
-
     initPublishers();
-
     initSubscribers();
+}
+
+void Vision::initConstants()
+{
+
 }
 
 // Create OpenCV Windows and sliders
@@ -23,23 +37,23 @@ void Vision::initSliders()
 
 void Vision::initPublishers()
 {
-    home1_pub = nh.advertise<geometry_msgs::Pose2D>(namespace + "home1", 5);
-    home2_pub = nh.advertise<geometry_msgs::Pose2D>(namespace + "home2", 5);
-    away1_pub = nh.advertise<geometry_msgs::Pose2D>(namespace + "away1", 5);
-    away2_pub = nh.advertise<geometry_msgs::Pose2D>(namespace + "away2", 5);
-    ball_pub = nh.advertise<geometry_msgs::Pose2D>(namespace + "ball", 5);
+    home1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home1", 5);
+    home2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home2", 5);
+    away1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away1", 5);
+    away2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away2", 5);
+    ball_pub = nh.advertise<geometry_msgs::Pose2D>(space + "ball", 5);
 }
 
 void Vision::initSubscribers()
 {
         // Subscribe to camera
     image_transport::ImageTransport it(nh);
-    image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, vision.imageCallback());
+    image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, &Vision::imageCallback, this);
 }
 
 
 
-void Vison::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
+void Vision::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
 {
     inRange(imgHSV, color[0], color[1], imgGray);
 
@@ -47,7 +61,7 @@ void Vison::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
     dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
 }
 
-Point2d Vison::getCenterOfMass(Moments moment)
+Point2d Vision::getCenterOfMass(Moments moment)
 {
     double m10 = moment.m10;
     double m01 = moment.m01;
@@ -57,14 +71,14 @@ Point2d Vison::getCenterOfMass(Moments moment)
     return Point2d(x, y);
 }
 
-bool Vison::compareMomentAreas(Moments moment1, Moments moment2)
+bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
 {
     double area1 = moment1.m00;
     double area2 = moment2.m00;
     return area1 < area2;
 }
 
-Point2d Vison::imageToWorldCoordinates(Point2d point_i)
+Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 {
     Point2d centerOfField(CAMERA_WIDTH/2, CAMERA_HEIGHT/2);
     Point2d center_w = (point_i - centerOfField);
@@ -80,7 +94,7 @@ Point2d Vison::imageToWorldCoordinates(Point2d point_i)
     return center_w;
 }
 
-void Vison::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
+void Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
 {
     Mat imgGray;
     thresholdImage(imgHsv, imgGray, color);
@@ -114,7 +128,7 @@ void Vison::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& rob
     robotPose.theta = angle;
 }
 
-void Vison::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
+void Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
 {
     Mat imgGray;
     thresholdImage(imgHsv, imgGray, color);
@@ -134,7 +148,7 @@ void Vison::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ball
     ballPose.theta = 0;
 }
 
-void Vison::processImage(Mat frame)
+void Vision::processImage(Mat frame)
 {
     Mat imgHsv;
     cvtColor(frame, imgHsv, COLOR_BGR2HSV);
@@ -163,7 +177,7 @@ void Vision::publish()
 }
 
 
-void Vison::imageCallback(const sensor_msgs::ImageConstPtr& msg)
+void Vision::imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
     try
     {
@@ -178,7 +192,8 @@ void Vison::imageCallback(const sensor_msgs::ImageConstPtr& msg)
     }
 }
 
-void Vison::sendBallMessage(int x, int y)
+/*
+void Vision::sendBallMessage(int x, int y)
 {
     // Expects x, y in pixels
 
@@ -203,9 +218,10 @@ void Vison::sendBallMessage(int x, int y)
     msg.y = y_meters;
     msg.z = 0;
     ball_position_pub.publish(msg);
-}
+} */
 
-void Vison::mouseCallback(int event, int x, int y, int flags, void* userdata) {
+/*
+void Vision::mouseCallback(int event, int x, int y, int flags, void* userdata) {
     static bool mouse_left_down = false;
 
     if (event == EVENT_LBUTTONDOWN) {
@@ -215,8 +231,8 @@ void Vison::mouseCallback(int event, int x, int y, int flags, void* userdata) {
         sprintf(buffer, "Location: (%.3f m, %.3f m)", point_meters.x, point_meters.y);
         displayStatusBar(GUI_NAME, buffer, 10000);
 
-    } else if (event == EVENT_MOUSEMOVE) {
-        if (mouse_left_down) sendBallMessage(x, y);
+    //} else if (event == EVENT_MOUSEMOVE) {
+       // if (mouse_left_down) sendBallMessage(x, y);
 
     } else if (event == EVENT_LBUTTONUP) {
         sendBallMessage(x, y);
@@ -224,3 +240,4 @@ void Vison::mouseCallback(int event, int x, int y, int flags, void* userdata) {
     }
     
 }
+*/

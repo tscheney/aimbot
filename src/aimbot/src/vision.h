@@ -1,5 +1,5 @@
 #ifndef VISION_H
-#def VISION_H
+#define VISION_H
 
 #include "ros/ros.h"
 #include "geometry_msgs/Pose2D.h"
@@ -8,6 +8,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include "opencvsliders.h"
 
 #include <cmath>
 #include <iostream>
@@ -21,18 +22,18 @@ using namespace cv;
 class Vision
 {
 private:
-	string amespace = "/aimbot_home/raw_vision/";
+	static string space;
 public:
 	Vision();
 	// constants
-	const float FIELD_WIDTH = 3.53;  // in meters
-	const float FIELD_HEIGHT = 2.39; 
-	const float ROBOT_RADIUS = 0.10;
- 	//const float GUI_NAME        "Soccer Overhead Camera"
-	const float FIELD_WIDTH_PIXELS = 577.0; // measured from threshold of goal to goal
-	const float FIELD_HEIGHT_PIXELS = 388.0; // measured from inside of wall to wall
-	const float CAMERA_WIDTH = 640.0;
-	const float CAMERA_HEIGHT = 480.0;
+	static float FIELD_WIDTH;  // in meters
+	static float FIELD_HEIGHT; 
+	static float ROBOT_RADIUS;
+ 	static string GUI_NAME; 
+	static float FIELD_WIDTH_PIXELS; // measured from threshold of goal to goal
+	static float FIELD_HEIGHT_PIXELS; // measured from inside of wall to wall
+	static float CAMERA_WIDTH;
+	static float CAMERA_HEIGHT;
 
 	// each objects stuff
 	OpenCVSliders home1slide;
@@ -53,12 +54,13 @@ public:
     ros::NodeHandle nh;
 
     // methods
+    void initConstants();
     void initSliders();
     void initPublishers();
     void initSubscribers();
 	void thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[]);
 	Point2d getCenterOfMass(Moments moment);
-	bool compareMomentAreas(Moments moment1, Moments moment2);
+	static bool compareMomentAreas(Moments moment1, Moments moment2);
 	Point2d imageToWorldCoordinates(Point2d point_i);
 	void getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose);
 	void getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose);
@@ -68,6 +70,6 @@ public:
 	void sendBallMessage(int x, int y);
 	void mouseCallback(int event, int x, int y, int flags, void* userdata);
 
-}
+};
 
 #endif

@@ -1,15 +1,15 @@
 #ifndef OPENCVSLIDERS_H
-#def OPENCVSLIDERS_H
+#define OPENCVSLIDERS_H
 
 
 #include <cv.h>
 #include <highgui.h>
-#include <stirng>
-#include <image_transport/image_transport.h>
+#include <string>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+using namespace std;
 using namespace cv;
 
 class OpenCVSliders
@@ -26,14 +26,18 @@ public:
 
 	string name;
 
-	OpenCVSliders(string inname);
+	OpenCVSliders();
 
-	OpenCVSliders(string inname, lh, hh, ls, hs, lv, hv);
+	OpenCVSliders(string inname);
+	//OpenCVSliders(string inname);
+
+	OpenCVSliders(string inname, int lh, int  hh, int ls, int hs, int lv, int hv);
+	//OpenCVSliders(string inname, int lh, int  hh, int ls, int hs, int lv, int hv);
 
 	void createTrackbars();
 
 	void exportScalar(Scalar scalarlh[2]); 
 
-}
+};
 
 #endif
