@@ -15,14 +15,23 @@ using namespace cv;
 class OpenCVSliders
 {
 public:
-	int LowH;
-	int HighH;
 
-	int LowS;
-	int HighS;
+    /*int lh;
+    int  hh;
+    int ls;
+    int hs;
+    int lv;
+    int hv; */
 
-	int LowV;
-	int HighV;
+    //Todo:: these can't be static, because they have to be different for each class
+	static int LowH;
+	static int HighH;
+
+	static int LowS;
+	static int HighS;
+
+	static int LowV;
+	static int HighV;
 
 	string name;
 
@@ -35,6 +44,8 @@ public:
 	//OpenCVSliders(string inname, int lh, int  hh, int ls, int hs, int lv, int hv);
 
 	void createTrackbars();
+
+	static void callback(int value, void* nothing);
 
 	void exportScalar(Scalar scalarlh[2]); 
 

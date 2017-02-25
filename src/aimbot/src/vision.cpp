@@ -2,7 +2,7 @@
 #include "vision.h"
 
 string Vision::space = "/aimbot_home/raw_vision/";
-string Vision::GUI_NAME = "Soccer Overhead Camera";
+string Vision::GUI_NAME = "home1";
 float Vision::FIELD_WIDTH = 3.53;  // in meters
 float Vision::FIELD_HEIGHT = 2.39; 
 float Vision::ROBOT_RADIUS = 0.10;
@@ -14,23 +14,26 @@ float Vision::CAMERA_HEIGHT = 480.0;
 Vision::Vision()
 {
     initSliders();
+    //initSubscribers();
     initPublishers();
-    initSubscribers();
 }
 
 // Create OpenCV Windows and sliders
 void Vision::initSliders()
 {
+    printf("begin initSliders\n\r");
     home1slide = OpenCVSliders("home1");
-    home2slide = OpenCVSliders("home2");
-    away1slide = OpenCVSliders("away1");
-    away2slide = OpenCVSliders("away2");
+    //home2slide = OpenCVSliders("home2");
+    //away1slide = OpenCVSliders("away1");
+    //away2slide = OpenCVSliders("away2");
     ballslide = OpenCVSliders("ball");
+    printf("end initSliders\n\r");
 }
 
 
 void Vision::initPublishers()
 {
+    printf("begin initPublishers\n\r");
     std::string key;
     if (nh.searchParam("team_side", key))
     {
@@ -44,13 +47,16 @@ void Vision::initPublishers()
     away1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away1", 5);
     away2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away2", 5);
     ball_pub = nh.advertise<geometry_msgs::Pose2D>(space + "ball", 5);
+    printf("end initPublishers\n\r");
 }
 
 void Vision::initSubscribers()
 {
+    printf("begin initSubscribers\n\r");
         // Subscribe to camera
     image_transport::ImageTransport it(nh);
     image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, &Vision::imageCallback, this);
+    printf("end initSubscribers\n\r");
 }
 
 
@@ -61,6 +67,8 @@ void Vision::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
 
     erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
     dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+
+    //imshow(GUI_NAME, imgGray);
 }
 
 Point2d Vision::getCenterOfMass(Moments moment)
@@ -96,10 +104,11 @@ Point2d Vision::imageToWorldCoordinates(Point2d point_i)
     return center_w;
 }
 
-void Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
+Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
 {
     Mat imgGray;
     thresholdImage(imgHsv, imgGray, color);
+    Mat imgThresholded = imgGray.clone();
 
     vector< vector<Point> > contours;
     vector<Moments> mm;
@@ -107,7 +116,9 @@ void Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ro
     findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
     if (hierarchy.size() != 2)
-        return;
+        return imgThresholded;
+
+
 
     for(int i = 0; i < hierarchy.size(); i++)
         mm.push_back(moments((Mat)contours[i]));
@@ -128,19 +139,21 @@ void Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ro
     robotPose.x = robotCenter.x;
     robotPose.y = robotCenter.y;
     robotPose.theta = angle;
+    return imgThresholded ;
 }
 
-void Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
+Mat Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
 {
     Mat imgGray;
     thresholdImage(imgHsv, imgGray, color);
+    Mat imgThresholded = imgGray.clone();
 
     vector< vector<Point> > contours;
     vector<Vec4i> hierarchy;
     findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
     if (hierarchy.size() != 1)
-        return;
+        return imgThresholded;
 
     Moments mm = moments((Mat)contours[0]);
     Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(mm));
@@ -148,6 +161,7 @@ void Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& bal
     ballPose.x = ballCenter.x;
     ballPose.y = ballCenter.y;
     ballPose.theta = 0;
+    return imgThresholded;
 }
 
 void Vision::processImage(Mat frame)
@@ -155,16 +169,26 @@ void Vision::processImage(Mat frame)
     Mat imgHsv;
     cvtColor(frame, imgHsv, COLOR_BGR2HSV);
     Scalar scalelh[2];
+
+    // home 1 vision
     home1slide.exportScalar(scalelh);
-    getRobotPose(imgHsv, scalelh,   poseHome1);
-    home1slide.exportScalar(scalelh);
+    Mat home1 = getRobotPose(imgHsv, scalelh, poseHome1);
+    imshow("home1", home1);
+
+
+    home2slide.exportScalar(scalelh);
     getRobotPose(imgHsv, scalelh,  poseHome2);
-    home1slide.exportScalar(scalelh);
+
+    away1slide.exportScalar(scalelh);
     getRobotPose(imgHsv, scalelh,    poseAway1);
-    home1slide.exportScalar(scalelh);
+
+    away2slide.exportScalar(scalelh);
     getRobotPose(imgHsv, scalelh, poseAway2);
-    home1slide.exportScalar(scalelh);
-    getBallPose(imgHsv,  scalelh, poseBall);
+
+    // ball vision
+    ballslide.exportScalar(scalelh);
+    Mat ball = getBallPose(imgHsv,  scalelh, poseBall);
+    imshow("ball", ball);
 
     publish();    
 }
@@ -185,13 +209,18 @@ void Vision::imageCallback(const sensor_msgs::ImageConstPtr& msg)
     {
         Mat frame = cv_bridge::toCvShare(msg, "bgr8")->image;
         processImage(frame);
-        imshow(GUI_NAME, frame);
+        //imshow(GUI_NAME, frame);
         waitKey(30);
     }
     catch (cv_bridge::Exception& e)
     {
         ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
     }
+}
+
+bool Vision::ok()
+{
+    return nh.ok();
 }
 
 /*

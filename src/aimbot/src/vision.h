@@ -61,13 +61,14 @@ public:
 	Point2d getCenterOfMass(Moments moment);
 	static bool compareMomentAreas(Moments moment1, Moments moment2);
 	Point2d imageToWorldCoordinates(Point2d point_i);
-	void getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose);
-	void getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose);
+	Mat getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose);
+	Mat getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose);
 	void processImage(Mat frame);
 	void imageCallback(const sensor_msgs::ImageConstPtr& msg);
 	void publish();
 	void sendBallMessage(int x, int y);
 	void mouseCallback(int event, int x, int y, int flags, void* userdata);
+	bool ok();
 
 };
 

@@ -1,5 +1,6 @@
 <launch>
 
     <node name="raw_vision" pkg="aimbot" type="raw_vision" output="screen" />
+    <!-- node name="camera" pkg="aimbot" type="camera" output="screen" / -->
 
 </launch>

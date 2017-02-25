@@ -34,6 +34,11 @@ add_dependencies(raw_vision ${PROJECT_NAME}_generate_messages_cpp)
 find_package( OpenCV REQUIRED )
 target_link_libraries(raw_vision ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
+add_executable(camera src/camera_node.cpp)
+add_dependencies(camera ${PROJECT_NAME}_generate_messages_cpp)
+find_package( OpenCV REQUIRED )
+target_link_libraries(camera ${OpenCV_LIBS} ${catkin_LIBRARIES})
+
 # Specify additional locations of header files
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
