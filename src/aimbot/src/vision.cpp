@@ -13,15 +13,9 @@ float Vision::CAMERA_HEIGHT = 480.0;
 
 Vision::Vision()
 {
-    //initConstants();
     initSliders();
     initPublishers();
     initSubscribers();
-}
-
-void Vision::initConstants()
-{
-
 }
 
 // Create OpenCV Windows and sliders
@@ -37,6 +31,14 @@ void Vision::initSliders()
 
 void Vision::initPublishers()
 {
+    std::string key;
+    if (nh.searchParam("team_side", key))
+    {
+        std::string val;
+        nh.getParam(key, val);
+        space = "/aimbot_" + val + "/raw_vision/";
+    }
+    
     home1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home1", 5);
     home2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home2", 5);
     away1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away1", 5);

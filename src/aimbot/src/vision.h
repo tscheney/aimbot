@@ -54,7 +54,6 @@ public:
     ros::NodeHandle nh;
 
     // methods
-    void initConstants();
     void initSliders();
     void initPublishers();
     void initSubscribers();

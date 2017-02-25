@@ -11,9 +11,6 @@
     <arg name="kick_ally1" default="kick" />
     <arg name="kick_ally2" default="kick" />
 
-    <param name="team_side" type="string" value="$(arg team_side)" />
-    <param name="sim_mode" type="string" value="$(arg sim_mode)" />
-
     <include file="$(find aimbot)/launch/central.launch">
         <arg name="team_side" value="$(arg team_side)" />
     </include>

@@ -5,7 +5,7 @@
 
     <group ns="aimbot_$(arg team_side)">
         <group ns="players">
-            <node name="ally$(arg num)" pkg="aimbot" type="robot_node.py" output="screen" args="$(arg num)"/>
+            <node name="ally$(arg num)" pkg="aimbot" type="robot_node.py" output="screen" args="$(arg num) $(arg team_side)"/>
         </group>
     </group>
 

@@ -13,12 +13,12 @@ class Team:
     all topics published by the game class are published under the node
     /aimbot_(team_side)/team/"""
 
-    def __init__(self):
+    def __init__(self, team_side):
         self.robots = [Robot(), Robot()]
         self.num_robots = 2
         self.num_opp_robots = 2
         self.game_state = GameStateObj()
-        self.team_side = rospy.get_param(rospy.search_param('team_side'), 'home')
+        self.team_side = team_side
         self.positions = dict() #ally1=Position(), ally2=Position, opp1=Position(), opp2=Position(), ball=Position())
         self.publishers = dict()
         self.roles = dict()

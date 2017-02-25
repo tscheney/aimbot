@@ -18,6 +18,5 @@ def main():
 
 if __name__ == '__main__':
     # If this file was run from the command line, then do the following:
-    print()
-    robot = Robot(sys.argv[1]) # sys.argv[1] is the num arg from the robot.launch file
+    robot = Robot(sys.argv[1], sys.argv[2]) # sys.argv[1] is the num arg from the robot.launch file, sys.argv[2] is the team_side
     main()

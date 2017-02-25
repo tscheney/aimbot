@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <arg name="team_side" default="home" />
 
-    <node name="game" pkg="aimbot" type="game_node.py" output="screen"/>
+    <node name="game" pkg="aimbot" type="game_node.py" output="screen" args="$(arg team_side)"/>
 
 </launch>

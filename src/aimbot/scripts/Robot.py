@@ -13,7 +13,7 @@ class Robot(Moving):
     this is with the exception of the command node which is published for
     compatability with the simulator"""
 
-    def __init__(self, num=0):
+    def __init__(self, num=0, team_side="home"):
         Moving.__init__(self)
         self.controller = Controller()
         self.num = num # player number
@@ -21,8 +21,9 @@ class Robot(Moving):
         self.ball_pos = Position()
         self.des_position = Position() # place where we want to go
         self.role = 0
-        self.team_side = rospy.get_param(rospy.search_param('team_side'), 'home')
-        self.vel = (0,0,0) # (vx, vy, w)
+        self.team_side = team_side
+        self.vel = (0.0,0.0,0.0) # (vx, vy, w)
+        self.wheel_vel = (0,0,0) # (wheel1, wheel2, wheel3)
         self.publishers = dict()
         self.init_publsihers()
 
@@ -72,16 +73,58 @@ class Robot(Moving):
         self.vel_pub()
 
     def update(self):
-        """Updates the robots controller"""
+        """Updates the robots controller and sets velocities"""
         self.determine_des_pos()
         self.controller.set_commanded_position(self.des_position.x, self.des_position.y, self.des_position.theta)
         self.vel = self.controller.update(self.position.x, self.position.y, self.position.theta)
+        self.vel_to_wheel_vel()
 
     def set_des_pos(self, des_x, des_y, des_th):
         """Sets the desired position"""
         self.des_position.x = des_x
         self.des_position.y = des_y
         self.des_position.theta = des_th
+
+    def rotationM(self):
+        """Create the rotation matrix to convert to wheel velocities"""
+        rad = np.radians(self.position.theta)
+        R = np.matrix([[np.cos(rad), np.sin(rad), 0],
+                       [-np.sin(rad), np.cos(rad), 0],
+                       [0, 0, 1]])
+        return R
+
+    def vel_to_wheel_vel(self):
+        """Convert the robot velocities to wheel velocities"""
+        # linear and angular velocity of the center of the body
+        v = np.matrix([[self.vel[0]], [self.vel[1]], [self.vel[2]]])
+
+        # wheel positions (these are guesses)
+        # 0,0 being the center of the robot
+        # y increases as you go to the front of the robot
+        # x increases as you go to the right of the robot
+
+        r1 = (-0.2, 0, 0)
+        r2 = (0.2, 0, 0)
+        r3 = (0.0, -0.1, 0.0)
+
+        # unit vectors of wheel rotation
+        # s1 is in the forward y direction (forward) left wheel
+        # s2 is in the forward y direction (forward) right wheel
+        # s3 is in the forward x direction (right) rear wheel
+
+        s1 = (0.0, 1.0, 0.0)
+        s2 = (0.0, 1.0, 0.0)
+        s3 = (1.0, 0.0, 0.0)  # assuming that the back wheel pushes the robot to the right
+
+        rad = 0.04  # radius of the wheels (guess)
+
+        m = (1 / rad) * np.matrix([[s1[0], s1[1], (s1[1] * r1[0] - s1[0] * r1[1])],
+                                 [s2[0], s2[1], (s2[1] * r2[0] - s2[0] * r2[1])],
+                                 [s3[0], s3[1], (s3[1] * r3[0] - s3[0] * r3[1])]])
+
+        r = self.rotationM()
+        Omega = np.dot(np.dot(m, r), v)
+        self.wheel_vel = (Omega.item(0), Omega.item(1), Omega.item(2))
 
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
@@ -159,3 +202,7 @@ class Robot(Moving):
         else:
             theta = 0
         return (me.x, me.y, theta)
+
+
+
+

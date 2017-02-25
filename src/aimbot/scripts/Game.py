@@ -16,14 +16,14 @@ class Game:
     all topics published by the game class are published under the node
     /aimbot_(team_side)/game/"""
 
-    def __init__(self):
+    def __init__(self, team_side, sim_mode):
         self.ball = Moving()
         self.oppTeam = [Moving(), Moving()]
         self.num_robots = 2
         self.num_opp_robots = 2
         self.game_state = GameStateObj()
-        self.team_side = rospy.get_param(rospy.search_param('team_side'), 'home')
-        self.sim_mode = self.sim_mode = rospy.get_param(rospy.search_param('sim_mode'), True)
+        self.team_side = team_side
+        self.sim_mode = rospy.get_param(rospy.search_param('sim_mode'), True)
         self.positions = dict() #ally1=Position(), ally2=Position, opp1=Position(), opp2=Position(), ball=Position()
         self.publishers = dict()
         self.n = 0
@@ -86,7 +86,6 @@ class Game:
 
     def vision_sub(self):
         """Sets up the subscription to the raw vision"""
-        print(self.sim_mode)
         if self.sim_mode: # if sim mode, look at the simulation vision
             namespace = "/vision/"
         else: # if not sim mode, look at our vision
