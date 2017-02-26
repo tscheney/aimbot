@@ -1,6 +1,6 @@
 import numpy as np
 
-from controllers import PID
+from PID import PID
 
 PID_x = None
 PID_y = None
@@ -17,27 +17,30 @@ _theta_loops = 1 # so every 2 loops do theta controller
 
 velocities = (0, 0, 0)
 
-#---------------------------------------------------------------------------------------
-def init(gains=None):
-    global PID_x, PID_y, PID_theta
 
-    xP = gains['x']['P'] if gains is not None else 2.5
-    xI = gains['x']['I'] if gains is not None else 0
-    xD = gains['x']['D'] if gains is not None else 0
+class Controller:
+    """Controller class for the robots"""
+    def __init__(self, gains=None):
+        self.control_rate = 100
+        global PID_x, PID_y, PID_theta
 
-    yP = gains['y']['P'] if gains is not None else 2.5
-    yI = gains['y']['I'] if gains is not None else 0
-    yD = gains['y']['D'] if gains is not None else 0
+        xP = gains['x']['P'] if gains is not None else 2.5
+        xI = gains['x']['I'] if gains is not None else 0
+        xD = gains['x']['D'] if gains is not None else 0
 
-    thetaP = gains['theta']['P'] if gains is not None else 2.5
-    thetaI = gains['theta']['I'] if gains is not None else 0
-    thetaD = gains['theta']['D'] if gains is not None else 0
+        yP = gains['y']['P'] if gains is not None else 2.5
+        yI = gains['y']['I'] if gains is not None else 0
+        yD = gains['y']['D'] if gains is not None else 0
 
-    PID_x = PID(xP, xI, xD, 2, 0.05, integrator_limit=0.05)
-    PID_y = PID(yP, yI, yD, 2, 0.05, integrator_limit=0.05)
-    PID_theta = PID(thetaP, thetaI, thetaD, 180, 0.05, integrator_limit=0.05)
+        thetaP = gains['theta']['P'] if gains is not None else 2.5
+        thetaI = gains['theta']['I'] if gains is not None else 0
+        thetaD = gains['theta']['D'] if gains is not None else 0
 
-    print "Initializing controller with gains: {}".format(str(gains))
+        PID_x = PID(xP, xI, xD, 2, 0.05, integrator_limit=0.05)
+        PID_y = PID(yP, yI, yD, 2, 0.05, integrator_limit=0.05)
+        PID_theta = PID(thetaP, thetaI, thetaD, 180, 0.05, integrator_limit=0.05)
+
+        print "Initializing controller with gains: {}".format(str(gains))
 
 #the section below is original code from the team parker, above was taken from mcthuggets
 #def init(gains=None):
@@ -59,87 +62,89 @@ def init(gains=None):
 #    PID_y = PID(yP, yI, yD, 2, 0.05, integrator_limit=0.05)
 #    PID_theta = PID(thetaP, thetaI, thetaD, 180, 0.05, integrator_limit=0.05)
 #--------------------------------------------------------------------------------------
-def set_commanded_position(x, y, theta):
-    """Set Commanded Position
 
-    x_c, y_c, theta_c. These will tell the controller where it wants to go.
 
-    theta_c (degrees) can be given on the interval [0, 360].
-    This function can also receive theta from [-360, 0].
+    def set_commanded_position(self, x, y, theta):
+        """Set Commanded Position
 
-    """
-    global _set_point, _arrived
+        x_c, y_c, theta_c. These will tell the controller where it wants to go.
 
-    # We aren't there yet!
-    _arrived = False
+        theta_c (degrees) can be given on the interval [0, 360].
+        This function can also receive theta from [-360, 0].
 
-    # Because theta is periodic with 360 degrees
-    # This also deals with theta being negative
-    theta = theta % 360
+        """
+        global _set_point, _arrived
 
-    _set_point = (x, y, theta)
-    return True
+        # We aren't there yet!
+        _arrived = False
 
-def get_commanded_position():
-    return _set_point
+        # Because theta is periodic with 360 degrees
+        # This also deals with theta being negative
+        theta = theta % 360
 
-def update(time_since_last_update, xhat, yhat, thetahat):
-    global velocities, _arrived, _loop_count
+        _set_point = (x, y, theta)
+        return True
 
-    if _arrived:
-        # Don't even try
-        return (0, 0, 0)
+    def get_commanded_position(self):
+        return _set_point
 
-    if PID_x is None or PID_y is None or PID_theta is None:
-        # Controller hasn't been properly initialized
-        return (0, 0, 0)
+    def update(self, xhat, yhat, thetahat):
+        global velocities, _arrived, _loop_count
 
-    # We've had another motion loop!
-    _loop_count = _loop_count + 1
+        if _arrived:
+            # Don't even try
+            return (0, 0, 0)
 
-    # Only update theta every _theta_loops times
-    if _loop_count == _theta_loops:
-        update_theta = True
-        _loop_count = 0
-    else:
-        update_theta = False
+        if PID_x is None or PID_y is None or PID_theta is None:
+            # Controller hasn't been properly initialized
+            return (0, 0, 0)
 
-    # Break out variables for easy access
-    x_c = _set_point[0]
-    y_c = _set_point[1]
-    theta_c = _set_point[2]
+        # We've had another motion loop!
+        _loop_count = _loop_count + 1
 
-    Ts = time_since_last_update
+        # Only update theta every _theta_loops times
+        if _loop_count == _theta_loops:
+            update_theta = True
+            _loop_count = 0
+        else:
+            update_theta = False
 
-    # Initialize velocities
-    vx = vy = w = 0
+        # Break out variables for easy access
+        x_c = _set_point[0]
+        y_c = _set_point[1]
+        theta_c = _set_point[2]
 
-    # Only control the positions that aren't 'close'
-    if not _close(x_c, xhat):
-        vx = PID_x.update(x_c, xhat, Ts)
+        Ts = 1 / self.control_rate
 
-    if not _close(y_c, yhat):
-        vy = PID_y.update(y_c, yhat, Ts)
+        # Initialize velocities
+        vx = vy = w = 0
 
-    if update_theta and not _close(theta_c, thetahat, tolerance=5): # degrees
-        # Since the max distance you should ever go is 180 degrees,
-        # test to see so that the commanded value is proportional to
-        # the error between commanded and actual.
-        # Basicaly, this makes going in circles cooler.
-        if abs(thetahat-theta_c) > 180:
-            if theta_c < thetahat:
-                theta_c = theta_c + 360
-            else:
-                theta_c = theta_c - 360
+        # Only control the positions that aren't 'close'
+        if not self.close(x_c, xhat):
+            vx = PID_x.update(x_c, xhat, Ts)
 
-        w  = PID_theta.update(theta_c, thetahat, Ts, max_error_window=0)
+        if not self.close(y_c, yhat):
+            vy = PID_y.update(y_c, yhat, Ts)
 
-    # Are we there yet?
-    _arrived = (vx == 0 and vy == 0 and w == 0 and update_theta)
+        if update_theta and not self.close(theta_c, thetahat, tolerance=5): # degrees
+            # Since the max distance you should ever go is 180 degrees,
+            # test to see so that the commanded value is proportional to
+            # the error between commanded and actual.
+            # Basicaly, this makes going in circles cooler.
+            if abs(thetahat-theta_c) > 180:
+                if theta_c < thetahat:
+                    theta_c = theta_c + 360
+                else:
+                    theta_c = theta_c - 360
 
-    velocities = (vx, vy, w)
+            w  = PID_theta.update(theta_c, thetahat, Ts, max_error_window=0)
 
-    return velocities
+        # Are we there yet?
+        _arrived = (vx == 0 and vy == 0 and w == 0 and update_theta)
 
-def _close(a, b, tolerance=0.010):
-    return abs(a - b) <= tolerance
+        velocities = (vx, vy, w)
+
+        return velocities
+
+    def close(self, a, b, tolerance=0.010):
+        return abs(a - b) <= tolerance

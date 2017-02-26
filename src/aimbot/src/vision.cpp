@@ -23,19 +23,16 @@ Vision::Vision()
 // Create OpenCV Windows and sliders
 void Vision::initSliders()
 {
-    printf("begin initSliders\n\r");
     home1slide = OpenCVSliders("home1");
     //home2slide = OpenCVSliders("home2");
     //away1slide = OpenCVSliders("away1");
     //away2slide = OpenCVSliders("away2");
     ballslide = OpenCVSliders("ball");
-    printf("end initSliders\n\r");
 }
 
 
 void Vision::initPublishers()
 {
-    printf("begin initPublishers\n\r");
     std::string key;
     if (nh.searchParam("team_side", key))
     {
@@ -49,16 +46,13 @@ void Vision::initPublishers()
     away1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away1", 5);
     away2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away2", 5);
     ball_pub = nh.advertise<geometry_msgs::Pose2D>(space + "ball", 5);
-    printf("end initPublishers\n\r");
 }
 
 void Vision::initSubscribers()
 {
-    printf("begin initSubscribers\n\r");
         // Subscribe to camera
     image_transport::ImageTransport it(nh);
     image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, &Vision::imageCallback, this);
-    printf("end initSubscribers\n\r");
 }
 
 
@@ -119,8 +113,6 @@ Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& rob
 
     if (hierarchy.size() != 2)
         return imgThresholded;
-
-
 
     for(int i = 0; i < hierarchy.size(); i++)
         mm.push_back(moments((Mat)contours[i]));

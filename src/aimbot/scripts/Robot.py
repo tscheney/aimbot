@@ -1,7 +1,7 @@
 import rospy
 import numpy as np
 from Moving import Moving
-from ControllerClass import Controller
+from Controller import Controller
 from Position import Position
 from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16

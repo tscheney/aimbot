@@ -12,7 +12,6 @@ using namespace cv;
 
 int main(int argc, char** argv)
 {
-    printf("this is the beginning of the camera node\n\r");
     Mat frame;
 
     VideoCapture capture(CV_CAP_ANY);
@@ -21,7 +20,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
     image_transport::Publisher pub = it.advertise("/usb_cam_away/image_raw", 1);
-    //cv::Mat image = cv::imread(argv[1], CV_LOAD_IMAGE_COLOR);
+
     cv::waitKey(30);
     sensor_msgs::ImagePtr msg;
 
