@@ -10,6 +10,8 @@ float Vision::FIELD_WIDTH_PIXELS = 577.0; // measured from threshold of goal to 
 float Vision::FIELD_HEIGHT_PIXELS = 388.0; // measured from inside of wall to wall
 float Vision::CAMERA_WIDTH = 640.0;
 float Vision::CAMERA_HEIGHT = 480.0;
+//OpenCVSliders home1slide = OpenCVSliders("home1");
+//OpenCVSliders ballslide = OpenCVSliders("ball");
 
 Vision::Vision()
 {
@@ -171,21 +173,23 @@ void Vision::processImage(Mat frame)
     Scalar scalelh[2];
 
     // home 1 vision
+    //printf("home1");
     home1slide.exportScalar(scalelh);
     Mat home1 = getRobotPose(imgHsv, scalelh, poseHome1);
     imshow("home1", home1);
 
 
-    home2slide.exportScalar(scalelh);
-    getRobotPose(imgHsv, scalelh,  poseHome2);
+    //home2slide.exportScalar(scalelh);
+    //getRobotPose(imgHsv, scalelh,  poseHome2);
 
-    away1slide.exportScalar(scalelh);
-    getRobotPose(imgHsv, scalelh,    poseAway1);
+    //away1slide.exportScalar(scalelh);
+    //getRobotPose(imgHsv, scalelh,    poseAway1);
 
-    away2slide.exportScalar(scalelh);
-    getRobotPose(imgHsv, scalelh, poseAway2);
+    //away2slide.exportScalar(scalelh);
+    //getRobotPose(imgHsv, scalelh, poseAway2);
 
     // ball vision
+    //printf("ball");
     ballslide.exportScalar(scalelh);
     Mat ball = getBallPose(imgHsv,  scalelh, poseBall);
     imshow("ball", ball);

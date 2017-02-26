@@ -37,9 +37,9 @@ public:
 
 	// each objects stuff
 	OpenCVSliders home1slide;
-    OpenCVSliders home2slide;
-    OpenCVSliders away1slide;
-    OpenCVSliders away2slide;
+    //static OpenCVSliders home2slide;
+    //static OpenCVSliders away1slide;
+    //static OpenCVSliders away2slide;
     OpenCVSliders ballslide;
 	geometry_msgs::Pose2D poseHome1;
 	geometry_msgs::Pose2D poseHome2;

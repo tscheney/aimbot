@@ -2,99 +2,77 @@
 #include "opencvsliders.h"
 
 
-int OpenCVSliders::LowH = 0;
-int OpenCVSliders::HighH = 179;
-int OpenCVSliders::LowS = 0;
-int OpenCVSliders::HighS = 255;
-int OpenCVSliders::LowV = 0;
-int OpenCVSliders::HighV = 255;
+int OpenCVSliders::lhball = 0;
+int OpenCVSliders::hhball = 179;
+int OpenCVSliders::lsball = 0;
+int OpenCVSliders::hsball = 255;
+int OpenCVSliders::lvball = 0;
+int OpenCVSliders::hvball = 255;
+
+int OpenCVSliders::lhhome1 = 0;
+int OpenCVSliders::hhhome1 = 179;
+int OpenCVSliders::lshome1 = 0;
+int OpenCVSliders::hshome1 = 255;
+int OpenCVSliders::lvhome1 = 0;
+int OpenCVSliders::hvhome1 = 255;
 
 
-OpenCVSliders::OpenCVSliders() //: name("blank"), LowH(0), HighH(179), LowS(0), HighS(255), LowV(0), HighV(255)
+OpenCVSliders::OpenCVSliders()
 {
-	/*
-	name = inname;
-
-	LowH = 0;
-	HighH = 179;
-
-	LowS = 0;
-	HighS = 255;
-
-	LowV = 0;
-	HighV = 255;
-	*/
-	
-
-	//namedWindow(inname, CV_WINDOW_AUTOSIZE); //create a window called "Control"
-
-	//createTrackbars(); // Create the trackbars for the window
 }
 
-OpenCVSliders::OpenCVSliders(string inname) //: name(inname), LowH(0), HighH(179), LowS(0), HighS(255), LowV(0), HighV(255)
+
+OpenCVSliders::OpenCVSliders(string inname)
 {
-    printf("change pointers\n\r");
-	name = inname;
-	
-    printf("create window\n\r");
-	namedWindow(inname, CV_WINDOW_AUTOSIZE); //create a window called "Control"
-    printf("create trackbars\n\r");
+    name = inname;
+
+	namedWindow(name, CV_WINDOW_AUTOSIZE); //create a window called "Control"
 	createTrackbars(); // Create the trackbars for the window
 }
-
-
-
-
-OpenCVSliders::OpenCVSliders(string inname, int lh, int  hh, int ls, int hs, int lv, int hv) //: name(inname), LowH(lh), HighH(hh), LowS(ls), HighS(hs), LowV(lv), HighV(hv)
-{
-	name = inname;
-/*
-	lh = lh;
-    hh = hh;
-    ls = ls;
-    hs = hs;
-    lv = lv;
-    hv = hv;
-
-	LowH = &lh;
-	HighH = &hh;
-
-	LowS = &ls;
-	HighS = &hs;
-
-	LowV = &lv;
-	HighV = &hv;*/
-
-	namedWindow(inname, CV_WINDOW_AUTOSIZE); //create a window called "Control"
-
-	createTrackbars(); // Create the trackbars for the window
-}
-
 
 void OpenCVSliders::createTrackbars()
 {
-	//createTrackbar("LowH", name.c_str(), &LowH, 179, &OpenCVSliders::callback, this); //Hue (0 - 179)
-	createTrackbar("LowH", name.c_str(), &LowH, 179);
-	createTrackbar("HighH", name.c_str(), &HighH, 179);
+    if(name=="home1")
+    {
+        createTrackbar("LowH", name.c_str(), &lhhome1, 179);
+        createTrackbar("HighH", name.c_str(), &hhhome1, 179);
 
-    createTrackbar("LowS", name.c_str(), &LowS, 255); //Saturation (0 - 255)
-    createTrackbar("HighS", name.c_str(), &HighS, 255);
+        createTrackbar("LowS", name.c_str(), &lshome1, 255); //Saturation (0 - 255)
+        createTrackbar("HighS", name.c_str(), &hshome1, 255);
 
-    createTrackbar("LowV", name.c_str(), &LowV, 255); //Value (0 - 255)
-    createTrackbar("HighV", name.c_str(), &HighV, 255);
+        createTrackbar("LowV", name.c_str(), &lvhome1, 255); //Value (0 - 255)
+        createTrackbar("HighV", name.c_str(), &hvhome1, 255);
+    }
+    else if(name=="ball")
+    {
+        //createTrackbar("LowH", name.c_str(), &LowH, 179, &OpenCVSliders::callback, this); //Hue (0 - 179)
+        createTrackbar("LowHb", name.c_str(), &lhball, 179);
+        createTrackbar("HighHb", name.c_str(), &hhball, 179);
 
-}
+        createTrackbar("LowSb", name.c_str(), &lsball, 255); //Saturation (0 - 255)
+        createTrackbar("HighSb", name.c_str(), &hsball, 255);
 
-void OpenCVSliders::callback(int value, void* nothing)
-{
-    LowH = value;
+        createTrackbar("LowVb", name.c_str(), &lvball, 255); //Value (0 - 255)
+        createTrackbar("HighVb", name.c_str(), &hvball, 255);
+    }
 }
 
 void OpenCVSliders::exportScalar(Scalar scalarlh[2])
 {
-	Scalar scalelow = Scalar(LowH, LowS, LowV);
-	printf("(%d, %d, %d)\n\r", LowH, LowS, LowV);
-	Scalar scalehigh = Scalar(HighH, HighS, HighV);
+    Scalar scalelow = Scalar(0, 0, 0);
+    Scalar scalehigh = Scalar(179, 255, 255);
+    if(name=="home1")
+    {
+        scalelow = Scalar(lhhome1, lshome1, lvhome1);
+        scalehigh = Scalar(hhhome1, hshome1, hvhome1);
+
+    }
+    else if(name=="ball")
+    {
+        scalelow = Scalar(lhball, lsball, lvball);
+        scalehigh = Scalar(hhball, hsball, hvball);
+    }
+
 
 	scalarlh[0] = scalelow;
 	scalarlh[1] = scalehigh;

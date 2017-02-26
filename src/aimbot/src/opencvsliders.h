@@ -16,38 +16,30 @@ class OpenCVSliders
 {
 public:
 
-    /*int lh;
-    int  hh;
-    int ls;
-    int hs;
-    int lv;
-    int hv; */
-
     //Todo:: these can't be static, because they have to be different for each class
-	static int LowH;
-	static int HighH;
+	static int lhball;
+	static int hhball;
+	static int lsball;
+	static int hsball;
+	static int lvball;
+	static int hvball;
 
-	static int LowS;
-	static int HighS;
-
-	static int LowV;
-	static int HighV;
+	static int lhhome1;
+	static int hhhome1;
+	static int lshome1;
+	static int hshome1;
+	static int lvhome1;
+	static int hvhome1;
 
 	string name;
 
 	OpenCVSliders();
 
-	OpenCVSliders(string inname);
-	//OpenCVSliders(string inname);
-
-	OpenCVSliders(string inname, int lh, int  hh, int ls, int hs, int lv, int hv);
-	//OpenCVSliders(string inname, int lh, int  hh, int ls, int hs, int lv, int hv);
+	OpenCVSliders(string name);
 
 	void createTrackbars();
 
-	static void callback(int value, void* nothing);
-
-	void exportScalar(Scalar scalarlh[2]); 
+	void exportScalar(Scalar scalarlh[2]);
 
 };
 
