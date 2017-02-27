@@ -34,6 +34,8 @@ public:
 	static float FIELD_HEIGHT_PIXELS; // measured from inside of wall to wall
 	static float CAMERA_WIDTH;
 	static float CAMERA_HEIGHT;
+	static float FIELD_X_OFFSET;
+	static float FIELD_Y_OFFSET;
 
 	// each objects stuff
 	OpenCVSliders home1slide;

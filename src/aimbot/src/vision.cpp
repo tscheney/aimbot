@@ -6,9 +6,11 @@ string Vision::GUI_NAME = "home1";
 float Vision::FIELD_WIDTH = 3.53;  // in meters
 float Vision::FIELD_HEIGHT = 2.39; 
 float Vision::ROBOT_RADIUS = 0.10;
-float Vision::FIELD_WIDTH_PIXELS = 577.0; // measured from threshold of goal to goal
-float Vision::FIELD_HEIGHT_PIXELS = 388.0; // measured from inside of wall to wall
-float Vision::CAMERA_WIDTH = 640.0;
+float Vision::FIELD_WIDTH_PIXELS = 610.0; // measured from threshold of goal to goal
+float Vision::FIELD_HEIGHT_PIXELS = 426.0; // measured from inside of wall to wall
+float Vision::FIELD_X_OFFSET = 111;
+float Vision::FIELD_Y_OFFSET = 17;
+float Vision::CAMERA_WIDTH = 864.0;
 float Vision::CAMERA_HEIGHT = 480.0;
 //OpenCVSliders home1slide = OpenCVSliders("home1");
 //OpenCVSliders ballslide = OpenCVSliders("ball");
@@ -86,7 +88,7 @@ bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
 
 Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 {
-    Point2d centerOfField(CAMERA_WIDTH/2, CAMERA_HEIGHT/2);
+    Point2d centerOfField(FIELD_X_OFFSET + FIELD_WIDTH_PIXELS/2, FIELD_Y_OFFSET + FIELD_HEIGHT_PIXELS/2);
     Point2d center_w = (point_i - centerOfField);
 
     // You have to split up the pixel to meter conversion
