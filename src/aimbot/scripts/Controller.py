@@ -26,15 +26,15 @@ class Controller:
 
         xP = gains['x']['P'] if gains is not None else 3
         xI = gains['x']['I'] if gains is not None else 0
-        xD = gains['x']['D'] if gains is not None else 1
+        xD = gains['x']['D'] if gains is not None else 0
         print(xP)
         print(xD)
 
         yP = gains['y']['P'] if gains is not None else 3
         yI = gains['y']['I'] if gains is not None else 0
-        yD = gains['y']['D'] if gains is not None else 1
+        yD = gains['y']['D'] if gains is not None else 0
 
-        thetaP = gains['theta']['P'] if gains is not None else 0.6
+        thetaP = gains['theta']['P'] if gains is not None else 1.5
         thetaI = gains['theta']['I'] if gains is not None else 0
         thetaD = gains['theta']['D'] if gains is not None else 0
 
