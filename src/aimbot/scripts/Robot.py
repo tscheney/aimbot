@@ -159,7 +159,7 @@ class Robot(Moving):
 
         s1 = (0.0, -1.0, 0.0)
         s2 = (-1.0, 0.0, 0.0)
-        s3 = (0.0, 1.0, 0.0)
+        s3 = (0.0, -1.0, 0.0)
 
           # assuming that the back wheel pushes the robot to the right
 
