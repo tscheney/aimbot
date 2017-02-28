@@ -56,7 +56,7 @@ class Robot(Moving):
 
     def init_debug_pub(self):
         """Inits publishers for debug values"""
-        namespace = '/' + self.team_side + "/players/ally" + str(self.num) + '/'
+        namespace = '/aimbot_' + self.team_side + "/players/ally" + str(self.num) + '/'
         self.publishers['des_pos'] = rospy.Publisher(namespace + 'des_pos', Pose2D, queue_size=10)
         self.publishers['robot_vel'] = rospy.Publisher(namespace + 'robot_vel', Twist, queue_size=10)
         self.publishers['wheel_vel1'] = rospy.Publisher(namespace + 'wheel_vel1', Float32, queue_size=10)
