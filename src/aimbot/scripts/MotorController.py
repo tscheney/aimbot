@@ -44,11 +44,11 @@ class MotorController:
         if self.serial_conn:
             self.ser.write('s')
             if (s1 < 1.5 * self.PULSE_PER_ROTATION):
-                s1 = 1.5 * self.PULSE_PER_ROTATION)
+                s1 = 1.5 * self.PULSE_PER_ROTATION
             if (s2 < 1.5 * self.PULSE_PER_ROTATION):
-                s2 = 1.5 * self.PULSE_PER_ROTATION)
+                s2 = 1.5 * self.PULSE_PER_ROTATION
             if (s3 < 1.5 * self.PULSE_PER_ROTATION):
-                s3 = 1.5 * self.PULSE_PER_ROTATION)
+                s3 = 1.5 * self.PULSE_PER_ROTATION
 
             self.writeFloat(s1)
             self.writeFloat(s2)
