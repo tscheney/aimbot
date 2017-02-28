@@ -77,6 +77,7 @@ class Robot(Moving):
 
     def update(self):
         """Updates the robots controller and sets velocities"""
+        print("update")
         self.determine_des_pos()
         self.controller.set_commanded_position(self.des_position.x, self.des_position.y, self.des_position.theta)
         self.vel = self.controller.update(self.position.x, self.position.y, self.position.theta)
