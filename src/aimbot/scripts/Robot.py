@@ -25,7 +25,7 @@ class Robot(Moving):
         self.role = 0
         self.team_side = team_side
         self.vel = (0.0,0.0,0.0) # (vx, vy, w)
-        self.wheel_vel = list(0,0,0) # (wheel1, wheel2, wheel3)
+        self.wheel_vel = [0,0,0] # (wheel1, wheel2, wheel3)
         self.publishers = dict()
         self.init_publsihers()
 
