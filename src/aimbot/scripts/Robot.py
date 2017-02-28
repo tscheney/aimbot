@@ -148,9 +148,9 @@ class Robot(Moving):
         # y increases as you go to the front of the robot
         # x increases as you go to the right of the robot
 
-        r1 = (0.0762, 0, 0)
+        r1 = (0.0762, 0.0, 0.0)
         r2 = (0.0, -0.1016, 0.0)
-        r3 = (-0.0762, 0, 0)
+        r3 = (-0.0762, 0.0, 0.0)
 
         # unit vectors of wheel rotation
         # s1 is in the negative y direction (backward) left wheel
