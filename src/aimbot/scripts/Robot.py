@@ -25,7 +25,7 @@ class Robot(Moving):
         self.role = 0
         self.team_side = team_side
         self.vel = (0.0,0.0,0.0) # (vx, vy, w)
-        self.wheel_vel = (0,0,0) # (wheel1, wheel2, wheel3)
+        self.wheel_vel = list(0,0,0) # (wheel1, wheel2, wheel3)
         self.publishers = dict()
         self.init_publsihers()
 
@@ -109,16 +109,16 @@ class Robot(Moving):
         # y increases as you go to the front of the robot
         # x increases as you go to the right of the robot
 
-        r1 = (-0.2, 0, 0)
-        r2 = (0.2, 0, 0)
-        r3 = (0.0, -0.1, 0.0)
+        r1 = (-0.0762, 0, 0)
+        r2 = (0.0762, 0, 0)
+        r3 = (0.0, -0.1016, 0.0)
 
         # unit vectors of wheel rotation
         # s1 is in the forward y direction (forward) left wheel
         # s2 is in the forward y direction (forward) right wheel
         # s3 is in the forward x direction (right) rear wheel
 
-        s1 = (0.0, 1.0, 0.0)
+        s1 = (0.0, -1.0, 0.0)
         s2 = (0.0, 1.0, 0.0)
         s3 = (1.0, 0.0, 0.0)  # assuming that the back wheel pushes the robot to the right
 
@@ -130,7 +130,22 @@ class Robot(Moving):
 
         r = self.rotationM()
         Omega = np.dot(np.dot(m, r), v)
-        self.wheel_vel = (Omega.item(0), Omega.item(1), Omega.item(2))
+        if (Omega.item(0) > 10000):
+            self.wheel_vel[0] = 10000
+        else:
+            self.wheel_vel[0] = Omega.item(0)
+
+        if (Omega.item(1) > 10000):
+            self.wheel_vel[1] = 10000
+        else:
+            self.wheel_vel[1] = Omega.item(1)
+
+        if (Omega.item(2) > 10000):
+            self.wheel_vel[2] = 10000
+        else:
+            self.wheel_vel[2] = Omega.item(2)
+
+        #self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
 
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
