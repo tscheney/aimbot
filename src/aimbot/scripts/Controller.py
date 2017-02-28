@@ -28,7 +28,7 @@ class Controller:
         xI = gains['x']['I'] if gains is not None else 0
         xD = gains['x']['D'] if gains is not None else 1
         print(xP)
-        print(xI)
+        print(xD)
 
         yP = gains['y']['P'] if gains is not None else 3
         yI = gains['y']['I'] if gains is not None else 0
