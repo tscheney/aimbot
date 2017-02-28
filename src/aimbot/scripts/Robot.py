@@ -148,18 +148,18 @@ class Robot(Moving):
         # y increases as you go to the front of the robot
         # x increases as you go to the right of the robot
 
-        r1 = (0.0762, 0.0, 0.0)
-        r2 = (0.0, -0.1016, 0.0)
-        r3 = (-0.0762, 0.0, 0.0)
+        r1 = (0.0, -0.0762, 0.0)
+        r2 = (-0.1016, 0.0, 0.0)
+        r3 = (0, 0.0762, 0.0)
 
         # unit vectors of wheel rotation
-        # s1 is in the negative y direction (backward) left wheel
+        # s1 is in the negative y direction (backward) right wheel
         # s2 is in the negative x direction (left) rear wheel
-        # s3 is in the postive y direction (forward) right wheel
+        # s3 is in the postive y direction (forward) left wheel
 
-        s1 = (0.0, -1.0, 0.0)
-        s2 = (-1.0, 0.0, 0.0)
-        s3 = (0.0, 1.0, 0.0)
+        s1 = (-1.0, 0.0, 0.0)
+        s2 = (0.0, 1.0, 0.0)
+        s3 = (1.0, 0.0, 0.0)
 
           # assuming that the back wheel pushes the robot to the right
 
@@ -191,8 +191,8 @@ class Robot(Moving):
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
         if self.role == 0: # stay where you are
-            #self.go_to(self.position.x, self.position.y)
-            self.move_to_center()
+            self.go_to(0,0,-90)
+            #self.move_to_center()
         elif self.role == 1:
             self.rush_goal(self.position, self.ball_pos)
         elif self.role == 2:
@@ -228,8 +228,8 @@ class Robot(Moving):
         self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
 
-    def go_to(self, x, y):
-        self.set_des_pos(x, y, 0)
+    def go_to(self, x, y, theta):
+        self.set_des_pos(x, y, theta)
 
     def move_to_center(self):
         return self.go_to(0, 0)
