@@ -158,7 +158,7 @@ class Robot(Moving):
         # s3 is in the postive y direction (forward) right wheel
 
         s1 = (0.0, -1.0, 0.0)
-        s2 = (1.0, 0.0, 0.0)
+        s2 = (-1.0, 0.0, 0.0)
         s3 = (0.0, 1.0, 0.0)
 
           # assuming that the back wheel pushes the robot to the right
@@ -179,12 +179,12 @@ class Robot(Moving):
         if (Omega.item(1) > 10000):
             self.wheel_vel[1] = 10000
         else:
-            self.wheel_vel[1] = Omega.item(2)
+            self.wheel_vel[1] = Omega.item(1)
 
         if (Omega.item(2) > 10000):
             self.wheel_vel[2] = 10000
         else:
-            self.wheel_vel[2] = Omega.item(1)
+            self.wheel_vel[2] = Omega.item(2)
 
         #self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
 
