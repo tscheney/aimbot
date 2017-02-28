@@ -93,11 +93,11 @@ class Controller:
 
         if _arrived:
             # Don't even try
-            return (0, 0, 0)
+            return [0, 0, 0]
 
         if PID_x is None or PID_y is None or PID_theta is None:
             # Controller hasn't been properly initialized
-            return (0, 0, 0)
+            return [0, 0, 0]
 
         # We've had another motion loop!
         _loop_count = _loop_count + 1
@@ -142,7 +142,7 @@ class Controller:
         # Are we there yet?
         _arrived = (vx == 0 and vy == 0 and w == 0 and update_theta)
 
-        velocities = (vx, vy, w)
+        velocities = [vx, vy, w]
 
         return velocities
 
