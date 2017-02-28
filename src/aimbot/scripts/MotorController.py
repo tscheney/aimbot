@@ -43,9 +43,9 @@ class MotorController:
         """Sends the speed command in qpps = (rotations per second)*PULSE_PER_ROTATION to the motor"""
         if self.serial_conn:
             self.ser.write('s')
-            self.writeFloat(s1 * self.PULSE_PER_ROTATION)
-            self.writeFloat(s2 * self.PULSE_PER_ROTATION)
-            self.writeFloat(s3 * self.PULSE_PER_ROTATION)
+            self.writeFloat(s1)
+            self.writeFloat(s2)
+            self.writeFloat(s3)
 
     def setPID(self, motor, p, i, qpps):  #
         """Sets the PI values as well as the qpps value, use motor = 0 to set all motors"""
