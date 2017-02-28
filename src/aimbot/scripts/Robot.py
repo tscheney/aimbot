@@ -153,12 +153,12 @@ class Robot(Moving):
         r3 = (-0.0762, 0, 0)
 
         # unit vectors of wheel rotation
-        # s1 is in the forward y direction (forward) left wheel
-        # s2 is in the forward x direction (right) rear wheel
-        # s3 is in the forward y direction (forward) right wheel
+        # s1 is in the negative y direction (backward) left wheel
+        # s2 is in the negative x direction (left) rear wheel
+        # s3 is in the postive y direction (forward) right wheel
 
         s1 = (0.0, -1.0, 0.0)
-        s2 = (1.0, 0.0, 0.0)
+        s2 = (-1.0, 0.0, 0.0)
         s3 = (0.0, 1.0, 0.0)
 
           # assuming that the back wheel pushes the robot to the right

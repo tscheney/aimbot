@@ -5,7 +5,7 @@ import serial
 
 class MotorController:
     """This class interfaces with the motors via the serial connection to the PSoC"""
-    def __init__(self, p=1, i=0.7, qpps=650):
+    def __init__(self, p=1, i=0.7, qpps=550):
         self.ser = serial.Serial()
         self.serial_conn = False
         self.PULSE_PER_ROTATION = 116.2
