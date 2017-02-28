@@ -43,6 +43,13 @@ class MotorController:
         """Sends the speed command in qpps = (rotations per second)*PULSE_PER_ROTATION to the motor"""
         if self.serial_conn:
             self.ser.write('s')
+            if (s1 < 1.5 * self.PULSE_PER_ROTATION):
+                s1 = 1.5 * self.PULSE_PER_ROTATION)
+            if (s2 < 1.5 * self.PULSE_PER_ROTATION):
+                s2 = 1.5 * self.PULSE_PER_ROTATION)
+            if (s3 < 1.5 * self.PULSE_PER_ROTATION):
+                s3 = 1.5 * self.PULSE_PER_ROTATION)
+
             self.writeFloat(s1)
             self.writeFloat(s2)
             self.writeFloat(s3)
