@@ -24,22 +24,22 @@ class Controller:
         self.control_rate = 100
         global PID_x, PID_y, PID_theta
 
-        xP = gains['x']['P'] if gains is not None else 2
+        xP = gains['x']['P'] if gains is not None else 3
         xI = gains['x']['I'] if gains is not None else 0
-        xD = gains['x']['D'] if gains is not None else 0
+        xD = gains['x']['D'] if gains is not None else 1
         print(xP)
         print(xI)
 
-        yP = gains['y']['P'] if gains is not None else 2
+        yP = gains['y']['P'] if gains is not None else 3
         yI = gains['y']['I'] if gains is not None else 0
-        yD = gains['y']['D'] if gains is not None else 0
+        yD = gains['y']['D'] if gains is not None else 1
 
         thetaP = gains['theta']['P'] if gains is not None else 0.2
         thetaI = gains['theta']['I'] if gains is not None else 0
         thetaD = gains['theta']['D'] if gains is not None else 0
 
-        PID_x = PID(xP, xI, xD, 4, 0.05, integrator_limit=0.05)
-        PID_y = PID(yP, yI, yD, 4, 0.05, integrator_limit=0.05)
+        PID_x = PID(xP, xI, xD, 5, 0.05, integrator_limit=0.05)
+        PID_y = PID(yP, yI, yD, 5, 0.05, integrator_limit=0.05)
         PID_theta = PID(thetaP, thetaI, thetaD, 180, 0.05, integrator_limit=0.05)
 
         print "Initializing controller with gains: {}".format(str(gains))
