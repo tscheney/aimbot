@@ -14,7 +14,7 @@ class Team:
     /aimbot_(team_side)/team/"""
 
     def __init__(self, team_side):
-        self.robots = [Robot(), Robot()]
+        #self.robots = [Robot(), Robot()]
         self.num_robots = 2
         self.num_opp_robots = 2
         self.game_state = GameStateObj()

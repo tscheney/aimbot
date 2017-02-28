@@ -2,6 +2,7 @@ import rospy
 import numpy as np
 from Moving import Moving
 from Controller import Controller
+from MotorController import MotorController
 from Position import Position
 from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
@@ -16,6 +17,7 @@ class Robot(Moving):
     def __init__(self, num=0, team_side="home"):
         Moving.__init__(self)
         self.controller = Controller()
+        self.motor_ctrl = MotorController(1, .7, 1200)
         self.num = num # player number
         self.position = Position()
         self.ball_pos = Position()
@@ -33,6 +35,7 @@ class Robot(Moving):
         rospy.Subscriber(namespace + 'ally' + str(self.num), Pose2D, lambda msg: self.position.import_msg(msg))
 
     def vision_sub(self):
+        """Subscribe to other vision nodes"""
         namespace = "/aimbot_" + self.team_side + "/game/vision/"
         rospy.Subscriber(namespace + 'ball', Pose2D, lambda msg: self.ball_pos.import_msg(msg))
 
@@ -78,6 +81,9 @@ class Robot(Moving):
         self.controller.set_commanded_position(self.des_position.x, self.des_position.y, self.des_position.theta)
         self.vel = self.controller.update(self.position.x, self.position.y, self.position.theta)
         self.vel_to_wheel_vel()
+
+        # send the actual wheel veoloticies to the motor
+        self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
 
     def set_des_pos(self, des_x, des_y, des_th):
         """Sets the desired position"""
