@@ -15,6 +15,7 @@ def main():
         game.publish()
         rate.sleep()
 
+
 if __name__ == '__main__':
     # If this file was run from the command line, then do the following:
     game = Game(sys.argv[1], sys.argv[2])  # sys.argv[1] is the team_side arg from the game.launch file, sys.argv[2] is sim_mode
