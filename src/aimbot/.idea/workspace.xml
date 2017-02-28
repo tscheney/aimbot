@@ -50,8 +50,8 @@
       <file leaf-file-name="robot_node.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/robot_node.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="195">
+              <caret line="17" column="5" lean-forward="false" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -180,15 +180,15 @@
         <option value="$PROJECT_DIR$/scripts/MotorController.py" />
         <option value="$PROJECT_DIR$/scripts/Robot.py" />
         <option value="$PROJECT_DIR$/scripts/Controller.py" />
-        <option value="$PROJECT_DIR$/scripts/robot_node.py" />
         <option value="$PROJECT_DIR$/scripts/game_node.py" />
         <option value="$PROJECT_DIR$/launch/robot.launch" />
+        <option value="$PROJECT_DIR$/scripts/robot_node.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="219" />
-    <option name="y" value="172" />
+    <option name="x" value="189" />
+    <option name="y" value="107" />
     <option name="width" value="1417" />
     <option name="height" value="756" />
   </component>
@@ -420,7 +420,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="219" y="172" width="1417" height="756" extended-state="0" />
+    <frame x="189" y="107" width="1417" height="756" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23712067" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -764,8 +764,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/robot_node.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        <state relative-caret-position="195">
+          <caret line="17" column="5" lean-forward="false" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
           <folding />
         </state>
       </provider>
