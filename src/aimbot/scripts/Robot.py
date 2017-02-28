@@ -90,7 +90,9 @@ class Robot(Moving):
         self.des_position.x = des_x
         self.des_position.y = des_y
         self.des_position.theta = des_th
-        print(self.des_position)
+        print("x: ", self.des_position.x)
+        print("y: ", self.des_position.y)
+        print("th: ", self.des_position.theta)
 
     def rotationM(self):
         """Create the rotation matrix to convert to wheel velocities"""
