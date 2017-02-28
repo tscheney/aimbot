@@ -24,17 +24,17 @@ class Controller:
         self.control_rate = 100
         global PID_x, PID_y, PID_theta
 
-        xP = gains['x']['P'] if gains is not None else 1
+        xP = gains['x']['P'] if gains is not None else 2
         xI = gains['x']['I'] if gains is not None else 0
         xD = gains['x']['D'] if gains is not None else 0
         print(xP)
         print(xI)
 
-        yP = gains['y']['P'] if gains is not None else 1
+        yP = gains['y']['P'] if gains is not None else 2
         yI = gains['y']['I'] if gains is not None else 0
         yD = gains['y']['D'] if gains is not None else 0
 
-        thetaP = gains['theta']['P'] if gains is not None else 1
+        thetaP = gains['theta']['P'] if gains is not None else 0.2
         thetaI = gains['theta']['I'] if gains is not None else 0
         thetaD = gains['theta']['D'] if gains is not None else 0
 
