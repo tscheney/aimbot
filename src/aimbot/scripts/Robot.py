@@ -179,12 +179,12 @@ class Robot(Moving):
         if (Omega.item(1) > 10000):
             self.wheel_vel[1] = 10000
         else:
-            self.wheel_vel[1] = Omega.item(1)
+            self.wheel_vel[1] = Omega.item(2)
 
         if (Omega.item(2) > 10000):
             self.wheel_vel[2] = 10000
         else:
-            self.wheel_vel[2] = Omega.item(2)
+            self.wheel_vel[2] = Omega.item(1)
 
         #self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
 
