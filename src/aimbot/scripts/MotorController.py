@@ -1,6 +1,7 @@
 import struct
 import time
 import serial
+import math
 
 
 class MotorController:
@@ -43,12 +44,12 @@ class MotorController:
         """Sends the speed command in qpps = (rotations per second)*PULSE_PER_ROTATION to the motor"""
         if self.serial_conn:
             self.ser.write('s')
-            if (s1 < 1.5 * self.PULSE_PER_ROTATION):
-                s1 = 1.5 * self.PULSE_PER_ROTATION
-            if (s2 < 1.5 * self.PULSE_PER_ROTATION):
-                s2 = 1.5 * self.PULSE_PER_ROTATION
-            if (s3 < 1.5 * self.PULSE_PER_ROTATION):
-                s3 = 1.5 * self.PULSE_PER_ROTATION
+            if (abs(s1) < 1.5 * self.PULSE_PER_ROTATION):
+                s1 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s1)
+            if (abs(s2) < 1.5 * self.PULSE_PER_ROTATION):
+                s2 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s2)
+            if (abs(s3) < 1.5 * self.PULSE_PER_ROTATION):
+                s3 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s3)
 
             self.writeFloat(s1)
             self.writeFloat(s2)
