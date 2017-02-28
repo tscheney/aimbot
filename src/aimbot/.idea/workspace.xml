@@ -35,12 +35,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vision.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="vision.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/vision.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="510">
               <caret line="37" column="32" lean-forward="false" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MotorController.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scripts/MotorController.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="44" column="27" lean-forward="false" selection-start-line="44" selection-start-column="27" selection-end-line="44" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -159,12 +171,13 @@
         <option value="$PROJECT_DIR$/launch/vision.launch" />
         <option value="$PROJECT_DIR$/src/vision.cpp" />
         <option value="$PROJECT_DIR$/src/vision.h" />
+        <option value="$PROJECT_DIR$/scripts/MotorController.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="430" />
-    <option name="y" value="224" />
+    <option name="x" value="607" />
+    <option name="y" value="169" />
     <option name="width" value="1200" />
     <option name="height" value="756" />
   </component>
@@ -396,7 +409,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="430" y="224" width="1200" height="756" extended-state="0" />
+    <frame x="607" y="169" width="1200" height="756" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -428,14 +441,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/launch/robot.launch">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/launch/vision.launch">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -738,6 +743,16 @@
         <state relative-caret-position="510">
           <caret line="37" column="32" lean-forward="false" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/MotorController.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="44" column="27" lean-forward="false" selection-start-line="44" selection-start-column="27" selection-end-line="44" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
