@@ -6,6 +6,7 @@ from MotorController import MotorController
 from Position import Position
 from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
+from std_msgs.msg import Float32
 
 class Robot(Moving):
     """Class that determines movements and control for a robot
@@ -53,6 +54,15 @@ class Robot(Moving):
         name = '/' + self.team_side + str(self.num) + '/'
         self.publishers['cmd_vel'] = rospy.Publisher(name + 'command', Twist, queue_size=10)
 
+    def init_debug_pub(self):
+        """Inits publishers for debug values"""
+        namespace = '/' + self.team_side + "/players/ally" + str(self.num) + '/'
+        self.publishers['des_pos'] = rospy.Publisher(namespace + 'des_pos', Pose2D, queue_size=10)
+        self.publishers['robot_vel'] = rospy.Publisher(namespace + 'robot_vel', Twist, queue_size=10)
+        self.publishers['wheel_vel1'] = rospy.Publisher(namespace + 'wheel_vel1', Float32, queue_size=10)
+        self.publishers['wheel_vel2'] = rospy.Publisher(namespace + 'wheel_vel2', Float32, queue_size=10)
+        self.publishers['wheel_vel3'] = rospy.Publisher(namespace + 'wheel_vel3', Float32, queue_size=10)
+
     def vel_pub(self):
         """Publishes the commanded velocities.  Needed by simulator."""
         msg = Twist()
@@ -60,6 +70,31 @@ class Robot(Moving):
         msg.linear.y = self.vel[1]
         msg.angular.z = self.vel[2]
         self.publishers['cmd_vel'].publish(msg)
+
+    def debug_pub(self):
+        """Publishes the debug values"""
+        pos_msg = Pose2D()
+        twist_msg = Twist()
+        float_msg = Float32()
+
+        pos_msg.x = self.des_position.x
+        pos_msg.y = self.des_position.y
+        pos_msg.theta = self.des_position.theta
+        self.publishers['des_pos'].publish(pos_msg)
+
+        twist_msg.linear.x = self.vel[0]
+        twist_msg.linear.y = self.vel[1]
+        twist_msg.angular.z = self.vel[2]
+        self.publishers['robot_vel'].publish(twist_msg)
+
+        float_msg.data = self.wheel_vel[0]
+        self.publishers['wheel_vel1'].publish(float_msg)
+
+        float_msg.data = self.wheel_vel[1]
+        self.publishers['wheel_vel2'].publish(float_msg)
+
+        float_msg.data = self.wheel_vel[2]
+        self.publishers['wheel_vel3'].publish(float_msg)
 
     def subscribe(self):
         """Subscribe to all nodes necessary for this robot"""
@@ -70,10 +105,12 @@ class Robot(Moving):
     def init_publsihers(self):
         """Inits all publishers for this robot"""
         self.init_vel_pub()
+        self.init_debug_pub()
 
     def publish(self):
         """Publishes all publishers for this robot"""
         self.vel_pub()
+        self.debug_pub()
 
     def update(self):
         """Updates the robots controller and sets velocities"""
@@ -91,9 +128,6 @@ class Robot(Moving):
         self.des_position.x = des_x
         self.des_position.y = des_y
         self.des_position.theta = des_th
-        print("x: ", self.des_position.x)
-        print("y: ", self.des_position.y)
-        print("th: ", self.des_position.theta)
 
     def rotationM(self):
         """Create the rotation matrix to convert to wheel velocities"""
@@ -113,20 +147,22 @@ class Robot(Moving):
         # y increases as you go to the front of the robot
         # x increases as you go to the right of the robot
 
-        r1 = (-0.0762, 0, 0)
-        r2 = (0.0762, 0, 0)
-        r3 = (0.0, -0.1016, 0.0)
+        r1 = (0.0762, 0, 0)
+        r2 = (0.0, -0.1016, 0.0)
+        r3 = (-0.0762, 0, 0)
 
         # unit vectors of wheel rotation
         # s1 is in the forward y direction (forward) left wheel
-        # s2 is in the forward y direction (forward) right wheel
-        # s3 is in the forward x direction (right) rear wheel
+        # s2 is in the forward x direction (right) rear wheel
+        # s3 is in the forward y direction (forward) right wheel
 
-        s1 = (0.0, -1.0, 0.0)
-        s2 = (0.0, 1.0, 0.0)
-        s3 = (1.0, 0.0, 0.0)  # assuming that the back wheel pushes the robot to the right
+        s1 = (0.0, 1.0, 0.0)
+        s2 = (1.0, 0.0, 0.0)
+        s3 = (0.0, -1.0, 0.0)
 
-        rad = 0.04  # radius of the wheels (guess)
+          # assuming that the back wheel pushes the robot to the right
+
+        rad = 0.03  # radius of the wheels (guess)
 
         m = (1 / rad) * np.matrix([[s1[0], s1[1], (s1[1] * r1[0] - s1[0] * r1[1])],
                                  [s2[0], s2[1], (s2[1] * r2[0] - s2[0] * r2[1])],
