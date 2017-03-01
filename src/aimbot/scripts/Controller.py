@@ -38,8 +38,8 @@ class Controller:
         thetaI = gains['theta']['I'] if gains is not None else 0
         thetaD = gains['theta']['D'] if gains is not None else 0
 
-        PID_x = PID(xP, xI, xD, 20, 0.05, integrator_limit=0.05)
-        PID_y = PID(yP, yI, yD, 20, 0.05, integrator_limit=0.05)
+        PID_x = PID(xP, xI, xD, 21, 0.05, integrator_limit=0.05)
+        PID_y = PID(yP, yI, yD, 21, 0.05, integrator_limit=0.05)
         PID_theta = PID(thetaP, thetaI, thetaD, 180, 0.05, integrator_limit=0.05)
 
         print "Initializing controller with gains: {}".format(str(gains))
