@@ -129,7 +129,8 @@ class Robot(Moving):
         #elif self.count > 100 #50 and self.count < 100:
             #self.motor_ctrl.setSpeed(600, 0, 0)
         elif self.count > 100:
-            self.count = 0
+            self.motor_ctrl.setSpeed(0, 0, 0)
+            self.motor_ctrl.disengage()
         #else:
         print(self.count)
         self.count += 1
