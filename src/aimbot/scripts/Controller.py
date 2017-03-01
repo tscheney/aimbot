@@ -34,7 +34,7 @@ class Controller:
         yI = gains['y']['I'] if gains is not None else 0
         yD = gains['y']['D'] if gains is not None else 0
 
-        thetaP = gains['theta']['P'] if gains is not None else 2.5
+        thetaP = gains['theta']['P'] if gains is not None else 0
         thetaI = gains['theta']['I'] if gains is not None else 0
         thetaD = gains['theta']['D'] if gains is not None else 0
 
