@@ -35,7 +35,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="robot_node.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="robot_node.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/robot_node.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="195">
@@ -45,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Robot.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Robot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="130" column="40" lean-forward="false" selection-start-line="130" selection-start-column="40" selection-end-line="130" selection-end-column="40" />
+            <state relative-caret-position="262">
+              <caret line="161" column="28" lean-forward="true" selection-start-line="161" selection-start-column="28" selection-end-line="161" selection-end-column="28" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -178,11 +178,11 @@
         <option value="$PROJECT_DIR$/src/vision.cpp" />
         <option value="$PROJECT_DIR$/src/vision.h" />
         <option value="$PROJECT_DIR$/scripts/MotorController.py" />
-        <option value="$PROJECT_DIR$/scripts/Robot.py" />
         <option value="$PROJECT_DIR$/scripts/Controller.py" />
         <option value="$PROJECT_DIR$/scripts/game_node.py" />
         <option value="$PROJECT_DIR$/launch/robot.launch" />
         <option value="$PROJECT_DIR$/scripts/robot_node.py" />
+        <option value="$PROJECT_DIR$/scripts/Robot.py" />
       </list>
     </option>
   </component>
@@ -736,16 +736,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="130" column="40" lean-forward="false" selection-start-line="130" selection-start-column="40" selection-end-line="130" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/launch/team.launch">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -775,6 +765,16 @@
         <state relative-caret-position="195">
           <caret line="17" column="32" lean-forward="false" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="32" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="161" column="28" lean-forward="true" selection-start-line="161" selection-start-column="28" selection-end-line="161" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
