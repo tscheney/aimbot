@@ -62,20 +62,20 @@ class MotorController:
                 self.setPID(2, 1, 1, 150/2)
                 reset = True
 
-            if (s3 < 300):
+            if (s3 < 200):
                 self.setPID(3, 1, 1, 150)
                 reset = True
 
             if (s1 < 100):
-                self.setPID(1, 1, 1, 75)
+                self.setPID(1, 1, 1, 50)
                 reset = True
 
             if (s2 < 100):
-                self.setPID(2, 1, 1, 75/2)
+                self.setPID(2, 1, 1, 50/2)
                 reset = True
 
             if (s3 < 100):
-                self.setPID(3, 1, 1, 75)
+                self.setPID(3, 1, 1, 50)
                 reset = True
 
             self.writeFloat(s1)
