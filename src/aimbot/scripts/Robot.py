@@ -131,6 +131,7 @@ class Robot(Moving):
         elif self.count > 50:
             self.count = 0
         #else:
+        print(self.count)
         self.count += 1
 
     def determine_des_pos(self):
