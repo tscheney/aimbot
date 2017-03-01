@@ -18,7 +18,7 @@ class Robot(Moving):
     def __init__(self, num=0, team_side="home"):
         Moving.__init__(self)
         self.controller = Controller()
-        self.motor_ctrl = MotorController(1, 1, 10)
+        self.motor_ctrl = MotorController(1, 1, 1)
         self.num = num # player number
         self.position = Position()
         self.ball_pos = Position()
@@ -158,7 +158,7 @@ class Robot(Moving):
         # linear and angular velocity of the center of the body
         v = np.matrix([[self.vel[0]], [self.vel[1]], [self.vel[2]]])
 
-        # wheel positions (these are guesses)
+        # wheel positions
         # 0,0 being the center of the robot
         # y increases as you go to the front of the robot
         # x increases as you go to the right of the robot
@@ -178,7 +178,7 @@ class Robot(Moving):
 
           # assuming that the back wheel pushes the robot to the right
 
-        rad = 0.03  # radius of the wheels (guess)
+        rad = 0.03  # radius of the wheels
 
         m = (1 / rad) * np.matrix([[s1[0], s1[1], (s1[1] * r1[0] - s1[0] * r1[1])],
                                  [s2[0], s2[1], (s2[1] * r2[0] - s2[0] * r2[1])],
