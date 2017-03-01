@@ -124,6 +124,16 @@ class Robot(Moving):
         # send the actual wheel veoloticies to the motor
         self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
 
+    def determine_des_pos(self):
+        """Determine the desired position for the robot"""
+        if self.role == 0: # stay where you are
+            self.go_to(0,0,-90)
+            #self.move_to_center()
+        elif self.role == 1:
+            self.rush_goal(self.position, self.ball_pos)
+        elif self.role == 2:
+            self.follow_ball_on_line(self.ball_pos, -1.25)
+
     def set_des_pos(self, des_x, des_y, des_th):
         """Sets the desired position"""
         self.des_position.x = des_x
@@ -188,15 +198,7 @@ class Robot(Moving):
 
         #self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
 
-    def determine_des_pos(self):
-        """Determine the desired position for the robot"""
-        if self.role == 0: # stay where you are
-            self.go_to(0,0,-90)
-            #self.move_to_center()
-        elif self.role == 1:
-            self.rush_goal(self.position, self.ball_pos)
-        elif self.role == 2:
-            self.follow_ball_on_line(self.ball_pos, -1.25)
+
 
     def follow_ball_on_line(self, ball, x_c):
         y_c = ball.y
