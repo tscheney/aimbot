@@ -57,7 +57,7 @@ class MotorController:
                 reset = True
 
             if (s1 < 100 and s2 < 100 and s3 < 100):
-                self.setPID(0, 1, 1, 50)
+                self.setPID(0, 1, 1, 10)
                 reset = True
 
             self.writeFloat(s1)
