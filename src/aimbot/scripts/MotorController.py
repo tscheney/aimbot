@@ -61,7 +61,7 @@ class MotorController:
             self.writeFloat(s3)
 
             if reset:
-                self.setPID(0, self.PIQ[0], self.PIQ[1], self.PID[2])
+                self.setPID(0, self.PIQ[0], self.PIQ[1], self.PIQ[2])
 
     def setPID(self, motor, p, i, qpps):  #
         """Sets the PI values as well as the qpps value, use motor = 0 to set all motors"""
