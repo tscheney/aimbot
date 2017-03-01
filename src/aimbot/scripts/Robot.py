@@ -124,7 +124,7 @@ class Robot(Moving):
 
         #if self.count > 10:
             # send the actual wheel veoloticies to the motor
-            self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
+        self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
         #    self.count = 0
         #else:
         #    self.count += 1
