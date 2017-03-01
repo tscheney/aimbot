@@ -167,8 +167,8 @@ class Robot(Moving):
         # s2 is in the negative x direction (left) rear wheel
         # s3 is in the postive y direction (forward) left wheel
 
-        s1 = (1.0, 0.0, 0.0)
-        s2 = (0.0, 1.0, 0.0)
+        s1 = (-1.0, 0.0, 0.0)
+        s2 = (0.0, -1.0, 0.0)
         s3 = (1.0, 0.0, 0.0)
 
           # assuming that the back wheel pushes the robot to the right
