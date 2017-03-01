@@ -186,22 +186,22 @@ class Robot(Moving):
 
         r = self.rotationM()
         Omega = np.dot(np.dot(m, r), v)
-        if (Omega.item(0) > 10000):
-            self.wheel_vel[0] = 10000
-        else:
-            self.wheel_vel[0] = Omega.item(0)
+        # if (Omega.item(0) > 10000):
+        #     self.wheel_vel[0] = 10000
+        # else:
+        #     self.wheel_vel[0] = Omega.item(0)
+        #
+        # if (Omega.item(1) > 10000):
+        #     self.wheel_vel[1] = 10000
+        # else:
+        #     self.wheel_vel[1] = Omega.item(1)
+        #
+        # if (Omega.item(2) > 10000):
+        #     self.wheel_vel[2] = 10000
+        # else:
+        #     self.wheel_vel[2] = Omega.item(2)
 
-        if (Omega.item(1) > 10000):
-            self.wheel_vel[1] = 10000
-        else:
-            self.wheel_vel[1] = Omega.item(1)
-
-        if (Omega.item(2) > 10000):
-            self.wheel_vel[2] = 10000
-        else:
-            self.wheel_vel[2] = Omega.item(2)
-
-        #self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
+        self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
 
 
 
