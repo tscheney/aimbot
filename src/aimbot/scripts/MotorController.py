@@ -52,7 +52,7 @@ class MotorController:
             #if (abs(s3) < 1.5 * self.PULSE_PER_ROTATION):
             #    s3 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s3)
             reset = False
-            if( s1 < 150 and s2 < 150 and s3 < 150):
+            if( s1 < 200 and s2 < 200 and s3 < 200):
                 self.setPID(0, 1, 1, 150)
                 reset = True
 
