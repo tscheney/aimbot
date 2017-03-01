@@ -24,6 +24,7 @@ class Robot(Moving):
         self.ball_pos = Position()
         self.des_position = Position() # place where we want to go
         self.role = 0
+        self.count = 0
         self.team_side = team_side
         self.vel = [0.0, 0.0, 0.0]  # (vx, vy, w)
         self.wheel_vel = [0.0,0.0,0.0] # (wheel1, wheel2, wheel3)
@@ -121,8 +122,12 @@ class Robot(Moving):
         #self.vel[2] = 0.0 #debug don't mess with theta
         self.vel_to_wheel_vel()
 
-        # send the actual wheel veoloticies to the motor
-        self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
+        if self.count > 10:
+            # send the actual wheel veoloticies to the motor
+            self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
+            self.count = 0
+        else:
+            self.count += 1
 
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
