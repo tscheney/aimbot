@@ -14,7 +14,7 @@ class MotorController:
         self.init_serial()
         self.setPID(1, p, i, qpps)
         self.setPID(2, p, i, qpps/2)
-        self.setPID(3, p, i, qpps)
+        self.setPID(3, p, i, qpps/2)
         self.setT(20, 50)
 
     def init_serial(self):
