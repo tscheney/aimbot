@@ -124,10 +124,12 @@ class Robot(Moving):
 
         if self.count < 25:
             self.motor_ctrl.setSpeed(0, 600, 0)
+            self.motor_ctrl.disengage()
         if self.count < 175 and self.count > 25:
             # send the actual wheel veoloticies to the motor
             #self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
             self.motor_ctrl.setSpeed(-600,0,  600)
+            self.motor_ctrl.disengage()
         #elif self.count > 100 #50 and self.count < 100:
             #self.motor_ctrl.setSpeed(600, 0, 0)
         elif self.count > 175:
