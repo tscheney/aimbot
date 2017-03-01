@@ -53,39 +53,40 @@ class MotorController:
             #    s2 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s2)
             #if (abs(s3) < 1.5 * self.PULSE_PER_ROTATION):
             #    s3 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s3)
-            reset = False
-            if( s1 < 200):
-                self.setPID(1, 1, 1, 150)
-                reset = True
 
-            if( s2 < 200):
-                self.setPID(2, 1, 1, 150/2)
-                reset = True
-
-            if (s3 < 200):
-                self.setPID(3, 1, 1, 150)
-                reset = True
-
-            if (s1 < 100):
-                self.setPID(1, 1, 1, 50)
-                reset = True
-
-            if (s2 < 100):
-                self.setPID(2, 1, 1, 50/2)
-                reset = True
-
-            if (s3 < 100):
-                self.setPID(3, 1, 1, 50)
-                reset = True
+            # reset = False
+            # if( s1 < 200):
+            #     self.setPID(1, 1, 1, 150)
+            #     reset = True
+            #
+            # if( s2 < 200):
+            #     self.setPID(2, 1, 1, 150/2)
+            #     reset = True
+            #
+            # if (s3 < 200):
+            #     self.setPID(3, 1, 1, 150)
+            #     reset = True
+            #
+            # if (s1 < 100):
+            #     self.setPID(1, 1, 1, 50)
+            #     reset = True
+            #
+            # if (s2 < 100):
+            #     self.setPID(2, 1, 1, 50/2)
+            #     reset = True
+            #
+            # if (s3 < 100):
+            #     self.setPID(3, 1, 1, 50)
+            #     reset = True
 
             self.writeFloat(s1)
             self.writeFloat(s2)
             self.writeFloat(s3)
 
-            if reset:
-                self.setPID(1, self.PIQ[0], self.PIQ[1], self.PIQ[2])
-                self.setPID(2, self.PIQ[0], self.PIQ[1], self.PIQ[2]/2)
-                self.setPID(3, self.PIQ[0], self.PIQ[1], self.PIQ[2])
+            # if reset:
+            #     self.setPID(1, self.PIQ[0], self.PIQ[1], self.PIQ[2])
+            #     self.setPID(2, self.PIQ[0], self.PIQ[1], self.PIQ[2]/2)
+            #     self.setPID(3, self.PIQ[0], self.PIQ[1], self.PIQ[2])
 
     def setPID(self, motor, p, i, qpps):  #
         """Sets the PI values as well as the qpps value, use motor = 0 to set all motors"""
