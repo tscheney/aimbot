@@ -12,7 +12,9 @@ class MotorController:
         self.PULSE_PER_ROTATION = 116.2
         self.PIQ = (p, i, qpps)
         self.init_serial()
-        self.setPID(0, p, i, qpps)
+        self.setPID(1, p, i, qpps)
+        self.setPID(2, p, i, qpps/2)
+        self.setPID(3, p, i, qpps)
         self.setT(20, 50)
 
     def init_serial(self):
@@ -53,11 +55,15 @@ class MotorController:
             #    s3 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s3)
             reset = False
             if( s1 < 200 and s2 < 200 and s3 < 200):
-                self.setPID(0, 1, 1, 150)
+                self.setPID(1, 1, 1, 150)
+                self.setPID(2, 1, 1, 150/2)
+                self.setPID(3, 1, 1, 150)
                 reset = True
 
             if (s1 < 100 and s2 < 100 and s3 < 100):
-                self.setPID(0, 1, 1, 75)
+                self.setPID(1, 1, 1, 75)
+                self.setPID(2, 1, 1, 75/2)
+                self.setPID(3, 1, 1, 75)
                 reset = True
 
             self.writeFloat(s1)
@@ -65,7 +71,9 @@ class MotorController:
             self.writeFloat(s3)
 
             if reset:
-                self.setPID(0, self.PIQ[0], self.PIQ[1], self.PIQ[2])
+                self.setPID(1, self.PIQ[0], self.PIQ[1], self.PIQ[2])
+                self.setPID(2, self.PIQ[0], self.PIQ[1], self.PIQ[2]/2)
+                self.setPID(3, self.PIQ[0], self.PIQ[1], self.PIQ[2])
 
     def setPID(self, motor, p, i, qpps):  #
         """Sets the PI values as well as the qpps value, use motor = 0 to set all motors"""
