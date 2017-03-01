@@ -51,10 +51,17 @@ class MotorController:
             #    s2 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s2)
             #if (abs(s3) < 1.5 * self.PULSE_PER_ROTATION):
             #    s3 = math.copysign(1.5 * self.PULSE_PER_ROTATION, s3)
+            reset = False
+            if( s1 < 100 and s2 < 100 and s3 < 100):
+                self.setPID(0, 1, 1, 150)
+                reset = True
 
             self.writeFloat(s1)
             self.writeFloat(s2)
             self.writeFloat(s3)
+
+            if reset:
+                self.setPID(0, self.PIQ[0], self.PIQ[1], self.PID[2])
 
     def setPID(self, motor, p, i, qpps):  #
         """Sets the PI values as well as the qpps value, use motor = 0 to set all motors"""
