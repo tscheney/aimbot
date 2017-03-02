@@ -18,7 +18,7 @@ class Robot(Moving):
     def __init__(self, num=0, team_side="home"):
         Moving.__init__(self)
         self.controller = Controller()
-        self.motor_ctrl = MotorController(1, 1, 1)
+        self.motor_ctrl = MotorController(1, 1, 400)
         self.num = num # player number
         self.position = Position()
         self.ball_pos = Position()
