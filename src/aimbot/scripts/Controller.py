@@ -30,7 +30,7 @@ class Controller:
         print(xP)
         print(xD)
 
-        yP = gains['y']['P'] if gains is not None else
+        yP = gains['y']['P'] if gains is not None else 5
         yI = gains['y']['I'] if gains is not None else 0
         yD = gains['y']['D'] if gains is not None else 0
 
