@@ -117,9 +117,9 @@ class Robot(Moving):
         """Updates the robots controller and sets velocities"""
         self.determine_des_pos()
         self.controller.set_commanded_position(self.des_position.x, self.des_position.y, self.des_position.theta)
-        self.vel = self.controller.update(self.position.x, self.position.y, self.position.theta)
+        #self.vel = self.controller.update(self.position.x, self.position.y, self.position.theta)
         #print(self.vel)
-        #self.vel = self.controller.update(0, 0, self.position.theta)
+        self.vel = self.controller.update(0, 0, self.position.theta)
         #self.vel[2] = 0.0 #debug don't mess with theta
         self.vel_to_wheel_vel()
 
