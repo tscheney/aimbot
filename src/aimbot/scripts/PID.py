@@ -45,6 +45,8 @@ class PID(object):
         else:
             error = x_c - x
 
+        print(error)
+
         # update derivative of x
         self.xdot = self._tustin_derivative(x, Ts)
 
