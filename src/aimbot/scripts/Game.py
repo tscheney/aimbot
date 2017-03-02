@@ -136,7 +136,6 @@ class Game:
         # publishes positions
 
         for name, pos in self.positions.items():
-            print(name, "x: ", pos.x, "y:", pos.y, "z: ", pos.theta)
             #print(name, pos.x, pos.y, pos.theta)
             #TODO remove debug code
             #if (name != "ally1"):

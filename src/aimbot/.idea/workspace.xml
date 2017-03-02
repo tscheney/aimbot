@@ -28,11 +28,31 @@
       <file leaf-file-name="Robot.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="121" column="23" lean-forward="false" selection-start-line="121" selection-start-column="23" selection-end-line="121" selection-end-column="23" />
+            <state relative-caret-position="255">
+              <caret line="116" column="63" lean-forward="false" selection-start-line="116" selection-start-column="63" selection-end-line="116" selection-end-column="63" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="opencvsliders.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/opencvsliders.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="26" column="23" lean-forward="false" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="opencvsliders.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/opencvsliders.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="32" lean-forward="false" selection-start-line="16" selection-start-column="32" selection-end-line="16" selection-end-column="32" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -69,26 +89,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameStateObj.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/GameStateObj.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game_node.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/game_node.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="14" column="21" lean-forward="false" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/Controller.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -111,11 +111,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Game.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/Game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="138" column="57" lean-forward="false" selection-start-line="138" selection-start-column="57" selection-end-line="138" selection-end-column="57" />
+            <state relative-caret-position="420">
+              <caret line="137" column="48" lean-forward="false" selection-start-line="137" selection-start-column="48" selection-end-line="137" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -175,7 +175,6 @@
         <option value="$PROJECT_DIR$/launch/comp.launch" />
         <option value="$PROJECT_DIR$/scripts/vision_node.py" />
         <option value="$PROJECT_DIR$/scripts/AI.py" />
-        <option value="$PROJECT_DIR$/src/opencvsliders.cpp" />
         <option value="$PROJECT_DIR$/launch/vision.launch" />
         <option value="$PROJECT_DIR$/src/vision.cpp" />
         <option value="$PROJECT_DIR$/src/vision.h" />
@@ -185,14 +184,15 @@
         <option value="$PROJECT_DIR$/scripts/MotorController.py" />
         <option value="$PROJECT_DIR$/scripts/PID.py" />
         <option value="$PROJECT_DIR$/scripts/Controller.py" />
-        <option value="$PROJECT_DIR$/scripts/Robot.py" />
         <option value="$PROJECT_DIR$/scripts/Game.py" />
+        <option value="$PROJECT_DIR$/scripts/Robot.py" />
+        <option value="$PROJECT_DIR$/src/opencvsliders.cpp" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="268" />
-    <option name="y" value="118" />
+    <option name="x" value="1" />
+    <option name="y" value="1001" />
     <option name="width" value="1526" />
     <option name="height" value="1153" />
   </component>
@@ -438,7 +438,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="268" y="118" width="1526" height="1153" extended-state="0" />
+    <frame x="1" y="1001" width="1526" height="1153" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22018349" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -576,20 +576,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/opencvsliders.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="23" lean-forward="false" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/opencvsliders.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-399">
-          <caret line="20" column="1" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/vision.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1425">
@@ -723,20 +709,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="137" column="48" lean-forward="false" selection-start-line="137" selection-start-column="48" selection-end-line="137" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="121" column="23" lean-forward="false" selection-start-line="121" selection-start-column="23" selection-end-line="121" selection-end-column="23" />
+        <state relative-caret-position="255">
+          <caret line="116" column="63" lean-forward="false" selection-start-line="116" selection-start-column="63" selection-end-line="116" selection-end-column="63" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Game.py">
+    <entry file="file://$PROJECT_DIR$/src/opencvsliders.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="138" column="57" lean-forward="false" selection-start-line="138" selection-start-column="57" selection-end-line="138" selection-end-column="57" />
+        <state relative-caret-position="390">
+          <caret line="26" column="23" lean-forward="false" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/opencvsliders.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="32" lean-forward="false" selection-start-line="16" selection-start-column="32" selection-end-line="16" selection-end-column="32" />
           <folding />
         </state>
       </provider>
