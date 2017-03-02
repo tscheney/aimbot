@@ -25,7 +25,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Robot.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Robot.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="375">
@@ -111,11 +111,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Game.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Game.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/Game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="89" column="34" lean-forward="false" selection-start-line="89" selection-start-column="34" selection-end-line="89" selection-end-column="34" />
+            <state relative-caret-position="435">
+              <caret line="138" column="57" lean-forward="false" selection-start-line="138" selection-start-column="57" selection-end-line="138" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -186,6 +186,7 @@
         <option value="$PROJECT_DIR$/scripts/PID.py" />
         <option value="$PROJECT_DIR$/scripts/Controller.py" />
         <option value="$PROJECT_DIR$/scripts/Robot.py" />
+        <option value="$PROJECT_DIR$/scripts/Game.py" />
       </list>
     </option>
   </component>
@@ -670,14 +671,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="89" column="34" lean-forward="false" selection-start-line="89" selection-start-column="34" selection-end-line="89" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/Position.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="630">
@@ -737,6 +730,14 @@
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="138" column="57" lean-forward="false" selection-start-line="138" selection-start-column="57" selection-end-line="138" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
