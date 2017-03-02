@@ -21,7 +21,7 @@ velocities = (0, 0, 0)
 class Controller:
     """Controller class for the robots"""
     def __init__(self, gains=None):
-        self.control_rate = 100
+        self.control_rate = 20
         global PID_x, PID_y, PID_theta
 
         xP = gains['x']['P'] if gains is not None else 30
