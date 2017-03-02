@@ -25,11 +25,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Robot.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Robot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="116" column="63" lean-forward="false" selection-start-line="116" selection-start-column="63" selection-end-line="116" selection-end-column="63" />
+            <state relative-caret-position="264">
+              <caret line="120" column="9" lean-forward="false" selection-start-line="120" selection-start-column="9" selection-end-line="120" selection-end-column="9" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -47,7 +47,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="opencvsliders.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="opencvsliders.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/opencvsliders.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -150,6 +150,7 @@
       <find>ally1</find>
       <find>ally</find>
       <find>p</find>
+      <find>print(</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -185,14 +186,14 @@
         <option value="$PROJECT_DIR$/scripts/PID.py" />
         <option value="$PROJECT_DIR$/scripts/Controller.py" />
         <option value="$PROJECT_DIR$/scripts/Game.py" />
-        <option value="$PROJECT_DIR$/scripts/Robot.py" />
         <option value="$PROJECT_DIR$/src/opencvsliders.cpp" />
+        <option value="$PROJECT_DIR$/scripts/Robot.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1" />
-    <option name="y" value="1001" />
+    <option name="x" value="161" />
+    <option name="y" value="176" />
     <option name="width" value="1526" />
     <option name="height" value="1153" />
   </component>
@@ -438,7 +439,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="1001" width="1526" height="1153" extended-state="0" />
+    <frame x="161" y="176" width="1526" height="1153" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22018349" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -717,16 +718,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="116" column="63" lean-forward="false" selection-start-line="116" selection-start-column="63" selection-end-line="116" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/opencvsliders.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -740,6 +731,16 @@
         <state relative-caret-position="240">
           <caret line="16" column="32" lean-forward="false" selection-start-line="16" selection-start-column="32" selection-end-line="16" selection-end-column="32" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Robot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="120" column="9" lean-forward="false" selection-start-line="120" selection-start-column="9" selection-end-line="120" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
