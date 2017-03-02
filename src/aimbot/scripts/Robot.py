@@ -144,7 +144,7 @@ class Robot(Moving):
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
         if self.role == 0: # stay where you are
-            self.go_to(0, 0,-180)
+            self.go_to(0, 0, 0)
             #self.move_to_center()
         elif self.role == 1:
             self.rush_goal(self.position, self.ball_pos)
