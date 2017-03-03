@@ -34,6 +34,12 @@ class Position:
         if (team_side != 'home') ^ bool(game_state.second_half):
             self.invert()
 
+    def update(self, x, y, theta):
+        """Updates position values"""
+        self.x = x
+        self.y = y
+        self.theta = theta
+
     def export(self, ):
         msg = Pose2D()
 

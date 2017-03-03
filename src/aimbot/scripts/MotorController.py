@@ -1,7 +1,5 @@
 import struct
-import time
 import serial
-import math
 
 
 class MotorController:
