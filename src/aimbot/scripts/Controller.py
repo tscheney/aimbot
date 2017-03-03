@@ -109,6 +109,7 @@ class Controller:
         self.th_obsv.d = theta_d
 
     def get_error(self, x, y, theta):
+        """Find the error between the desired and real positions"""
         x_error = abs(abs(x.xhat[0, 0] - x.d))
         y_error = abs(abs(y.xhat[0, 0] - y.d))
         theta_error = abs(abs(theta.xhat[0, 0] - theta.d))
