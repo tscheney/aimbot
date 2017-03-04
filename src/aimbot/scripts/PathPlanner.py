@@ -3,12 +3,16 @@ import numpy as np
 from Position import Position
 
 class PathPlanner:
+    """This class uses the position of the robot and of the all the objects necessary to avoid and
+    calculates a new intermediate point as part of an overall path that will guide the robot
+    to its desired position without running into anything"""
+
     def __init__(self):
         self.pos = Position() # the current position of the robot
         self.des_pos = Position() # the eventual position the robot wants to get to, will come from the Robot class
         self.intm_pos = Position() # the intermediate position that this class calculates for the robot to head to in order to
                                     # avoid objects and get the desired position
-        self.obj_to_avoid = [] # this is a list of obejcts to avoid
+        self.obj_to_avoid = [] # this is a list of objects to avoid
 
         def update_pos(self, pos):
             """Updates to the latest current position of the Robot"""
