@@ -141,7 +141,7 @@ class Controller:
                 #           else:                          # Else the current position is less than the desired position
                 #               curr = curr + 2*np.pi      # Add 360 degrees to the current posistion
 
-        if (curr - curr_d > (-np.pi)) and (curr + curr_d < np.pi):
+        if (curr - curr_d > (-np.pi)) and (curr - curr_d < np.pi):
             self.th_obsv.xhat[0, 0] = curr  # Update current position
         else:
             print("error")
