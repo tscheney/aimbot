@@ -145,7 +145,7 @@ class Controller:
             self.th_obsv.xhat[0, 0] = curr  # Update current position
         else:
             print("error")
-            print(self.th_obsv.xhat[0, 0])
+            print("th_vel", np.rad2deg(self.th_obsv.xhat[0, 0]))
             print("curr", np.rad2deg(curr))
             print("theta d", np.rad2deg(curr_d))
             # print("theta curr", curr*180/np.pi)
