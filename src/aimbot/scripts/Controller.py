@@ -75,7 +75,7 @@ class Controller:
         self.th_obsv = Observer(thetaP)
         self.position = Position()
         self.vel = [0.0, 0.0, 0.0]  # (vx, vy, w)
-        self.motor_ctrl = MotorController(1, 1, 400)
+        self.motor_ctrl = MotorController(1, 3, 600)
         self.wheel_vel = [0.0, 0.0, 0.0]  # (wheel1, wheel2, wheel3)
 
     def update(self):
@@ -123,7 +123,7 @@ class Controller:
             curr = curr + 2 * np.pi
             i = i + 1
             #if i > 4:
-                #print("first", i) 
+                #print("first", i)
         i = 0
         while curr + self.th_obsv.d > np.pi:
             curr = curr - 2 * np.pi
