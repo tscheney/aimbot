@@ -122,14 +122,14 @@ class Controller:
         while curr - self.th_obsv.d < -1 * np.pi:
             curr = curr + 2 * np.pi
             i = i + 1
-            if i > 4:
-                print("first", i)
+            #if i > 4:
+                #print("first", i) 
         i = 0
         while curr + self.th_obsv.d > np.pi:
             curr = curr - 2 * np.pi
             i = i + 1
-            if i > 4:
-                print("second", i)
+            #if i > 4:
+                #print("second", i)
                 #       while (abs(curr - self.d) > np.pi):   # Sees if the distance between the two is greater than 180 degrees
                 #           if curr > self.d:              # If the current position is greater than the desired position
                 #               curr = curr - 2*np.pi      # Subtract 360 degrees from the current position
