@@ -140,11 +140,12 @@ class Controller:
                 #               curr = curr - 2*np.pi      # Subtract 360 degrees from the current position
                 #           else:                          # Else the current position is less than the desired position
                 #               curr = curr + 2*np.pi      # Add 360 degrees to the current posistion
-        self.th_obsv.xhat[0, 0] = curr # Update current position
+
         if (curr - curr_d > (-np.pi)) and (curr + curr_d < np.pi):
-            pass
+            self.th_obsv.xhat[0, 0] = curr  # Update current position
         else:
             print("error")
+            print(self.th_obsv.xhat[0, 0])
             print("curr", np.rad2deg(curr))
             print("theta d", np.rad2deg(curr_d))
             # print("theta curr", curr*180/np.pi)
