@@ -121,8 +121,8 @@ class Controller:
 
     def adjust_for_period(self):
         """This function accounts for the periodicity of theta. The robot should never need to rotate more than 180 degrees."""
-        curr = np.deg2rad(self.th_obsv.xhat[0, 0]) # get theta velocity
-        curr_d = np.deg2rad(self.th_obsv.d)
+        curr = self.th_obsv.xhat[0, 0] # get theta velocity
+        curr_d = self.th_obsv.d
         i = 0
         while curr - curr_d < -1 * np.pi:
             curr = curr + 2 * np.pi

@@ -114,11 +114,11 @@ class Robot(Moving):
     def update(self):
         """Updates the robots controller and sets velocities"""
         self.determine_des_pos()
-        self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, self.des_pos.theta)
-        self.controller.update_cur_pos(self.pos.x, self.pos.y, self.pos.theta)
+        self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
+        self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
         #print(self.vel)
         self.controller.update()
-        self.vel = self.controller.vel
+        self.vel = [self.controller.vel.x, self.controller.vel.y, np.rad2deg(self.controller.vel.theta)]
         self.wheel_vel = self.controller.wheel_vel
 
     def determine_des_pos(self):
