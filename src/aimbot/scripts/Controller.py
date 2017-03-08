@@ -69,7 +69,7 @@ thetaP = {
 class Controller:
     """Controller class for the robots that uses observer based techniques"""
     def __init__(self):
-        self.control_rate = 100
+        self.control_rate = 10
         self.x_obsv = Observer(xP)
         self.y_obsv = Observer(yP)
         self.th_obsv = Observer(thetaP)
