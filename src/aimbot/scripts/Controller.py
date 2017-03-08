@@ -69,7 +69,7 @@ thetaP = {
 class Controller:
     """Controller class for the robots that uses observer based techniques"""
     def __init__(self):
-        self.control_rate = 10
+        self.control_rate = 100
         self.x_obsv = Observer(xP)
         self.y_obsv = Observer(yP)
         self.th_obsv = Observer(thetaP)
@@ -77,17 +77,21 @@ class Controller:
         self.vel = [0.0, 0.0, 0.0]  # (vx, vy, w)
         self.motor_ctrl = MotorController(1, 3, 600)
         self.wheel_vel = [0.0, 0.0, 0.0]  # (wheel1, wheel2, wheel3)
+        self.tick = 0
 
     def update(self):
         """Updates the observer controller"""
-        self.x_obsv.updateObserver()
-        self.y_obsv.updateObserver()
-        self.adjust_for_period()  # The rotational movement is periodic with 2pi. It must account for that.
-        self.th_obsv.updateObserver()
+        if(self.tick == 5):
+            self.x_obsv.updateObserver()
+            self.y_obsv.updateObserver()
+            self.adjust_for_period()  # The rotational movement is periodic with 2pi. It must account for that.
+            self.th_obsv.updateObserver()
+            self.tick = 0
         self.position.update(self.x_obsv.xhat[0,0], self.y_obsv.xhat[0,0], self.th_obsv.xhat[0,0])
         self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
         self.vel_to_wheel_vel()
         self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
+        self.tick += 1
 
     def map_theta(self, theta_c):
         while (theta_c > 2 * np.pi):
