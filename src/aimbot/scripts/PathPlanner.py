@@ -13,7 +13,7 @@ class PathPlanner:
         self.intm_pos = Position() # the intermediate position that this class calculates for the robot to head to in order to
                                     # avoid objects and get the desired position
         self.obj_to_avoid = [] # this is a list of objects to avoid
-# TODO not sure if the next line is right, these are the ones i (corbin) added
+# TODO not sure if the next few lines are right
         self.waypoints = [] #list of points to pass through
         self.ball = Position() #need the ball position
         self.goal = Position() #the position of the goal
@@ -35,9 +35,13 @@ class PathPlanner:
                 self.obj_to_avoid.append(pos)  # add all the new positions
 
 #TODO here down is new or modified
+        def update_goal(self):
+            self.goal.x = 1.5 #not sure on the coordinates might be 2
+            self.goal.y = 0 #center of the goal
+            self.goal.theta = 0 #doesnt really matter
 
         def calc_waypoints(self):
-            """Calculates intermiate position to head to"""
+            """Calculates intermediate position to head to"""
             rad = np.radians(self.pos.theta)
             self.point = self.hand*np.matrix([[np.cos(rad)],
                                np.sin(rad)])
