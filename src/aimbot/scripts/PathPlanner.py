@@ -60,7 +60,7 @@ class PathPlanner:
         def print_waypoints(self, waypoints):
             """prints out the waypoints for debugging purposes"""
             for point in waypoints:
-                print(point)
+                #print(point)
 
 # notes on waypoint path finding from http://rwbclasses.groups.et.byu.net/lib/exe/fetch.php?media=robot_soccer:material:waypoints.pdf
 #   1.) He suggests having a few functions, one that will clear the waypoint
