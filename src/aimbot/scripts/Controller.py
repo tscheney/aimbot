@@ -124,13 +124,13 @@ class Controller:
         curr = self.th_obsv.xhat[0, 0] # get theta position
         curr_d = self.th_obsv.d
         i = 0
-        while curr - curr_d < -1 * np.pi:
+        while (curr - curr_d) < -1 * np.pi:
             curr = curr + 2 * np.pi
             i = i + 1
             #if i > 4:
                 #print("first", i)
         i = 0
-        while curr + curr_d > np.pi:
+        while (curr + curr_d) > np.pi:
             curr = curr - 2 * np.pi
             i = i + 1
             #if i > 4:
