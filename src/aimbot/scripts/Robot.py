@@ -118,7 +118,7 @@ class Robot(Moving):
         self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
         #print(self.vel)
         self.controller.update()
-        self.vel = [self.controller.vel.x, self.controller.vel.y, np.rad2deg(self.controller.vel.theta)]
+        self.vel = [self.controller.vel[0], self.controller.vel[2], np.rad2deg(self.controller.vel[2])]
         self.wheel_vel = self.controller.wheel_vel
 
     def determine_des_pos(self):
