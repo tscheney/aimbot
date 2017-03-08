@@ -121,15 +121,16 @@ class Controller:
 
     def adjust_for_period(self):
         """This function accounts for the periodicity of theta. The robot should never need to rotate more than 180 degrees."""
-        curr = self.th_obsv.xhat[0, 0]
+        curr = np.deg2rad(self.th_obsv.xhat[0, 0]) # get theta velocity
+        curr_d = np.deg2rad(self.th_obsv.d)
         i = 0
-        while curr - self.th_obsv.d < -1 * np.pi:
+        while curr - curr_d < -1 * np.pi:
             curr = curr + 2 * np.pi
             i = i + 1
             #if i > 4:
                 #print("first", i)
         i = 0
-        while curr + self.th_obsv.d > np.pi:
+        while curr + curr_d > np.pi:
             curr = curr - 2 * np.pi
             i = i + 1
             #if i > 4:
@@ -139,13 +140,13 @@ class Controller:
                 #               curr = curr - 2*np.pi      # Subtract 360 degrees from the current position
                 #           else:                          # Else the current position is less than the desired position
                 #               curr = curr + 2*np.pi      # Add 360 degrees to the current posistion
-        self.th_obsv.xhat[0, 0] = curr  # Update current position
-        if (curr - self.th_obsv.d > (-np.pi)) and (curr + self.th_obsv.d < np.pi):
+        self.th_obsv.xhat[0, 0] = np.rad2deg(curr) # Update current position
+        if (curr - curr_d > (-np.pi)) and (curr + curr_d < np.pi):
             pass
         else:
             print("error")
-            print("curr", curr * 180 / np.pi)
-            print("theta d", self.th_obsv.d * 180 / np.pi)
+            print("curr", np.rad2deg(curr))
+            print("theta d", np.rad2deg(curr_d))
             # print("theta curr", curr*180/np.pi)
 
     def rotationM(self):
