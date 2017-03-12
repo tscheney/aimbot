@@ -103,13 +103,12 @@ class Robot(Moving):
 
 
         if(self.hertz_20 == 4 or self.first):
-            self.my_role_sub()
+            self.vision_sub()
             self.hertz_20 = 0
             self.first = False
-        self.vision_sub()
         self.hertz_20 = self.hertz_20 + 1
         self.my_pos_sub()
-
+        self.my_role_sub()
 
     def init_publsihers(self):
         """Inits all publishers for this robot"""
