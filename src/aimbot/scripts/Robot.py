@@ -60,6 +60,7 @@ class Robot(Moving):
         """Inits publishers for debug values"""
         namespace = '/aimbot_' + self.team_side + "/players/ally" + str(self.num) + '/'
         self.publishers['des_pos'] = rospy.Publisher(namespace + 'des_pos', Pose2D, queue_size=10)
+        self.publishers['obsv_pos'] = rospy.Publisher(namespace + 'des_pos', Pose2D, queue_size=10)
         self.publishers['robot_vel'] = rospy.Publisher(namespace + 'robot_vel', Twist, queue_size=10)
         self.publishers['wheel_vel1'] = rospy.Publisher(namespace + 'wheel_vel1', Float32, queue_size=10)
         self.publishers['wheel_vel2'] = rospy.Publisher(namespace + 'wheel_vel2', Float32, queue_size=10)
@@ -84,6 +85,11 @@ class Robot(Moving):
         pos_msg.theta = self.des_pos.theta
         self.publishers['des_pos'].publish(pos_msg)
 
+        pos_msg.x = self.pos.x
+        pos_msg.y = self.pos.y
+        pos_msg.theta = self.pos.theta
+        self.publishers['obsv_pos'].publish(pos_msg)
+
         twist_msg.linear.x = self.vel[0]
         twist_msg.linear.y = self.vel[1]
         twist_msg.angular.z = self.vel[2]
@@ -100,8 +106,6 @@ class Robot(Moving):
 
     def subscribe(self):
         """Subscribe to all nodes necessary for this robot"""
-
-
         self.vision_sub()
         self.my_pos_sub()
         self.my_role_sub()
@@ -129,10 +133,9 @@ class Robot(Moving):
         self.hertz_20 = self.hertz_20 + 1
 
 
-
         #print(self.vel)
         self.controller.update()
-        self.vel = [self.controller.vel[0], self.controller.vel[2], np.rad2deg(self.controller.vel[2])]
+        self.vel = [self.controller.vel[0], self.controller.vel[1], np.rad2deg(self.controller.vel[2])]
         self.wheel_vel = self.controller.wheel_vel
 
     def determine_des_pos(self):
