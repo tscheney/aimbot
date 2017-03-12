@@ -102,11 +102,7 @@ class Robot(Moving):
         """Subscribe to all nodes necessary for this robot"""
 
 
-        if(self.hertz_20 == 4 or self.first):
-            self.vision_sub()
-            self.hertz_20 = 0
-            self.first = False
-        self.hertz_20 = self.hertz_20 + 1
+        self.vision_sub()
         self.my_pos_sub()
         self.my_role_sub()
 
@@ -125,7 +121,15 @@ class Robot(Moving):
         self.determine_des_pos()
         #TODO remove print('cur rads', np.deg2rad(self.pos.theta))
         self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
-        self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
+
+        if (self.hertz_20 == 5 or self.first):
+            self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
+            self.hertz_20 = 0
+            self.first = False
+        self.hertz_20 = self.hertz_20 + 1
+
+
+
         #print(self.vel)
         self.controller.update()
         self.vel = [self.controller.vel[0], self.controller.vel[2], np.rad2deg(self.controller.vel[2])]
@@ -134,7 +138,7 @@ class Robot(Moving):
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
         if self.role == 0: # stay where you are
-            self.go_to(0, 0, 90)
+            self.go_to(0, 0, 0)
             #self.move_to_center()
         elif self.role == 1:
             self.rush_goal(self.pos, self.ball_pos)
