@@ -7,6 +7,7 @@ from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 
+
 class Robot(Moving):
     """Class that determines movements and control for a robot
     all topics published by the robot class are published under the node
@@ -28,6 +29,7 @@ class Robot(Moving):
         self.wheel_vel = [0.0,0.0,0.0] # (wheel1, wheel2, wheel3)
         self.publishers = dict()
         self.init_publsihers()
+        self.hertz_20 = 1
 
     def my_pos_sub(self):
         """Subscribe to my position"""
@@ -97,8 +99,13 @@ class Robot(Moving):
 
     def subscribe(self):
         """Subscribe to all nodes necessary for this robot"""
-        self.my_pos_sub()
-        self.vision_sub()
+
+
+        if(self.hertz_20 == 5):
+            self.my_pos_sub()
+            self.vision_sub()
+            self.hertz_20 = 0
+        self.hertz_20 = self.hertz_20 + 1
         self.my_role_sub()
 
     def init_publsihers(self):
@@ -125,7 +132,7 @@ class Robot(Moving):
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
         if self.role == 0: # stay where you are
-            self.go_to(self.pos.x, self.pos.y, -90)
+            self.go_to(0, 0, 0)
             #self.move_to_center()
         elif self.role == 1:
             self.rush_goal(self.pos, self.ball_pos)
