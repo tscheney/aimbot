@@ -126,11 +126,11 @@ class Robot(Moving):
         #TODO remove print('cur rads', np.deg2rad(self.pos.theta))
         self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
 
-        if (self.hertz_20 == 5 or self.first):
-            self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
-            self.hertz_20 = 0
-            self.first = False
-        self.hertz_20 = self.hertz_20 + 1
+        #if (self.hertz_20 == 5 or self.first):
+        self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
+        #    self.hertz_20 = 0
+        #    self.first = False
+        #self.hertz_20 = self.hertz_20 + 1
 
 
         #print(self.vel)
