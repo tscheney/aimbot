@@ -75,7 +75,7 @@ class Controller:
         self.th_obsv = Observer(thetaP)
         self.position = Position()
         self.vel = [0.0, 0.0, 0.0]  # (vx, vy, w)
-        self.motor_ctrl = MotorController(1, 3, 600)
+        self.motor_ctrl = MotorController(1, 1, 500)
         self.wheel_vel = [0.0, 0.0, 0.0]  # (wheel1, wheel2, wheel3)
         self.tick = 0
 
@@ -170,18 +170,30 @@ class Controller:
         # y increases as you go to the left of the robot
         # x increases as you go to the front of the robot
 
-        r1 = (0.0, -0.0762, 0.0)
-        r2 = (-0.1016, 0.0, 0.0)
-        r3 = (0, 0.0762, 0.0)
+
+        # Robot body 1, configuration
+        #r1 = (0.0, -0.0762, 0.0)
+        #r2 = (-0.1016, 0.0, 0.0)
+        #r3 = (0, 0.0762, 0.0)
+
+        # Robot body 2 configuration (60 degrees)
+        r1 = (0.04286, -0.7423, 0.0)
+        r2 = (-0.08573, 0.0, 0.0)
+        r3 = (0.04286, 0.7423, 0.0)
 
         # s vectors are unit vectors of wheel rotation
         # s1 is in the negative x direction (backward) right wheel
         # s2 is in the negative y direction (right) rear wheel
         # s3 is in the postive x direction (forward) left wheel
 
-        s1 = (-1.0, 0.0, 0.0)
+        # Robot body 1 configuration
+        #s1 = (-1.0, 0.0, 0.0)
+        #s2 = (0.0, -1.0, 0.0)
+        #s3 = (1.0, 0.0, 0.0)
+
+        s1 = (-0.866025, -0.5, 0.0)
         s2 = (0.0, -1.0, 0.0)
-        s3 = (1.0, 0.0, 0.0)
+        s3 = (0.866025, 0.5, 0.0)
 
         rad = 0.03  # radius of the wheels
 
