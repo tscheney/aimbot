@@ -102,9 +102,8 @@ class Robot(Moving):
         """Subscribe to all nodes necessary for this robot"""
 
 
-        if(self.hertz_20 == 5 or self.first):
+        if(self.hertz_20 == 10 or self.first):
             self.my_pos_sub()
-
             self.hertz_20 = 0
             self.first = False
         self.vision_sub()
