@@ -30,6 +30,7 @@ class Robot(Moving):
         self.publishers = dict()
         self.init_publsihers()
         self.hertz_20 = 1
+        self.first = True
 
     def my_pos_sub(self):
         """Subscribe to my position"""
@@ -101,10 +102,11 @@ class Robot(Moving):
         """Subscribe to all nodes necessary for this robot"""
 
 
-        if(self.hertz_20 == 5):
+        if(self.hertz_20 == 5 or self.first):
             self.my_pos_sub()
             self.vision_sub()
             self.hertz_20 = 0
+            self.first = False
         self.hertz_20 = self.hertz_20 + 1
         self.my_role_sub()
 
