@@ -81,14 +81,13 @@ class Controller:
 
     def update(self):
         """Updates the observer controller"""
-        if(self.tick == 5):
-            self.tick = 0
-            self.position.update(self.x_obsv.xhat[0,0], self.y_obsv.xhat[0,0], self.th_obsv.xhat[0,0])
-            self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
+        #if(self.tick == 5):
         self.x_obsv.updateObserver()
         self.y_obsv.updateObserver()
         self.adjust_for_period()  # The rotational movement is periodic with 2pi. It must account for that.
         self.th_obsv.updateObserver()
+        self.position.update(self.x_obsv.xhat[0,0], self.y_obsv.xhat[0,0], self.th_obsv.xhat[0,0])
+        self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
         self.vel_to_wheel_vel()
         self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
         self.tick += 1
