@@ -90,7 +90,6 @@ class Controller:
         self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
         self.vel_to_wheel_vel()
         self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
-        self.tick += 1
 
     def map_theta(self, theta_c):
         while (theta_c > 2 * np.pi):
@@ -116,7 +115,6 @@ class Controller:
         x_error = abs(abs(x.xhat[0, 0] - x.d))
         y_error = abs(abs(y.xhat[0, 0] - y.d))
         theta_error = abs(abs(theta.xhat[0, 0] - theta.d))
-        print("th_err", theta_error)
         return x_error, y_error, theta_error
 
     def adjust_for_period(self):
@@ -125,13 +123,13 @@ class Controller:
         curr_d = self.th_obsv.d
         i = 0
         while (curr - curr_d) < -1 * np.pi:
-            curr = curr + 2 * np.pi
+            curr_d = curr_d - 2 * np.pi
             i = i + 1
             #if i > 4:
                 #print("first", i)
         i = 0
         while (curr - curr_d) > np.pi:
-            curr = curr - 2 * np.pi
+            curr_d = curr_d + 2 * np.pi
             i = i + 1
             #if i > 4:
                 #print("second", i)
@@ -141,8 +139,9 @@ class Controller:
                 #           else:                          # Else the current position is less than the desired position
                 #               curr = curr + 2*np.pi      # Add 360 degrees to the current posistion
 
-        if (curr - curr_d > (-np.pi)) and (curr - curr_d < np.pi):
-            self.th_obsv.xhat[0, 0] = curr  # Update current position
+        if (curr - curr_d >= (-np.pi)) and (curr - curr_d <= np.pi):
+            #self.th_obsv.xhat[0, 0] = curr  # Update current position
+            self.th_obsv.d = curr_d
         else:
             print("error")
             print("th_vel", np.rad2deg(self.th_obsv.xhat[0, 0]))
