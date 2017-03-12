@@ -116,6 +116,7 @@ class Controller:
         x_error = abs(abs(x.xhat[0, 0] - x.d))
         y_error = abs(abs(y.xhat[0, 0] - y.d))
         theta_error = abs(abs(theta.xhat[0, 0] - theta.d))
+        print("th_err", theta_error)
         return x_error, y_error, theta_error
 
     def adjust_for_period(self):
