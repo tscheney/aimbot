@@ -142,7 +142,7 @@ class Game:
                 self.publishers[name].publish(self.positions[name].export())
             else:
                 msg = Pose2D()
-                msg.x = -1
+                msg.x = -10
                 msg.y = 0
                 msg.theta = 0
                 self.publishers["ally1"].publish(msg)
