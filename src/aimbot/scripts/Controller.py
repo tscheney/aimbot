@@ -113,6 +113,7 @@ class Controller:
     def get_error(self, x, y, theta):
         """Find the error between the desired and real positions"""
         x_error = abs(abs(x.xhat[0, 0] - x.d))
+        print(x_error)
         y_error = abs(abs(y.xhat[0, 0] - y.d))
         theta_error = abs(abs(theta.xhat[0, 0] - theta.d))
         return x_error, y_error, theta_error

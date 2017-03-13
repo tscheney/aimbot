@@ -125,9 +125,9 @@ class Robot(Moving):
     def update(self):
         """Updates the robots controller and sets velocities"""
         self.determine_des_pos()
-        #TODO remove print('cur rads', np.deg2rad(self.pos.theta))
-        self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
 
+        self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
+        # TODO figure out how smooth vision values
         #if (self.hertz_20 == 5 or self.first):
         self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
         #    self.hertz_20 = 0
