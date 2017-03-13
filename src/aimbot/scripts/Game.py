@@ -138,14 +138,14 @@ class Game:
         for name, pos in self.positions.items():
             #print(name, pos.x, pos.y, pos.theta)
             #TODO remove debug code
-            #if (name != "ally1"):
-            self.publishers[name].publish(self.positions[name].export())
-            #else:
-            #    msg = Pose2D()
-            #    msg.x = 0
-            #    msg.y = 0
-            #    msg.theta = 0
-            #    self.publishers["ally1"].publish(msg)
+            if (name != "ally1"):
+                self.publishers[name].publish(self.positions[name].export())
+            else:
+                msg = Pose2D()
+                msg.x = -1
+                msg.y = 0
+                msg.theta = 0
+                self.publishers["ally1"].publish(msg)
 
 
     def subscribe(self):
