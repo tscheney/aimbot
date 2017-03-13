@@ -90,6 +90,7 @@ class Controller:
         self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
         self.vel_to_wheel_vel()
         self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
+        print(abs(self.x_obsv.xhat[0, 0] - self.x_obsv.d))
 
     def map_theta(self, theta_c):
         while (theta_c > 2 * np.pi):
@@ -113,7 +114,6 @@ class Controller:
     def get_error(self, x, y, theta):
         """Find the error between the desired and real positions"""
         x_error = abs(abs(x.xhat[0, 0] - x.d))
-        print(x_error)
         y_error = abs(abs(y.xhat[0, 0] - y.d))
         theta_error = abs(abs(theta.xhat[0, 0] - theta.d))
         return x_error, y_error, theta_error
