@@ -2,12 +2,12 @@
 #include "opencvsliders.h"
 
 
-int OpenCVSliders::lhball = 0;
-int OpenCVSliders::hhball = 179;
+int OpenCVSliders::lhball = 146;
+int OpenCVSliders::hhball = 158;
 int OpenCVSliders::lsball = 0;
-int OpenCVSliders::hsball = 255;
-int OpenCVSliders::lvball = 0;
-int OpenCVSliders::hvball = 255;
+int OpenCVSliders::hsball = 85;
+int OpenCVSliders::lvball = 204;
+int OpenCVSliders::hvball = 240;
 
 int OpenCVSliders::lhhome1 = 0;
 int OpenCVSliders::hhhome1 = 19;

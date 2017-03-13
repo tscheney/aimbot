@@ -81,7 +81,7 @@ class Game:
 
     def game_state_pub(self):
         """Publishes the game state"""
-
+        #self.game_state.second_half = True;
         self.publishers['game_state'].publish(self.game_state.export())
 
     def vision_sub(self):
