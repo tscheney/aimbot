@@ -6,6 +6,7 @@ from Position import Position
 from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
+from PathPlanner import PathPlanner
 
 
 class Robot(Moving):
@@ -31,6 +32,7 @@ class Robot(Moving):
         self.init_publsihers()
         self.hertz_20 = 1
         self.first = True
+        self.path_planner = PathPlanner()
 
     def my_pos_sub(self):
         """Subscribe to my position"""
