@@ -3,15 +3,16 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-_scale = 0.2
+_scale = 1
 _scale2 = 1
+_scale3 = 0.5
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
     'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
     'ki': 6 * _scale2,  # Observer coefficient
-    'kr': 124.866 / _scale,  # Observer coefficient
+    'kr': 124.866 / _scale3,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
     'Ld': 12000,  # Correction coefficient used by dhat
     # 'K': np.matrix([[32.1629, 21.7255]]),
@@ -90,7 +91,6 @@ class Controller:
         self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
         self.vel_to_wheel_vel()
         self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
-        print(abs(self.x_obsv.xhat[0, 0] - self.x_obsv.d))
 
     def map_theta(self, theta_c):
         while (theta_c > 2 * np.pi):

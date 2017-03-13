@@ -31,13 +31,20 @@ class Observer:
 
     def updateObserver(self):
         """Updates the observer"""
+
         self.getNextStep()
 
         N = 1
 
         for i in range(0, N):
+            # the following line causes the x velocity to flip when the scale factor is not 1
             self.xhat = self.xhat + P.Ts / N * (
             self.A * (self.xhat - self.x_e) + self.B * (self.F - self.F_e + self.dhat))  # +m.L*(x_c-m.C*xhat))
+
+
+
+
+
             self.dhat = 0  # m.dhat + P.Ts/N*m.Ld*(m.xdot-m.C2*m.xhat)
 
         xhat_dot = (self.A * (self.xhat - self.x_e) + self.B * (self.F - self.F_e + self.dhat))  # Calculate xhat_dot
