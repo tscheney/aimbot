@@ -3,7 +3,7 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-_scale = 1
+_scale = 0.2
 _scale2 = 1
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
