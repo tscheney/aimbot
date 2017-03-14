@@ -207,6 +207,6 @@ class Controller:
 
         r = self.rotationM()
         Omega = np.dot(np.dot(m, r), v)
-        Omega *= 20
+        Omega *= 5
 
         self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
