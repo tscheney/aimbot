@@ -64,7 +64,7 @@ thetaP = {
     'kr': 19.2928 / th_scale,
     'L': np.matrix([[0.0972e4], [9.6463e4]]),
     'Ld': 1.9099e3,
-    'F_max': 30, #30,  # Maximum force applied to the system
+    'F_max': 1, #30,  # Maximum force applied to the system
     'max_step': np.pi,   #np.pi / 4,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'theta'
