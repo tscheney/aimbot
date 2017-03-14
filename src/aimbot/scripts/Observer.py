@@ -61,7 +61,7 @@ class Observer:
         # compute the state feedback controller
         F_tilde = -self.K * (self.xhat - self.x_e) + self.kr * (self.d_step) - self.ki * self.integrator  # - dhat
         F_unsat = self.F_e + F_tilde
-        self.F = self.sat(F_unsat, self.F_max)
+        #self.F = self.sat(F_unsat, self.F_max)
         # print(self.F)
         # self.Fq.put(self.F)
         # integrator anti-windup
