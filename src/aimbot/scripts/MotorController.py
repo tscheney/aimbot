@@ -1,5 +1,6 @@
 import struct
 import serial
+import numpy as np
 
 
 class MotorController:
@@ -40,6 +41,12 @@ class MotorController:
             self.writeFloat(p1)
             self.writeFloat(p2)
             self.writeFloat(p3)
+
+    def setSpeedRadSec(self, s1, s2, s3):
+        """Set the speed in radians per second"""
+        self.setSpeed(s1/ (2 * np.pi) * self.PULSE_PER_ROTATION,
+                 s2 / (2 * np.pi) * self.PULSE_PER_ROTATION,
+                 s3 / (2 * np.pi) * self.PULSE_PER_ROTATION)
 
     def setSpeed(self, s1, s2, s3):
         """Sends the speed command in qpps = (rotations per second)*PULSE_PER_ROTATION to the motor"""

@@ -94,7 +94,7 @@ class Controller:
         self.position.update(self.x_obsv.xhat[0,0], self.y_obsv.xhat[0,0], self.th_obsv.xhat[0,0])
         self.vel = [self.x_obsv.xhat[1,0], self.y_obsv.xhat[1,0], self.th_obsv.xhat[1,0]]
         self.vel_to_wheel_vel()
-        self.motor_ctrl.setSpeed(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
+        self.motor_ctrl.setSpeedRadSec(self.wheel_vel[0], self.wheel_vel[1], self.wheel_vel[2])
 
     def map_theta(self, theta_c):
         while (theta_c > 2 * np.pi):
@@ -207,6 +207,6 @@ class Controller:
 
         r = self.rotationM()
         Omega = np.dot(np.dot(m, r), v)
-        Omega *= 5
+        #Omega *= 5
 
         self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
