@@ -60,7 +60,7 @@ thetaP = {
     # 'Ld': 3.8197e3,                             # Correction coefficient used by dhat
     #'K': np.matrix([[19.2928, 1.9436]]),
     'K': np.matrix([[19.2928 * th_scale, 1.9436 * th_scale]]),
-    'ki': 3.81,
+    'ki': 3.81 * 0,
     'kr': 19.2928 / th_scale,
     'L': np.matrix([[0.0972e4], [9.6463e4]]),
     'Ld': 1.9099e3,
