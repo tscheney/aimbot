@@ -5,12 +5,14 @@ from Position import Position
 
 _scale = 1
 _scale2 = 1
-_scale3 = 1000
+_scale3 = 1
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
+    #'A': np.matrix([[0, 7], [0, -0.06]]),  # A matrix for observer
+    #'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
-    'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
+    'K': np.matrix([[124.866 * _scale, 48.8645 * _scale]]),  # Observer coefficient
     'ki': 6 * _scale2,  # Observer coefficient
     'kr': 124.866 / _scale3,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
@@ -21,7 +23,7 @@ xP = {
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
     'F_max': 6000, #60,  # Maximum force applied to the system
-    'max_step': 1, #0.25,  # Max step size #this is apparently the limiting factor
+    'max_step': 0.25, #0.25,  # Max step size #this is apparently the limiting factor
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'x'
 }
@@ -30,7 +32,7 @@ yP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
-    'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
+    'K': np.matrix([[124.866 * _scale, 48.8645 * _scale]]),  # Observer coefficient
     'ki': 6 * _scale2,  # Observer coefficient
     'kr': 124.866 / _scale3,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
@@ -41,7 +43,7 @@ yP = {
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
     'F_max': 6000, #60,  # Maximum force applied to the system
-    'max_step': 1, #0.25,  # Max step size
+    'max_step': 0.25, #0.25,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'y'
 }
@@ -203,5 +205,6 @@ class Controller:
 
         r = self.rotationM()
         Omega = np.dot(np.dot(m, r), v)
+        Omega *= 3
 
         self.wheel_vel = [Omega.item(0), Omega.item(1), Omega.item(2)]
