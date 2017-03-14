@@ -22,7 +22,7 @@ xP = {
     # 'kr': 32.1629,
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
-    'F_max': 6000, #60,  # Maximum force applied to the system
+    'F_max': 60, #60,  # Maximum force applied to the system
     'max_step': 0.25, #0.25,  # Max step size #this is apparently the limiting factor
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'x'
@@ -42,13 +42,13 @@ yP = {
     # 'kr': 32.1629,
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
-    'F_max': 6000, #60,  # Maximum force applied to the system
+    'F_max': 60, #60,  # Maximum force applied to the system
     'max_step': 0.25, #0.25,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'y'
 }
 
-th_scale = 0.000000001
+th_scale = 1
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [50]]),  # B matrix for observer
