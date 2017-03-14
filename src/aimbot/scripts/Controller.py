@@ -32,7 +32,7 @@ yP = {
     'C': np.matrix([[1, 0]]),  # C matrix for observer
     'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
     'ki': 6 * _scale2,  # Observer coefficient
-    'kr': 124.866 / _scale,  # Observer coefficient
+    'kr': 124.866 / _scale3,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
     'Ld': 12000,  # Correction coefficient used by dhat
     # 'K': np.matrix([[32.1629, 21.7255]]),
