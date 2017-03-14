@@ -3,9 +3,9 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-_scale = 1
+_scale = 0.5
 _scale2 = 1
-_scale3 = 1
+_scale3 = 0.5
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     #'A': np.matrix([[0, 7], [0, -0.06]]),  # A matrix for observer
@@ -48,7 +48,7 @@ yP = {
     'type': 'y'
 }
 
-th_scale = 1
+th_scale = 0.1
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [50]]),  # B matrix for observer
@@ -80,7 +80,7 @@ class Controller:
         self.th_obsv = Observer(thetaP)
         self.position = Position()
         self.vel = [0.0, 0.0, 0.0]  # (vx, vy, w)
-        self.motor_ctrl = MotorController(1, 3, 200)
+        self.motor_ctrl = MotorController(1, 1, 500)
         self.wheel_vel = [0.0, 0.0, 0.0]  # (wheel1, wheel2, wheel3)
         self.tick = 0
 
@@ -167,6 +167,7 @@ class Controller:
 
         # linear and angular velocity of the center of the body
         v = np.matrix([[self.vel[0]], [self.vel[1]], [self.vel[2]]])
+        print(self.vel[2])
 
         # r tuples represent wheel positions
         # 0,0 being the center of the robot
