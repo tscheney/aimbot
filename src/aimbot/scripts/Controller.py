@@ -48,6 +48,7 @@ yP = {
     'type': 'y'
 }
 
+th_scale = 0.5
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [50]]),  # B matrix for observer
@@ -57,7 +58,8 @@ thetaP = {
     # 'kr': 38.4718,                              # Observer coefficient
     # 'L': np.matrix([[137],[1.9236e4]]),         # Correction coefficient used by xhat
     # 'Ld': 3.8197e3,                             # Correction coefficient used by dhat
-    'K': np.matrix([[19.2928, 1.9436]]),
+    #'K': np.matrix([[19.2928, 1.9436]]),
+    'K': np.matrix([[19.2928 * th_scale, 1.9436 * th_scale]]),
     'ki': 3.81,
     'kr': 19.2928,
     'L': np.matrix([[0.0972e4], [9.6463e4]]),
