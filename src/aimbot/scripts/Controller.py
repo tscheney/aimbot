@@ -61,7 +61,7 @@ thetaP = {
     #'K': np.matrix([[19.2928, 1.9436]]),
     'K': np.matrix([[19.2928 * th_scale, 1.9436 * th_scale]]),
     'ki': 3.81,
-    'kr': 19.2928,
+    'kr': 19.2928 / th_scale,
     'L': np.matrix([[0.0972e4], [9.6463e4]]),
     'Ld': 1.9099e3,
     'F_max': 30, #30,  # Maximum force applied to the system
