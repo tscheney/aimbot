@@ -3,15 +3,14 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-_scale = 1
-_scale2 = 1
+xy_scale = 0.5
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
-    'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
-    'ki': 6 * _scale2,  # Observer coefficient
-    'kr': 124.866 / _scale,  # Observer coefficient
+    'K': np.matrix([[124.866 * xy_scale, 48.8645]]),  # Observer coefficient
+    'ki': 6,  # Observer coefficient
+    'kr': 124.866 *xy_scale,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
     'Ld': 12000,  # Correction coefficient used by dhat
     # 'K': np.matrix([[32.1629, 21.7255]]),
@@ -29,9 +28,9 @@ yP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
-    'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
-    'ki': 6 * _scale2,  # Observer coefficient
-    'kr': 124.866 / _scale,  # Observer coefficient
+    'K': np.matrix([[124.866 * xy_scale, 48.8645]]),  # Observer coefficient
+    'ki': 6,  # Observer coefficient
+    'kr': 124.866 * xy_scale,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
     'Ld': 12000,  # Correction coefficient used by dhat
     # 'K': np.matrix([[32.1629, 21.7255]]),
@@ -46,7 +45,7 @@ yP = {
 }
 
 #th_scale = 0.31 good for simulator
-th_scale = 0.05
+th_scale = 0.01
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     #'B': np.matrix([[0], [50]]),  # B matrix for observer
@@ -171,7 +170,7 @@ class Controller:
 
         # linear and angular velocity of the center of the body
         v = np.matrix([[self.vel[0]], [self.vel[1]], [self.vel[2]]])
-        print(self.vel[2])
+        #print(self.vel[2])
 
         # r tuples represent wheel positions
         # 0,0 being the center of the robot
