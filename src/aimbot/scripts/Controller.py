@@ -185,9 +185,9 @@ class Controller:
         #r3 = (0, 0.0762, 0.0)
 
         # Robot body 2 configuration (60 degrees)
-        r1 = (0.04286, -0.7423, 0.0)
+        r1 = (0.04286, -0.07423, 0.0)
         r2 = (-0.08573, 0.0, 0.0)
-        r3 = (0.04286, 0.7423, 0.0)
+        r3 = (0.04286, 0.07423, 0.0)
 
         # s vectors are unit vectors of wheel rotation
         # s1 is in the negative x direction (backward) right wheel
