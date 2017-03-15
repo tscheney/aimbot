@@ -143,7 +143,7 @@ class Game:
             #else:
             #    msg = Pose2D()
             #    msg.x = -1.5
-            #    msg.y = 0
+            ##    msg.y = 0
             #    msg.theta = 0
             #    self.publishers["ally1"].publish(msg)
 
