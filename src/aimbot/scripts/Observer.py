@@ -52,9 +52,9 @@ class Observer:
 
         error = self.xhat[0, 0] - self.d  # Calculate the positional error
 
-        if np.abs(self.xhat[
-                      1, 0]) < 0.5 and self.type != 'theta':  # If the velocity is small the integrator will be triggered
-            self.integrator = self.integrator + (P.Ts / 2) * (error + self.error_dl)
+        #if np.abs(self.xhat[
+        #              1, 0]) < 0.5 and self.type != 'theta':  # If the velocity is small the integrator will be triggered
+        #    self.integrator = self.integrator + (P.Ts / 2) * (error + self.error_dl)
 
         self.error_dl = error  # Update the error
 

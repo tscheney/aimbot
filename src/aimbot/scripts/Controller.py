@@ -45,6 +45,7 @@ yP = {
     'type': 'y'
 }
 
+th_scale = 0.31
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     #'B': np.matrix([[0], [50]]),  # B matrix for observer
@@ -56,13 +57,15 @@ thetaP = {
     # 'L': np.matrix([[137],[1.9236e4]]),         # Correction coefficient used by xhat
     # 'Ld': 3.8197e3,                             # Correction coefficient used by dhat
     #'K': np.matrix([[19.2928, 1.9436]]),
-    'K': np.matrix([[0.1, 0.1]]),
+    'K': np.matrix([[19.2928 * th_scale, 1.9436]]),
     #'ki': 3.81,
-    'ki': 0,
+    'ki': 1,
     #'kr': 19.2928,
-    'kr': 0,
+    'kr': 19.2928 * th_scale,
     'L': np.matrix([[0.0972e4], [9.6463e4]]),
+    #'L': np.matrix([[0], [0]]),
     'Ld': 1.9099e3,
+    #'Ld': 0,
     'F_max': 30,  # Maximum force applied to the system
     #'F_max': 3,  # Maximum force applied to the system
     'max_step': np.pi / 4,  # Max step size
