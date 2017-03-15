@@ -5,16 +5,13 @@ from Position import Position
 
 _scale = 1
 _scale2 = 1
-_scale3 = 1
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
-    #'A': np.matrix([[0, 7], [0, -0.06]]),  # A matrix for observer
-    #'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
-    'K': np.matrix([[124.866 * _scale, 48.8645 * _scale]]),  # Observer coefficient
+    'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
     'ki': 6 * _scale2,  # Observer coefficient
-    'kr': 124.866 / _scale3,  # Observer coefficient
+    'kr': 124.866 / _scale,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
     'Ld': 12000,  # Correction coefficient used by dhat
     # 'K': np.matrix([[32.1629, 21.7255]]),
@@ -22,8 +19,8 @@ xP = {
     # 'kr': 32.1629,
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
-    'F_max': 60, #60,  # Maximum force applied to the system
-    'max_step': 0.25, #0.25,  # Max step size #this is apparently the limiting factor
+    'F_max': 60,  # Maximum force applied to the system
+    'max_step': 0.25,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'x'
 }
@@ -32,9 +29,9 @@ yP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
-    'K': np.matrix([[124.866 * _scale, 48.8645 * _scale]]),  # Observer coefficient
+    'K': np.matrix([[124.866 / _scale, 48.8645 / _scale]]),  # Observer coefficient
     'ki': 6 * _scale2,  # Observer coefficient
-    'kr': 124.866 / _scale3,  # Observer coefficient
+    'kr': 124.866 / _scale,  # Observer coefficient
     'L': np.matrix([[244], [6.243e3]]),  # Correction coefficient used by xdhat
     'Ld': 12000,  # Correction coefficient used by dhat
     # 'K': np.matrix([[32.1629, 21.7255]]),
@@ -42,15 +39,15 @@ yP = {
     # 'kr': 32.1629,
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
-    'F_max': 60, #60,  # Maximum force applied to the system
-    'max_step': 0.25, #0.25,  # Max step size
+    'F_max': 60,  # Maximum force applied to the system
+    'max_step': 0.25,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'y'
 }
 
-th_scale = 1
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
+    #'B': np.matrix([[0], [50]]),  # B matrix for observer
     'B': np.matrix([[0], [50]]),  # B matrix for observer
     'C': np.matrix([[1, 0]]),  # C matrix for observer
     # 'K': np.matrix([[38.4718, 2.7479]]),        # Observer coefficient
@@ -59,13 +56,16 @@ thetaP = {
     # 'L': np.matrix([[137],[1.9236e4]]),         # Correction coefficient used by xhat
     # 'Ld': 3.8197e3,                             # Correction coefficient used by dhat
     #'K': np.matrix([[19.2928, 1.9436]]),
-    'K': np.matrix([[19.2928 * th_scale, 1.9436 * th_scale]]),
-    'ki': 3.81 * 0,
-    'kr': 19.2928 / th_scale,
+    'K': np.matrix([[0.1, 0.1]]),
+    #'ki': 3.81,
+    'ki': 0,
+    #'kr': 19.2928,
+    'kr': 0,
     'L': np.matrix([[0.0972e4], [9.6463e4]]),
     'Ld': 1.9099e3,
-    'F_max': 1, #30,  # Maximum force applied to the system
-    'max_step': np.pi / 32,   #np.pi / 4,  # Max step size
+    'F_max': 30,  # Maximum force applied to the system
+    #'F_max': 3,  # Maximum force applied to the system
+    'max_step': np.pi / 4,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'theta'
 }

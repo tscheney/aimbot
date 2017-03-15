@@ -1,7 +1,7 @@
 import numpy as np
 
 class P:
-    Ts = 0.02
+    Ts = 0.01
     tau = 0.05
 
 class Observer:

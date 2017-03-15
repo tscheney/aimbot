@@ -109,13 +109,12 @@ class Team:
 
     def update(self):
         """Update the teams strategy and roles"""
-        #if(self.game_state.play):
-        #    self.roles['ally1'] = 1 # these are just test roles
-        #    self.roles['ally2'] = 2
-        #else:
-        #    self.roles['ally1'] = 0  # these are just test roles
-        #    self.roles['ally2'] = 0
-        self.roles['ally1'] = 0
+        if(self.game_state.play):
+            self.roles['ally1'] = 0 # these are just test roles
+            self.roles['ally2'] = 2
+        else:
+            self.roles['ally1'] = 0  # these are just test roles
+            self.roles['ally2'] = 0
 
     def determine_game_state(self):
         """Based on known positions and score, determine which state the game is in"""
