@@ -144,6 +144,8 @@ class Game:
                 msg = Pose2D()
                 msg.x = 0
                 msg.y = -1
+
+
                 msg.theta = 90
                 self.publishers["ally1"].publish(msg)
 
