@@ -32,6 +32,7 @@ class Robot(Moving):
         self.init_publsihers()
         self.hertz_20 = 1
         self.first = True
+        self.state = 0
         self.path_planner = PathPlanner()
 
     def my_pos_sub(self):
@@ -150,8 +151,16 @@ class Robot(Moving):
         error = 0.1
         if self.role == 0: # stay where you are
             #self.go_to(0, 0, 0)
-            self.rotate()
+            #self.rotate()
             #self.move_to_center()
+            if self.withinError(10):
+                if self.state < 3:
+                    self.state += 1
+                else:
+                    self.state = 0
+
+            self.move_square()
+
         elif self.role == 1:
             self.rush_goal(self.pos, self.ball_pos)
         elif self.role == 2:
@@ -198,7 +207,7 @@ class Robot(Moving):
     def move_to_center(self):
         return self.go_to(0, 0)
 
-    def move_square(self, me):
+    def move_square(self):
         global state
 
         print('state is: ',state)
@@ -222,7 +231,20 @@ class Robot(Moving):
         # else:
         # return pos <= (desired - error) and pos >= (desired + error)
 
-    def close(self, errorPercent):
+    def withinError(self, errorPercent):
+        """Returns if the robot is at it's desired position within the error percentage"""
+        field_width = 3.53 #in meters
+        xy_offset = field_width * errorPercent / 100
+        th_offset = 360 * errorPercent / 100
+        x_good = abs(self.pos.x - self.des_pos.x) < xy_offset
+        y_good = abs(self.pos.y - self.des_pos.y) < xy_offset
+        th_good = abs(self.pos.theta - self.des_pos.theta) < th_offset
+        return x_good and y_good and th_good
+
+
+
+
+
         return
 
     def rotate(self):
