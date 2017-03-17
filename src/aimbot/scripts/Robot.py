@@ -152,14 +152,15 @@ class Robot(Moving):
         if self.role == 0: # stay where you are
             self.go_to(0.3, -0.3, 0)
             #self.rotate()
-            #self.move_to_center()
-            #if self.withinError(10):
-            #    if self.state < 3:
-            #        self.state += 1
-            #    else:
-            #        self.state = 0
+            self.move_to_center()
+            if self.withinError(10):
+                if self.state < 3:
+                    self.state += 1
+                else:
+                    self.state = 0
+                print(self.state)
 
-            #self.move_square()
+            self.move_square()
 
         elif self.role == 1:
             self.rush_goal(self.pos, self.ball_pos)
