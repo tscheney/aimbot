@@ -131,13 +131,13 @@ class Robot(Moving):
 
             self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
             # TODO figure out how smooth vision values
-            #if (self.hertz_20 == 5 or self.first):
+            if (self.hertz_20 == 5 or self.first):
             #print("degrees", self.pos.theta)
             #print("radians", np.deg2rad(self.pos.theta))
-            self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
-            #    self.hertz_20 = 0
-            #   self.first = False
-            #self.hertz_20 = self.hertz_20 + 1
+                self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
+                self.hertz_20 = 0
+                self.first = False
+            self.hertz_20 = self.hertz_20 + 1
 
 
             #print(self.vel)
