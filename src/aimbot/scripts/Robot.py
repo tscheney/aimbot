@@ -208,22 +208,20 @@ class Robot(Moving):
         return self.go_to(0, 0)
 
     def move_square(self):
-        global state
-
-        print('state is: ',state)
         # actions
-        if (state == 0):  # going to upper right
+        square_size = 0.3
+        if (self.state == 0):  # going to upper right
             state = 1
-            return self.go_to(0.15, 0.15)
-        elif (state == 1):  # going to lower right
+            self.go_to(square_size, square_size, 0)
+        elif (self.state == 1):  # going to lower right
             state = 2
-            return self.go_to(0.15, -0.15)
-        elif (state == 2):  # going to lower left
+            self.go_to(square_size, -square_size, 0)
+        elif (self.state == 2):  # going to lower left
             state = 3
-            return self.go_to(-0.15, -0.15)
-        elif (state == 3):  # going to upper left
+            self.go_to(-square_size, -square_size, 0)
+        elif (self.state == 3):  # going to upper left
             state = 0
-            return self.go_to(-0.15, 0.15)
+            self.go_to(-square_size, square_size, 0)
 
     def tolerance(self, pos, desired, error):
         # if(pos >= 0):
