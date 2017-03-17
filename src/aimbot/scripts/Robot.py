@@ -226,12 +226,13 @@ class Robot(Moving):
         return
 
     def rotate(self):
+        """Rotate the robot"""
         theta = self.pos.theta
         if (theta + 10) < 360:
             theta += 40
         else:
             theta = 0
-        return (self.pos.x, self.pos.y, theta)
+        self.set_des_pos(self.pos.x, self.pos.y, theta)
 
 
 
