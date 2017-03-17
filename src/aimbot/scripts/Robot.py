@@ -153,7 +153,7 @@ class Robot(Moving):
             #self.go_to(0.3, -0.3, 0)
             #self.rotate()
             #self.move_to_center()
-            if self.withinError(10):
+            if self.withinError(5):
                 if self.state < 3:
                     self.state += 1
                 else:
@@ -210,7 +210,7 @@ class Robot(Moving):
 
     def move_square(self):
         # actions
-        square_size = 0.3
+        square_size = 0.4
         if (self.state == 0):  # going to upper right
             state = 1
             self.go_to(square_size, square_size, 0)
