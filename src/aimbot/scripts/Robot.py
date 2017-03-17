@@ -150,9 +150,9 @@ class Robot(Moving):
         """Determine the desired position for the robot"""
 
         if self.role == 0: # stay where you are
-            #self.go_to(0, 0, 0)
+            self.go_to(0.3, 0.3, 0)
             #self.rotate()
-            self.move_to_center()
+            #self.move_to_center()
             #if self.withinError(10):
             #    if self.state < 3:
             #        self.state += 1
