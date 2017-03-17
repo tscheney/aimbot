@@ -13,8 +13,8 @@ int OpenCVSliders::lhhome1 = 0;
 int OpenCVSliders::hhhome1 = 19;
 int OpenCVSliders::lshome1 = 139;
 int OpenCVSliders::hshome1 = 186;
-int OpenCVSliders::lvhome1 = 219;
-int OpenCVSliders::hvhome1 = 231;
+int OpenCVSliders::lvhome1 = 209;
+int OpenCVSliders::hvhome1 = 228;
 
 
 OpenCVSliders::OpenCVSliders()
