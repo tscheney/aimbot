@@ -225,13 +225,13 @@ class Robot(Moving):
     def close(self, errorPercent):
         return
 
-    def rotate(self, me):
-        theta = me.theta
+    def rotate(self):
+        theta = self.pos.theta
         if (theta + 10) < 360:
             theta += 40
         else:
             theta = 0
-        return (me.x, me.y, theta)
+        return (self.pos.x, self.pos.y, theta)
 
 
 
