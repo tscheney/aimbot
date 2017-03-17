@@ -90,6 +90,7 @@ class Controller:
     def update(self):
         """Updates the observer controller"""
         #if(self.tick == 5):
+
         self.x_obsv.updateObserver()
         self.y_obsv.updateObserver()
         self.adjust_for_period()  # The rotational movement is periodic with 2pi. It must account for that.
@@ -108,9 +109,9 @@ class Controller:
 
     def update_cur_pos(self, x_c, y_c, theta_c):
         """Updates the current position from vision data"""
-        self.x_obsv.xhat[0, 0] = float(x_c)
-        self.y_obsv.xhat[0, 0] = float(y_c)
-        self.th_obsv.xhat[0, 0] = float(theta_c)
+        self.x_obsv.xhat[0, 0] = x_c
+        self.y_obsv.xhat[0, 0] = y_c
+        self.th_obsv.xhat[0, 0] = theta_c
 
     def update_des_pos(self, x_d, y_d, theta_d):
         """Update the desired position of the robot"""
@@ -159,9 +160,8 @@ class Controller:
 
     def rotationM(self):
         """Create the rotation matrix to convert to wheel velocities"""
-        rad = np.radians(self.position.theta)
-        R = np.matrix([[np.cos(rad), np.sin(rad), 0],
-                       [-np.sin(rad), np.cos(rad), 0],
+        R = np.matrix([[np.cos(self.position.theta), np.sin(self.position.theta), 0],
+                       [-np.sin(self.position.theta), np.cos(self.position.theta), 0],
                        [0, 0, 1]])
         return R
 
@@ -170,7 +170,6 @@ class Controller:
 
         # linear and angular velocity of the center of the body
         v = np.matrix([[self.vel[0]], [self.vel[1]], [self.vel[2]]])
-        #print(self.vel[2])
 
         # r tuples represent wheel positions
         # 0,0 being the center of the robot

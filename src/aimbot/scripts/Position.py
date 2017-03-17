@@ -8,6 +8,7 @@ class Position:
         self.x = 0
         self.y = 0
         self.theta = 0
+        self.init = False
 
     def import_msg_raw(self, msg, team_side, game_state):
         self.import_msg(msg)
@@ -17,6 +18,7 @@ class Position:
         #print('th:', self.theta)
 
     def import_msg(self, msg):
+        self.init = True
         self.x = msg.x
         self.y = msg.y
         self.theta = msg.theta
