@@ -146,7 +146,7 @@ class Game:
                 msg.y = -1
 
 
-                msg.theta = 90
+                msg.theta = 0
                 self.publishers["ally1"].publish(msg)
 
 
