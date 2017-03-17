@@ -147,8 +147,10 @@ class Robot(Moving):
 
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
+        error = 0.1
         if self.role == 0: # stay where you are
-            self.go_to(1, 1, 90)
+            #self.go_to(0, 0, 0)
+            self.rotate()
             #self.move_to_center()
         elif self.role == 1:
             self.rush_goal(self.pos, self.ball_pos)
@@ -219,6 +221,9 @@ class Robot(Moving):
         return pos >= (desired - error) and pos <= (desired + error)
         # else:
         # return pos <= (desired - error) and pos >= (desired + error)
+
+    def close(self, errorPercent):
+        return
 
     def rotate(self, me):
         theta = me.theta
