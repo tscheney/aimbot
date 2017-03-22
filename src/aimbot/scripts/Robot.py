@@ -220,7 +220,6 @@ class Robot(Moving):
                     y = ball.y -.3
                     cmdvec = np.array([[x], [y]])
         if np.linalg.norm(p - mevec) < 0.21:
-            print("rush goal")
             cmdvec = goalvec
         else:
             cmdvec = p
