@@ -202,30 +202,34 @@ class Robot(Moving):
         #else:
         #    cmdvec = p
 
-        if ball.x < me.x:
-            if (ball.y) < 0:
-                if ball.x -.3 > -1.595:
-                    x = ball.x-.3
-                    y = ball.y+.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-                else:
-                    x = ball.x + .05
-                    y = ball.y+.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-            else:
-                if ball.x -.3 > -1.595:
-                    x = ball.x -.3
-                    y = ball.y -.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-                else:
-                    x = ball.x + .05
-                    y = ball.y -.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-        elif np.linalg.norm(p - mevec) < 0.21:
+        #if ball.x < me.x:
+        #    if ball.y < 0:
+        #        if ball.x -.3 > -1.595:
+        #            x = ball.x-.3
+        #            y = ball.y+.3
+        #            cmdvec = np.array([[x], [y]])
+        #            self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+        #            return
+        #        else:
+        #            x = ball.x + .05
+        #            y = ball.y+.3
+        #            cmdvec = np.array([[x], [y]])
+        #            self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+        #            return
+        #    else:
+        #        if ball.x -.3 > -1.595:
+        #            x = ball.x -.3
+        #            y = ball.y -.3
+        #            cmdvec = np.array([[x], [y]])
+        #            self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+        #            return
+        #        else:
+        #            x = ball.x + .05
+        #            y = ball.y -.3
+        #            cmdvec = np.array([[x], [y]])
+        #            self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+        #            return
+        if np.linalg.norm(p - mevec) < 0.21:
             cmdvec = goalvec
         else:
             cmdvec = p
