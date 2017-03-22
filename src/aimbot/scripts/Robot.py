@@ -163,6 +163,7 @@ class Robot(Moving):
             self.move_square()
 
         elif self.role == 1:
+            print("role 1")
             self.rush_goal(self.pos, self.ball_pos)
         elif self.role == 2:
             self.follow_ball_on_line(self.ball_pos, -1.25)
@@ -200,26 +201,27 @@ class Robot(Moving):
         #else:
         #    cmdvec = p
 
-        #if ball.x < me.x:
-        #    if (ball.y + .3) < 1.12:
-        #        if ball.x -.3 > -1.595:
-        #            x = ball.x-.3
-        #            y = ball.y+.3
-        #            cmdvec = np.array([[x], [y]])
-        #        else:
-        #            x = ball.x + .05
-        #            y = ball.y+.3
-        #            cmdvec = np.array([[x], [y]])
-        #    else:
-        #        if ball.x -.3 > -1.595:
-        #            x = ball.x -.3
-        #            y = ball.y -.3
-        #            cmdvec = np.array([[x], [y]])
-        #        else:
-        #            x = ball.x + .05
-        #            y = ball.y -3
-        #            cmdvec = np.array([[x], [y]])
+        if ball.x < me.x:
+            if (ball.y + .3) < 1.12:
+                if ball.x -.3 > -1.595:
+                    x = ball.x-.3
+                    y = ball.y+.3
+                    cmdvec = np.array([[x], [y]])
+                else:
+                    x = ball.x + .05
+                    y = ball.y+.3
+                    cmdvec = np.array([[x], [y]])
+            else:
+                if ball.x -.3 > -1.595:
+                    x = ball.x -.3
+                    y = ball.y -.3
+                    cmdvec = np.array([[x], [y]])
+                else:
+                    x = ball.x + .05
+                    y = ball.y -3
+                    cmdvec = np.array([[x], [y]])
         if np.linalg.norm(p - mevec) < 0.21:
+            print("rush goal")
             cmdvec = goalvec
         else:
             cmdvec = p
