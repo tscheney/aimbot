@@ -199,6 +199,17 @@ class Robot(Moving):
             cmdvec = goalvec
         else:
             cmdvec = p
+        if ball.x < me.x:
+            if ball.y + .3 < 1.12:
+                if ball.x -.3 > -1.595:
+                    cmdvec = np.array([ball.x-.3], [ball.y+.3])
+                else:
+                    cmdvec = np.array([ball.x+ .05], [ball.y+.3])
+            else:
+                if ball.x -.3 > -1.595:
+                    cmdvec = np.array([ball.x-.3], [ball.y-.3])
+                else:
+                    cmdvec = np.array([ball.x+ .05], [ball.y-.3])
 
         self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
