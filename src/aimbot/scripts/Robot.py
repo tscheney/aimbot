@@ -200,26 +200,26 @@ class Robot(Moving):
         #else:
         #    cmdvec = p
 
-        if ball.x < me.x:
-            if (ball.y + .3) < 1.12:
-                if ball.x -.3 > -1.595:
-                    x = ball.x-.3
-                    y = ball.y+.3
-                    cmdvec = np.array([[x], [y]])
-                else:
-                    x = ball.x + .05
-                    y = ball.y+.3
-                    cmdvec = np.array([[x], [y]])
-            else:
-                if ball.x -.3 > -1.595:
-                    x = ball.x -.3
-                    y = ball.y -.3
-                    cmdvec = np.array([[x], [y]])
-                else:
-                    x = ball.x + .05
-                    y = ball.y -3
-                    cmdvec = np.array([[x], [y]])
-        elif np.linalg.norm(p - mevec) < 0.21:
+        #if ball.x < me.x:
+        #    if (ball.y + .3) < 1.12:
+        #        if ball.x -.3 > -1.595:
+        #            x = ball.x-.3
+        #            y = ball.y+.3
+        #            cmdvec = np.array([[x], [y]])
+        #        else:
+        #            x = ball.x + .05
+        #            y = ball.y+.3
+        #            cmdvec = np.array([[x], [y]])
+        #    else:
+        #        if ball.x -.3 > -1.595:
+        #            x = ball.x -.3
+        #            y = ball.y -.3
+        #            cmdvec = np.array([[x], [y]])
+        #        else:
+        #            x = ball.x + .05
+        #            y = ball.y -3
+        #            cmdvec = np.array([[x], [y]])
+        if np.linalg.norm(p - mevec) < 0.21:
             cmdvec = goalvec
         else:
             cmdvec = p
