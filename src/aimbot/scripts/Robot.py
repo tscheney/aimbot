@@ -205,8 +205,8 @@ class Robot(Moving):
 
         if ball.x < me.x:
             if ball.y < 0:
-                if ball.x -.3 > -1.595:
-                    x = ball.x-.3
+                if ball.x -.5 > -1.595:
+                    x = ball.x-.5
                     y = ball.y+.3
                     cmdvec = np.array([[x], [y]])
                     self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
@@ -218,8 +218,8 @@ class Robot(Moving):
                     self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
                     return
             else:
-                if ball.x -.3 > -1.595:
-                    x = ball.x -.3
+                if ball.x -.5 > -1.595:
+                    x = ball.x -.5
                     y = ball.y -.3
                     cmdvec = np.array([[x], [y]])
                     self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
