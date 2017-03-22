@@ -195,10 +195,11 @@ class Robot(Moving):
         # If I am sufficiently close to the point behind the ball,
         # or in other words, once I am 21cm behind the ball, just
         # drive to the goal.
-        if np.linalg.norm(p - mevec) < 0.21:
-            cmdvec = goalvec
-        else:
-            cmdvec = p
+        #if np.linalg.norm(p - mevec) < 0.21:
+        #    cmdvec = goalvec
+        #else:
+        #    cmdvec = p
+
         if ball.x < me.x:
             if ball.y + .3 < 1.12:
                 if ball.x -.3 > -1.595:
@@ -210,6 +211,10 @@ class Robot(Moving):
                     cmdvec = np.array([ball.x-.3], [ball.y-.3])
                 else:
                     cmdvec = np.array([ball.x+ .05], [ball.y-.3])
+        elif np.linalg.norm(p - mevec) < 0.21:
+            cmdvec = goalvec
+        else:
+            cmdvec = p
 
         self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
