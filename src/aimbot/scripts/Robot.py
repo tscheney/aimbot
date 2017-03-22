@@ -179,6 +179,8 @@ class Robot(Moving):
         self.set_des_pos(x_c, y_c, theta_c)
 
     def rush_goal(self, me, ball):
+        cmdvec = np.array([[0], [0]])
+
         # Use numpy to create vectors
         ballvec = np.array([[ball.x], [ball.y]])
         mevec = np.array([[me.x], [me.y]])
@@ -206,24 +208,27 @@ class Robot(Moving):
                     x = ball.x-.3
                     y = ball.y+.3
                     cmdvec = np.array([[x], [y]])
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
                 else:
                     x = ball.x + .05
                     y = ball.y+.3
                     cmdvec = np.array([[x], [y]])
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
             else:
                 if ball.x -.3 > -1.595:
                     x = ball.x -.3
                     y = ball.y -.3
                     cmdvec = np.array([[x], [y]])
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
                 else:
                     x = ball.x + .05
                     y = ball.y -.3
                     cmdvec = np.array([[x], [y]])
-        if np.linalg.norm(p - mevec) < 0.21:
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+        elif np.linalg.norm(p - mevec) < 0.21:
             cmdvec = goalvec
         else:
             cmdvec = p
-
         self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
     def go_to(self, x, y, theta):
