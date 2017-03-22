@@ -163,8 +163,8 @@ class Robot(Moving):
             self.move_square()
 
         elif self.role == 1:
-            self.go_to(self.pos.x, self.pos.y, 0)
-            #self.rush_goal(self.pos, self.ball_pos)
+            #self.go_to(self.pos.x, self.pos.y, 0)
+            self.rush_goal(self.pos, self.ball_pos)
         elif self.role == 2:
             self.follow_ball_on_line(self.ball_pos, -1.25)
 
