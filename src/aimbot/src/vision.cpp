@@ -1,8 +1,8 @@
 
 #include "vision.h"
+#include "moc_vision.cpp"
 
 string Vision::space = "/aimbot_home/raw_vision/";
-string Vision::GUI_NAME = "home1";
 float Vision::FIELD_WIDTH = 3.53;  // in meters
 float Vision::FIELD_HEIGHT = 2.39; 
 float Vision::ROBOT_RADIUS = 0.10;
@@ -10,30 +10,63 @@ float Vision::FIELD_WIDTH_PIXELS = 610.0; // measured from threshold of goal to 
 float Vision::FIELD_HEIGHT_PIXELS = 426.0; // measured from inside of wall to wall
 float Vision::FIELD_X_OFFSET = 111;
 float Vision::FIELD_Y_OFFSET = 17;
-float Vision::CAMERA_WIDTH = 864.0;
+float Vision::CAMERA_WIDTH = 864.0; //Todo check this it is likely that it is 848
 float Vision::CAMERA_HEIGHT = 480.0;
-//OpenCVSliders home1slide = OpenCVSliders("home1");
-//OpenCVSliders ballslide = OpenCVSliders("ball");
 
-Vision::Vision()
+Vision::Vision(QObject* parent, string initName) : QObject(parent)
 {
-    initSliders();
-    //initSubscribers();
-    initPublishers();
+    //connect(this, SIGNAL(started()), this, SLOT(process()));
+    //moveToThread(this);
+    name = initName;
+    initPublishers(name);
+    hsvParams.push_back(0);
+    hsvParams.push_back(179);
+    hsvParams.push_back(0);
+    hsvParams.push_back(255);
+    hsvParams.push_back(0);
+    hsvParams.push_back(255);
 }
 
-// Create OpenCV Windows and sliders
-void Vision::initSliders()
+// Processes the image
+void Vision::process(cv::Mat frame)
 {
-    home1slide = OpenCVSliders("home1");
-    //home2slide = OpenCVSliders("home2");
-    //away1slide = OpenCVSliders("away1");
-    //away2slide = OpenCVSliders("away2");
-    ballslide = OpenCVSliders("ball");
+    Mat imgHsv;
+    geometry_msgs::Pose2D pos;
+    cvtColor(frame, imgHsv, COLOR_BGR2HSV);
+    Scalar scalarlh[2];
+    Scalar scalelow = Scalar(hsvParams[0], hsvParams[2], hsvParams[4]);
+    Scalar scalehigh = Scalar(hsvParams[1], hsvParams[3], hsvParams[5]);
+
+    scalarlh[0] = scalelow;
+    scalarlh[1] = scalehigh;
+
+    Mat proc;
+
+    // Hacky solution to get ball correct, probably should use inheritance here
+    if(name == "ball")
+    {
+        proc = getBallPose(imgHsv, scalarlh, pos);
+    }
+    else
+    {
+        proc = getRobotPose(imgHsv, scalarlh, pos);
+    }
+
+    publish(pos);
+    emit processedImage(proc);
 }
 
+// Update HSV params
+void Vision::newHSV(QVector<int> hsv)
+{
+    for(int i = 0; i < hsv.size(); i++)
+    {
+        hsvParams[i] = hsv[i];
+    }
+}
 
-void Vision::initPublishers()
+// Initialize the publishers this class publishes
+void Vision::initPublishers(string name)
 {
     std::string key;
     if (nh.searchParam("team_side", key))
@@ -41,34 +74,20 @@ void Vision::initPublishers()
         std::string val;
         nh.getParam(key, val);
         space = "/aimbot_" + val + "/raw_vision/";
-    }
-    
-    home1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home1", 5);
-    home2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home2", 5);
-    away1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away1", 5);
-    away2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away2", 5);
-    ball_pub = nh.advertise<geometry_msgs::Pose2D>(space + "ball", 5);
+    }    
+    pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
 }
 
-void Vision::initSubscribers()
-{
-        // Subscribe to camera
-    image_transport::ImageTransport it(nh);
-    image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, &Vision::imageCallback, this);
-}
-
-
-
+// Thesholds the image to isolate the given colors
 void Vision::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
 {
     inRange(imgHSV, color[0], color[1], imgGray);
 
     erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
     dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-
-    //imshow(GUI_NAME, imgGray);
 }
 
+// Gets the center point of a given moments
 Point2d Vision::getCenterOfMass(Moments moment)
 {
     double m10 = moment.m10;
@@ -79,6 +98,7 @@ Point2d Vision::getCenterOfMass(Moments moment)
     return Point2d(x, y);
 }
 
+// Decides which moment has greater area
 bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
 {
     double area1 = moment1.m00;
@@ -86,6 +106,7 @@ bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
     return area1 < area2;
 }
 
+// Converts image pixels to world coordinates in meters
 Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 {
     Point2d centerOfField(FIELD_X_OFFSET + FIELD_WIDTH_PIXELS/2, FIELD_Y_OFFSET + FIELD_HEIGHT_PIXELS/2);
@@ -102,6 +123,7 @@ Point2d Vision::imageToWorldCoordinates(Point2d point_i)
     return center_w;
 }
 
+// Determines the position of a robot
 Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
 {
     Mat imgGray;
@@ -135,9 +157,10 @@ Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& rob
     robotPose.x = robotCenter.x;
     robotPose.y = robotCenter.y;
     robotPose.theta = angle;
-    return imgThresholded ;
+    return imgThresholded;
 }
 
+// Determines the position of a ball
 Mat Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
 {
     Mat imgGray;
@@ -160,113 +183,13 @@ Mat Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ball
     return imgThresholded;
 }
 
-void Vision::processImage(Mat frame)
+// Publishes the messages
+void Vision::publish(geometry_msgs::Pose2D& pos)
 {
-    Mat imgHsv;
-    cvtColor(frame, imgHsv, COLOR_BGR2HSV);
-    Scalar scalelh[2];
-
-    // home 1 vision
-    //printf("home1");
-    home1slide.exportScalar(scalelh);
-    Mat home1 = getRobotPose(imgHsv, scalelh, poseHome1);
-    imshow("home1", home1);
-
-
-    //home2slide.exportScalar(scalelh);
-    //getRobotPose(imgHsv, scalelh,  poseHome2);
-
-    //away1slide.exportScalar(scalelh);
-    //getRobotPose(imgHsv, scalelh,    poseAway1);
-
-    //away2slide.exportScalar(scalelh);
-    //getRobotPose(imgHsv, scalelh, poseAway2);
-
-    // ball vision
-    //printf("ball");
-    ballslide.exportScalar(scalelh);
-    Mat ball = getBallPose(imgHsv,  scalelh, poseBall);
-    imshow("ball", ball);
-
-    publish();    
-}
-
-void Vision::publish()
-{
-    home1_pub.publish(poseHome1);
-    home2_pub.publish(poseHome2);
-    away1_pub.publish(poseAway1);
-    away2_pub.publish(poseAway2);
-    ball_pub.publish(poseBall);
-}
-
-
-void Vision::imageCallback(const sensor_msgs::ImageConstPtr& msg)
-{
-    try
-    {
-        Mat frame = cv_bridge::toCvShare(msg, "bgr8")->image;
-        processImage(frame);
-        //imshow(GUI_NAME, frame);
-        waitKey(30);
-    }
-    catch (cv_bridge::Exception& e)
-    {
-        ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-    }
+    pub.publish(pos);
 }
 
 bool Vision::ok()
 {
     return nh.ok();
 }
-
-/*
-void Vision::sendBallMessage(int x, int y)
-{
-    // Expects x, y in pixels
-
-    // Convert pixels to meters for sending  simulated ball position from mouse clicks
-    float x_meters, y_meters;
-
-    // shift data by half the pixels so (0, 0) is in center
-    x_meters = x - (CAMERA_WIDTH/2.0);   
-    y_meters = y - (CAMERA_HEIGHT/2.0);
-
-    // Multiply by aspect-ratio scaling factor
-    x_meters = x_meters * (FIELD_WIDTH/FIELD_WIDTH_PIXELS);
-    y_meters = y_meters * (FIELD_HEIGHT/FIELD_HEIGHT_PIXELS);
-
-    // mirror y over y-axis
-    y_meters = -1*y_meters;
-
-    // cout << "x: " << x_meters << ", y: " << y_meters << endl;
-
-    geometry_msgs::Vector3 msg;
-    msg.x = x_meters;
-    msg.y = y_meters;
-    msg.z = 0;
-    ball_position_pub.publish(msg);
-} */
-
-/*
-void Vision::mouseCallback(int event, int x, int y, int flags, void* userdata) {
-    static bool mouse_left_down = false;
-
-    if (event == EVENT_LBUTTONDOWN) {
-        mouse_left_down = true;
-        Point2d point_meters = imageToWorldCoordinates(Point2d(x, y));
-        char buffer[50];
-        sprintf(buffer, "Location: (%.3f m, %.3f m)", point_meters.x, point_meters.y);
-        displayStatusBar(GUI_NAME, buffer, 10000);
-
-    //} else if (event == EVENT_MOUSEMOVE) {
-       // if (mouse_left_down) sendBallMessage(x, y);
-
-    } else if (event == EVENT_LBUTTONUP) {
-        sendBallMessage(x, y);
-        mouse_left_down = false;
-    }
-    
-}
-*/

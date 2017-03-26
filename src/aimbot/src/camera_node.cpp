@@ -10,6 +10,7 @@
 using namespace std;
 using namespace cv;
 
+// This is a debugging tool that publishes the webcam feed to the same node as used in the robot soccer lab
 int main(int argc, char** argv)
 {
     Mat frame;

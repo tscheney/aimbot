@@ -1,10 +1,16 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.1.0)
 project(aimbot)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 #find_package(catkin REQUIRED)
+
+set (CMAKE_CXX_STANDARD 11)
+
+#Add custom (non compiling) targets so launch scripts and python files show up in QT Creator's project view.
+#file(GLOB_RECURSE EXTRA_FILES */*)
+#add_custom_target(${PROJECT_NAME}_OTHER_FILES ALL WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} SOURCES ${EXTRA_FILES})
 
 # Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS 
@@ -20,24 +26,43 @@ find_package(catkin REQUIRED COMPONENTS
     image_transport
     sensor_msgs
     xacro
-    soccerref
 )
 
 # Declare a catkin package
-catkin_package(CATKIN_DEPENDS roscpp rospy std_msgs std_srvs geometry_msgs message_runtime soccerref)
+catkin_package(CATKIN_DEPENDS roscpp rospy std_msgs std_srvs geometry_msgs message_runtime)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set (CMAKE_INCLUDE_CURRENT_DIR ON)
+
+#include OpenCv
+find_package( OpenCV REQUIRED )
+include_directories(${OPENCV_INCLUDE_DIRS})
+link_directories(${OPENCV_LIBRARY_DIRS})
+add_definitions(${OPENCV_DEFINITIONS})
+
+#include OpenGL
+find_package(OpenGL REQUIRED)
+
+# Include Qt
+find_package( Qt4 REQUIRED QtCore QtGui QtOpenGL)
+set(QT_USE_QTOPENGL TRUE)
+include( ${QT_USE_FILE} )
+add_definitions( ${QT_DEFINITIONS} )
+include_directories( ${CMAKE_BINARY_DIR} ${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} )
 
 
+# using Qt meta-system (precompiler)
+#QT4_ADD_RESOURCES( RES_SOURCES ${RESOURCES} )
+#QT4_WRAP_UI( UI_HEADERS ${UIS} )
+#QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
 
 # Declare C++ executables
-add_executable(raw_vision src/raw_vision_node.cpp src/vision.cpp src/opencvsliders.cpp)
-add_dependencies(raw_vision ${PROJECT_NAME}_generate_messages_cpp)
-find_package( OpenCV REQUIRED )
-target_link_libraries(raw_vision ${OpenCV_LIBS} ${catkin_LIBRARIES})
-
 add_executable(camera src/camera_node.cpp)
-add_dependencies(camera ${PROJECT_NAME}_generate_messages_cpp)
-find_package( OpenCV REQUIRED )
 target_link_libraries(camera ${OpenCV_LIBS} ${catkin_LIBRARIES})
+
+add_executable(raw_vision src/raw_vision_node.cpp src/mainwindow.cpp src/camlistener.cpp src/vision.cpp src/mainwindow.ui src/maintab.cpp src/visiontab.cpp)
+target_link_libraries(raw_vision ${OpenCV_LIBS} ${catkin_LIBRARIES} ${QT_LIBRARIES})
 
 # Specify additional locations of header files
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
