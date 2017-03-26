@@ -27,33 +27,17 @@ Vision::Vision(QObject* parent, string initName) : QObject(parent)
     hsvParams.push_back(255);
 }
 
-// Processes the image
-void Vision::process(cv::Mat frame)
+// Initialize the publishers this class publishes
+void Vision::initPublishers(string name)
 {
-    Mat imgHsv;
-    geometry_msgs::Pose2D pos;
-    cvtColor(frame, imgHsv, COLOR_BGR2HSV);
-    Scalar scalarlh[2];
-    Scalar scalelow = Scalar(hsvParams[0], hsvParams[2], hsvParams[4]);
-    Scalar scalehigh = Scalar(hsvParams[1], hsvParams[3], hsvParams[5]);
-
-    scalarlh[0] = scalelow;
-    scalarlh[1] = scalehigh;
-
-    Mat proc;
-
-    // Hacky solution to get ball correct, probably should use inheritance here
-    if(name == "ball")
+    std::string key;
+    if (nh.searchParam("team_side", key))
     {
-        proc = getBallPose(imgHsv, scalarlh, pos);
+        std::string val;
+        nh.getParam(key, val);
+        space = "/aimbot_" + val + "/raw_vision/";
     }
-    else
-    {
-        proc = getRobotPose(imgHsv, scalarlh, pos);
-    }
-
-    publish(pos);
-    emit processedImage(proc);
+    pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
 }
 
 // Update HSV params
@@ -65,29 +49,176 @@ void Vision::newHSV(QVector<int> hsv)
     }
 }
 
-// Initialize the publishers this class publishes
-void Vision::initPublishers(string name)
+// Processes the image
+void Vision::process(cv::Mat frame)
 {
-    std::string key;
-    if (nh.searchParam("team_side", key))
+    Mat imgHsv;
+    geometry_msgs::Pose2D pos;
+    Scalar scalarlh[2];
+    Scalar scalelow = Scalar(hsvParams[0], hsvParams[2], hsvParams[4]);
+    Scalar scalehigh = Scalar(hsvParams[1], hsvParams[3], hsvParams[5]);
+
+    scalarlh[0] = scalelow;
+    scalarlh[1] = scalehigh;
+
+    Mat imgGray;
+    // Mask based on shape
+    Mat shapeResult;
+    cvtColor( frame, imgGray, CV_BGR2GRAY );
+    blur( imgGray, imgGray, Size(3,3) );
+    threshold( imgGray, imgGray, 100, 255, THRESH_BINARY );
+    shapeResult = detectShapes(frame, imgGray);
+
+    //GaussianBlur(frame, frame, Size(3,3), 0, 0); // an addition that could help reduce noise
+    cvtColor(shapeResult, imgHsv, COLOR_BGR2HSV);
+
+    // threshold the image according to given HSV parameters
+    Mat colorThresh = thresholdImage(imgHsv, scalarlh);
+
+    vector<Moments> mm = calcMoments(colorThresh);
+
+
+    // Hacky solution to get ball correct, probably should use inheritance here
+    if(name == "ball")
     {
-        std::string val;
-        nh.getParam(key, val);
-        space = "/aimbot_" + val + "/raw_vision/";
-    }    
-    pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
+        pos = getBallPose(mm);
+    }
+    else
+    {
+        pos = getRobotPose(mm);
+    }
+
+    publish(pos);
+    emit processedImage(colorThresh);
 }
 
 // Thesholds the image to isolate the given colors
-void Vision::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
+Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
 {
+    Mat imgGray;
     inRange(imgHSV, color[0], color[1], imgGray);
-
     erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
     dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    return imgGray;
 }
 
-// Gets the center point of a given moments
+// Detect shapes of a chosen number of contours
+Mat Vision::detectShapes(Mat frame, Mat imgGray)
+{
+    Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
+    vector< vector<Point> > contours; // vector of contours, which are vectors of points
+    //Contour<Point> contours;
+    vector<Vec4i> hierarchy;
+
+    //finding all contours in the image
+    //cvFindContours(imgGray, storage, &contours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+    findContours(imgGray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+
+    //iterating through each contour
+    for(vector<Point> contour : contours)
+    {
+        vector<Point> result;
+        //obtain a sequence of points of the countour, pointed by the variable 'countour'
+        approxPolyDP(Mat(contour), result, arcLength(contour, true)*0.03, true);
+        //printf("%ldu\n\r", result.size());
+        //if there are 3 vertices  in the contour and the area of the triangle is more than 100 pixels
+        if(result.size()==4 && fabs(contourArea(result))>100 )
+        {
+            //printf("in draw place yo\n\r");
+            //iterating through each point
+            //Point pt[3];
+            //for(int i=0;i<3;i++)
+            //{
+            //    pt[i] = result, i);
+            //}
+
+            //drawing lines around the trianglea
+            //printf("point0x: %d, point0y: %d\n\r", result[0].x, result[0].y);
+            //printf("point1x: %d, point1y: %d\n\r", result[1].x, result[1].y);
+            //printf("point2x: %d, point2y: %d\n\r", result[2].x, result[2].y);
+            //printf("point3x: %d, point3y: %d\n\r", result[3].x, result[3].y);
+
+            //line(frame, result[0], result[1], Scalar(255,0,0), 3);
+            //line(frame, result[1], result[2], Scalar(255,0,0), 3);
+            //line(frame, result[2], result[3], Scalar(255,0,0), 3);
+            //line(frame, result[3], result[0], Scalar(255,0,0), 3); //1, 8, CV_AA);
+            fillConvexPoly(mask, result, Scalar(255,255,255));
+        }
+    }
+    Mat output = frame.clone().setTo(0);
+    frame.copyTo(output, mask);
+    return output;
+}
+
+// Given a thresholded gray image, calculate the moments in the image
+vector<Moments> Vision::calcMoments(Mat imgGray)
+{
+    // Calculate contours
+    vector< vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+    findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+
+    // Isolate
+    vector<Moments> mm;
+    for(int i = 0; i < hierarchy.size(); i++)
+        mm.push_back(moments((Mat)contours[i]));
+
+    return mm;
+}
+
+// Determines the position of a robot
+geometry_msgs::Pose2D Vision::getRobotPose(vector<Moments> mm)
+{
+    geometry_msgs::Pose2D robotPose;
+
+    if (mm.size() != 2)
+    {
+        //return imgThresholded;
+        return robotPose;
+    }
+
+    std::sort(mm.begin(), mm.end(), compareMomentAreas);
+    Moments mmLarge = mm[mm.size() - 1];
+    Moments mmSmall = mm[mm.size() - 2];
+
+    Point2d centerLarge = imageToWorldCoordinates(getCenterOfMass(mmLarge));
+    Point2d centerSmall = imageToWorldCoordinates(getCenterOfMass(mmSmall));
+
+    Point2d robotCenter = (centerLarge + centerSmall) * (1.0 / 2);
+    Point2d diff = centerSmall - centerLarge;
+    double angle = atan2(diff.y, diff.x);
+
+    //convert angle to degrees
+    angle = angle *180/M_PI;
+    robotPose.x = robotCenter.x;
+    robotPose.y = robotCenter.y;
+    robotPose.theta = angle;
+    //return imgThresholded;
+    return robotPose;
+}
+
+// Determines the position of a ball
+geometry_msgs::Pose2D Vision::getBallPose(vector<Moments> mm)
+{
+    geometry_msgs::Pose2D ballPose;
+
+    if (mm.size() != 1)
+    {
+        return ballPose;
+    }
+
+    Moments moments = mm[0];
+    //Moments mm = moments((Mat)contours[0]);
+    Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(moments));
+
+    ballPose.x = ballCenter.x;
+    ballPose.y = ballCenter.y;
+    ballPose.theta = 0;
+    return ballPose;
+}
+
+// Gets the center point of a given moment
 Point2d Vision::getCenterOfMass(Moments moment)
 {
     double m10 = moment.m10;
@@ -121,66 +252,6 @@ Point2d Vision::imageToWorldCoordinates(Point2d point_i)
     center_w.y = -center_w.y;
     
     return center_w;
-}
-
-// Determines the position of a robot
-Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
-{
-    Mat imgGray;
-    thresholdImage(imgHsv, imgGray, color);
-    Mat imgThresholded = imgGray.clone();
-
-    vector< vector<Point> > contours;
-    vector<Moments> mm;
-    vector<Vec4i> hierarchy;
-    findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
-
-    if (hierarchy.size() != 2)
-        return imgThresholded;
-
-    for(int i = 0; i < hierarchy.size(); i++)
-        mm.push_back(moments((Mat)contours[i]));
-
-    std::sort(mm.begin(), mm.end(), compareMomentAreas);
-    Moments mmLarge = mm[mm.size() - 1];
-    Moments mmSmall = mm[mm.size() - 2];
-
-    Point2d centerLarge = imageToWorldCoordinates(getCenterOfMass(mmLarge));
-    Point2d centerSmall = imageToWorldCoordinates(getCenterOfMass(mmSmall));
-
-    Point2d robotCenter = (centerLarge + centerSmall) * (1.0 / 2);
-    Point2d diff = centerSmall - centerLarge;
-    double angle = atan2(diff.y, diff.x);
-
-    //convert angle to degrees
-    angle = angle *180/M_PI;
-    robotPose.x = robotCenter.x;
-    robotPose.y = robotCenter.y;
-    robotPose.theta = angle;
-    return imgThresholded;
-}
-
-// Determines the position of a ball
-Mat Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
-{
-    Mat imgGray;
-    thresholdImage(imgHsv, imgGray, color);
-    Mat imgThresholded = imgGray.clone();
-
-    vector< vector<Point> > contours;
-    vector<Vec4i> hierarchy;
-    findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
-
-    if (hierarchy.size() != 1)
-        return imgThresholded;
-
-    Moments mm = moments((Mat)contours[0]);
-    Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(mm));
-
-    ballPose.x = ballCenter.x;
-    ballPose.y = ballCenter.y;
-    ballPose.theta = 0;
-    return imgThresholded;
 }
 
 // Publishes the messages

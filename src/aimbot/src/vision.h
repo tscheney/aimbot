@@ -45,12 +45,14 @@ public:
     // methods
     void initSliders();
     void initPublishers(string name);
-    void thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[]);
+    Mat thresholdImage(Mat& imgHSV, Scalar color[]);
+    Mat detectShapes(Mat frame, Mat imgGray);
+    vector<Moments> calcMoments(Mat imgGray);
 	Point2d getCenterOfMass(Moments moment);
 	static bool compareMomentAreas(Moments moment1, Moments moment2);
 	Point2d imageToWorldCoordinates(Point2d point_i);
-    Mat getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose);
-    Mat getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose);
+    geometry_msgs::Pose2D getRobotPose(vector<Moments> mm);
+    geometry_msgs::Pose2D getBallPose(vector<Moments> mm);
 	void imageCallback(const sensor_msgs::ImageConstPtr& msg);
     void publish(geometry_msgs::Pose2D& pos);
 	void sendBallMessage(int x, int y);
