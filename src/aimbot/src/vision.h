@@ -9,6 +9,7 @@
 #endif
 #include "geometry_msgs/Pose2D.h"
 #include <opencv2/imgproc/imgproc.hpp>
+#include "global.h"
 
 using namespace std;
 using namespace cv;
@@ -19,7 +20,8 @@ private:
 	static string space;
 private slots:
     void process(cv::Mat frame);
-    void newHSV(QVector<int> hsv);
+    void newColorData(ColorData newColorData);
+    void newShapeData(ShapeData newShapeData);
 signals:
     void processedImage(cv::Mat frame);
 public:
@@ -36,7 +38,8 @@ public:
     static float FIELD_Y_OFFSET;
 
     // Processing Params
-    QVector<int> hsvParams;
+    ColorData colorData;
+    ShapeData shapeData;
 
     string name;
     ros::Publisher pub;
@@ -46,7 +49,9 @@ public:
     void initSliders();
     void initPublishers(string name);
     Mat thresholdImage(Mat& imgHSV, Scalar color[]);
-    Mat detectShapes(Mat frame, Mat imgGray);
+    Mat detectShapes(Mat frame);
+    bool isCorrectShape(vector<Point> shape);
+    Mat detectColors(Mat frame);
     vector<Moments> calcMoments(Mat imgGray);
 	Point2d getCenterOfMass(Moments moment);
 	static bool compareMomentAreas(Moments moment1, Moments moment2);

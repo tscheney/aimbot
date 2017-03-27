@@ -15,6 +15,11 @@
 #include <cv_bridge/cv_bridge.h>
 #include "vision.h"
 #include "mainwindow.h"
+#include "global.h"
+
+
+
+#include <opencv2/highgui/highgui.hpp>
 
 class VisionTab : public QWidget
 {
@@ -24,10 +29,12 @@ public:
     ~VisionTab();
     Vision* getVision();
 signals:
-    void newVisionOptions(QVector<int> hsv);
+    void newColorData(ColorData colorData);
+    void newShapeData(ShapeData shapeData);
 public slots:
     void updateVideo(cv::Mat frame);
-    void slidersChanged(int val);
+    void colorSlidersChanged(int val);
+    void shapeSlidersChanged(int val);
 private:
     Vision *vision;
     QThread visionThread;
@@ -38,6 +45,8 @@ private:
     void setUpVision(string name);
     void setUpVideo();
     void setUpVisionOptions();
+    void setUpColorOptions(QVBoxLayout *visionOptionsLayout);
+    void setUpShapeOptions(QVBoxLayout *visionOptionsLayout);
     void setUpSlider(QSlider *slider, int min, int max, int val);
     void fitVideo(cv::Mat frame);
 };

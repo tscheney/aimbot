@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/objdetect/objdetect.hpp>
@@ -13,9 +14,12 @@ using namespace cv;
 // This is a debugging tool that publishes the webcam feed to the same node as used in the robot soccer lab
 int main(int argc, char** argv)
 {
+    bool webCam = false;
     Mat frame;
 
     VideoCapture capture(CV_CAP_ANY);
+
+    Mat image = imread("/home/tom/Downloads/shapes.jpg");
 
     ros::init(argc, argv, "camera");
     ros::NodeHandle nh;
@@ -30,7 +34,15 @@ int main(int argc, char** argv)
     {
         if (capture.isOpened())
         {
-            capture.read(frame);
+            if (webCam)
+            {
+                capture.read(frame);
+            }
+            else
+            {
+                frame = image;
+            }
+
             msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", frame).toImageMsg();
             pub.publish(msg);
             cv::waitKey(1);

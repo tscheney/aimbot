@@ -15,16 +15,8 @@ float Vision::CAMERA_HEIGHT = 480.0;
 
 Vision::Vision(QObject* parent, string initName) : QObject(parent)
 {
-    //connect(this, SIGNAL(started()), this, SLOT(process()));
-    //moveToThread(this);
     name = initName;
     initPublishers(name);
-    hsvParams.push_back(0);
-    hsvParams.push_back(179);
-    hsvParams.push_back(0);
-    hsvParams.push_back(255);
-    hsvParams.push_back(0);
-    hsvParams.push_back(255);
 }
 
 // Initialize the publishers this class publishes
@@ -40,71 +32,57 @@ void Vision::initPublishers(string name)
     pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
 }
 
-// Update HSV params
-void Vision::newHSV(QVector<int> hsv)
+// Update color data
+void Vision::newColorData(ColorData newColorData)
 {
-    for(int i = 0; i < hsv.size(); i++)
-    {
-        hsvParams[i] = hsv[i];
-    }
+    colorData = newColorData;
+}
+
+// Update shape data
+void Vision::newShapeData(ShapeData newShapeData)
+{
+    shapeData = newShapeData;
 }
 
 // Processes the image
 void Vision::process(cv::Mat frame)
 {
-    Mat imgHsv;
     geometry_msgs::Pose2D pos;
-    Scalar scalarlh[2];
-    Scalar scalelow = Scalar(hsvParams[0], hsvParams[2], hsvParams[4]);
-    Scalar scalehigh = Scalar(hsvParams[1], hsvParams[3], hsvParams[5]);
 
-    scalarlh[0] = scalelow;
-    scalarlh[1] = scalehigh;
-
-    Mat imgGray;
     // Mask based on shape
-    Mat shapeResult;
-    cvtColor( frame, imgGray, CV_BGR2GRAY );
-    blur( imgGray, imgGray, Size(3,3) );
-    threshold( imgGray, imgGray, 100, 255, THRESH_BINARY );
-    shapeResult = detectShapes(frame, imgGray);
-
-    //GaussianBlur(frame, frame, Size(3,3), 0, 0); // an addition that could help reduce noise
-    cvtColor(shapeResult, imgHsv, COLOR_BGR2HSV);
+    Mat shapeResult = detectShapes(frame);
 
     // threshold the image according to given HSV parameters
-    Mat colorThresh = thresholdImage(imgHsv, scalarlh);
+    //Mat colorThresh = detectColors(shapeResult);
 
-    vector<Moments> mm = calcMoments(colorThresh);
+    // Calculate moments to
+    //vector<Moments> mm = calcMoments(colorThresh);
 
 
     // Hacky solution to get ball correct, probably should use inheritance here
     if(name == "ball")
     {
-        pos = getBallPose(mm);
+        //pos = getBallPose(mm);
     }
     else
     {
-        pos = getRobotPose(mm);
+        //pos = getRobotPose(mm);
     }
 
     publish(pos);
-    emit processedImage(colorThresh);
+    emit processedImage(shapeResult);
 }
 
-// Thesholds the image to isolate the given colors
-Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
+// Detect shapes based on the current shape data params
+Mat Vision::detectShapes(Mat frame)
 {
+    std::cout << shapeData.toString();
     Mat imgGray;
-    inRange(imgHSV, color[0], color[1], imgGray);
-    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-    return imgGray;
-}
 
-// Detect shapes of a chosen number of contours
-Mat Vision::detectShapes(Mat frame, Mat imgGray)
-{
+    cvtColor( frame, imgGray, CV_BGR2GRAY );
+    blur( imgGray, imgGray, Size(shapeData.blurSize,shapeData.blurSize) );
+    threshold( imgGray, imgGray, shapeData.edgeThresh, GlobalData::edgeThreshMax, THRESH_BINARY );
+
     Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
     vector< vector<Point> > contours; // vector of contours, which are vectors of points
     //Contour<Point> contours;
@@ -120,35 +98,62 @@ Mat Vision::detectShapes(Mat frame, Mat imgGray)
     {
         vector<Point> result;
         //obtain a sequence of points of the countour, pointed by the variable 'countour'
-        approxPolyDP(Mat(contour), result, arcLength(contour, true)*0.03, true);
+        approxPolyDP(Mat(contour), result, arcLength(contour, true)*shapeData.polyError, true);
         //printf("%ldu\n\r", result.size());
         //if there are 3 vertices  in the contour and the area of the triangle is more than 100 pixels
-        if(result.size()==4 && fabs(contourArea(result))>100 )
+        if(isCorrectShape(result))
         {
-            //printf("in draw place yo\n\r");
-            //iterating through each point
-            //Point pt[3];
-            //for(int i=0;i<3;i++)
-            //{
-            //    pt[i] = result, i);
-            //}
-
-            //drawing lines around the trianglea
-            //printf("point0x: %d, point0y: %d\n\r", result[0].x, result[0].y);
-            //printf("point1x: %d, point1y: %d\n\r", result[1].x, result[1].y);
-            //printf("point2x: %d, point2y: %d\n\r", result[2].x, result[2].y);
-            //printf("point3x: %d, point3y: %d\n\r", result[3].x, result[3].y);
-
-            //line(frame, result[0], result[1], Scalar(255,0,0), 3);
-            //line(frame, result[1], result[2], Scalar(255,0,0), 3);
-            //line(frame, result[2], result[3], Scalar(255,0,0), 3);
-            //line(frame, result[3], result[0], Scalar(255,0,0), 3); //1, 8, CV_AA);
+            printf("correct shape\n\r");
             fillConvexPoly(mask, result, Scalar(255,255,255));
         }
     }
     Mat output = frame.clone().setTo(0);
     frame.copyTo(output, mask);
     return output;
+}
+
+// Returns whether the given shape fits the criteria for the front or back
+bool Vision::isCorrectShape(vector<Point> shape)
+{
+    double area = fabs(contourArea(shape));
+    bool isFrontNumVert = (shape.size() == shapeData.frontNumVert);
+    bool isGreaterFrontMin = (area >= shapeData.frontMinSize);
+    bool isLessFrontMax = (area <= shapeData.frontMaxSize);
+    bool isBackNumVert = (shape.size() == shapeData.backNumVert);
+    bool isGreaterBackMin = (area >= shapeData.backMinSize);
+    bool isLessBackMax = (area <= shapeData.backMaxSize);
+    bool isFront = isFrontNumVert && isGreaterFrontMin && isLessFrontMax;
+    bool isBack = isBackNumVert && isGreaterBackMin && isLessBackMax;
+    return isFront || isBack;
+}
+
+// Detect the HSV color range based on the current color data params
+Mat Vision::detectColors(Mat frame)
+{
+    Mat imgHSV;
+
+    Scalar scalarlh[2];
+    Scalar scalelow = Scalar(colorData.hLow, colorData.sLow, colorData.vLow);
+    Scalar scalehigh = Scalar(colorData.hHigh, colorData.sHigh, colorData.vHigh);
+
+    scalarlh[0] = scalelow;
+    scalarlh[1] = scalehigh;
+
+    cvtColor(frame, imgHSV, COLOR_BGR2HSV);
+
+    Mat imgGray = thresholdImage(imgHSV, scalarlh);
+
+    return imgGray;
+}
+
+// Thesholds the image to isolate the given colors
+Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
+{
+    Mat imgGray;
+    inRange(imgHSV, color[0], color[1], imgGray);
+    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    return imgGray;
 }
 
 // Given a thresholded gray image, calculate the moments in the image
