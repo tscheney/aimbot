@@ -1,8 +1,8 @@
 
 #include "vision.h"
+#include "moc_vision.cpp"
 
 string Vision::space = "/aimbot_home/raw_vision/";
-string Vision::GUI_NAME = "home1";
 float Vision::FIELD_WIDTH = 3.53;  // in meters
 float Vision::FIELD_HEIGHT = 2.39; 
 float Vision::ROBOT_RADIUS = 0.10;
@@ -10,30 +10,17 @@ float Vision::FIELD_WIDTH_PIXELS = 610.0; // measured from threshold of goal to 
 float Vision::FIELD_HEIGHT_PIXELS = 426.0; // measured from inside of wall to wall
 float Vision::FIELD_X_OFFSET = 111;
 float Vision::FIELD_Y_OFFSET = 17;
-float Vision::CAMERA_WIDTH = 864.0;
+float Vision::CAMERA_WIDTH = 864.0; //Todo check this it is likely that it is 848
 float Vision::CAMERA_HEIGHT = 480.0;
-//OpenCVSliders home1slide = OpenCVSliders("home1");
-//OpenCVSliders ballslide = OpenCVSliders("ball");
 
-Vision::Vision()
+Vision::Vision(QObject* parent, string initName) : QObject(parent)
 {
-    initSliders();
-    //initSubscribers();
-    initPublishers();
+    name = initName;
+    initPublishers(name);
 }
 
-// Create OpenCV Windows and sliders
-void Vision::initSliders()
-{
-    home1slide = OpenCVSliders("home1");
-    //home2slide = OpenCVSliders("home2");
-    //away1slide = OpenCVSliders("away1");
-    //away2slide = OpenCVSliders("away2");
-    ballslide = OpenCVSliders("ball");
-}
-
-
-void Vision::initPublishers()
+// Initialize the publishers this class publishes
+void Vision::initPublishers(string name)
 {
     std::string key;
     if (nh.searchParam("team_side", key))
@@ -42,82 +29,162 @@ void Vision::initPublishers()
         nh.getParam(key, val);
         space = "/aimbot_" + val + "/raw_vision/";
     }
-    
-    home1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home1", 5);
-    home2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "home2", 5);
-    away1_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away1", 5);
-    away2_pub = nh.advertise<geometry_msgs::Pose2D>(space + "away2", 5);
-    ball_pub = nh.advertise<geometry_msgs::Pose2D>(space + "ball", 5);
+    pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
 }
 
-void Vision::initSubscribers()
+// Update color data
+void Vision::newColorData(ColorData newColorData)
 {
-        // Subscribe to camera
-    image_transport::ImageTransport it(nh);
-    image_transport::Subscriber image_sub = it.subscribe("/usb_cam_away/image_raw", 1, &Vision::imageCallback, this);
+    colorData = newColorData;
 }
 
-
-
-void Vision::thresholdImage(Mat& imgHSV, Mat& imgGray, Scalar color[])
+// Update shape data
+void Vision::newShapeData(ShapeData newShapeData)
 {
-    inRange(imgHSV, color[0], color[1], imgGray);
-
-    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-
-    //imshow(GUI_NAME, imgGray);
+    shapeData = newShapeData;
 }
 
-Point2d Vision::getCenterOfMass(Moments moment)
+// Processes the image
+void Vision::process(cv::Mat frame)
 {
-    double m10 = moment.m10;
-    double m01 = moment.m01;
-    double mass = moment.m00;
-    double x = m10 / mass;
-    double y = m01 / mass;
-    return Point2d(x, y);
+    geometry_msgs::Pose2D pos;
+
+    // Mask based on shape
+    Mat shapeResult = detectShapes(frame);
+
+    // threshold the image according to given HSV parameters
+    Mat colorResult = detectColors(shapeResult);
+
+    // Calculate moments to
+    //vector<Moments> mm = calcMoments(colorThresh);
+
+
+    // Hacky solution to get ball correct, probably should use inheritance here
+    if(name == "ball")
+    {
+        //pos = getBallPose(mm);
+    }
+    else
+    {
+        //pos = getRobotPose(mm);
+    }
+
+    publish(pos);
+    emit processedImage(applyMask(frame, colorResult));
 }
 
-bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
+// Apply the mask to the frame
+Mat Vision::applyMask(Mat frame, Mat mask)
 {
-    double area1 = moment1.m00;
-    double area2 = moment2.m00;
-    return area1 < area2;
+    Mat output = frame.clone().setTo(0);
+    frame.copyTo(output, mask);
+    return output;
 }
 
-Point2d Vision::imageToWorldCoordinates(Point2d point_i)
+// Detect shapes based on the current shape data params
+Mat Vision::detectShapes(Mat frame)
 {
-    Point2d centerOfField(FIELD_X_OFFSET + FIELD_WIDTH_PIXELS/2, FIELD_Y_OFFSET + FIELD_HEIGHT_PIXELS/2);
-    Point2d center_w = (point_i - centerOfField);
+    std::cout << shapeData.toString();
+    Mat imgGray;
 
-    // You have to split up the pixel to meter conversion
-    // because it is a rect, not a square!
-    center_w.x *= (FIELD_WIDTH/FIELD_WIDTH_PIXELS);
-    center_w.y *= (FIELD_HEIGHT/FIELD_HEIGHT_PIXELS);
+    cvtColor( frame, imgGray, CV_BGR2GRAY );
+    blur( imgGray, imgGray, Size(shapeData.blurSize,shapeData.blurSize) );
+    threshold( imgGray, imgGray, shapeData.edgeThresh, GlobalData::edgeThreshMax, THRESH_BINARY );
 
-    // Reflect y
-    center_w.y = -center_w.y;
-    
-    return center_w;
+    Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
+    vector< vector<Point> > contours; // vector of contours, which are vectors of points
+    //Contour<Point> contours;
+    vector<Vec4i> hierarchy;
+
+    //finding all contours in the image
+    //cvFindContours(imgGray, storage, &contours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+    findContours(imgGray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+
+    //iterating through each contour
+    for(vector<Point> contour : contours)
+    {
+        vector<Point> result;
+        approxPolyDP(Mat(contour), result, arcLength(contour, true)*shapeData.polyError, true);
+        if(isCorrectShape(result))
+        {
+            fillConvexPoly(mask, result, Scalar(255,255,255));
+        }
+    }
+
+    return applyMask(frame, mask);
 }
 
-Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& robotPose)
+// Returns whether the given shape fits the criteria for the front or back
+bool Vision::isCorrectShape(vector<Point> shape)
+{
+    double area = fabs(contourArea(shape));
+    bool isFrontNumVert = (shape.size() == shapeData.frontNumVert);
+    bool isGreaterFrontMin = (area >= shapeData.frontMinSize);
+    bool isLessFrontMax = (area <= shapeData.frontMaxSize);
+    bool isBackNumVert = (shape.size() == shapeData.backNumVert);
+    bool isGreaterBackMin = (area >= shapeData.backMinSize);
+    bool isLessBackMax = (area <= shapeData.backMaxSize);
+    bool isFront = isFrontNumVert && isGreaterFrontMin && isLessFrontMax;
+    bool isBack = isBackNumVert && isGreaterBackMin && isLessBackMax;
+    return isFront || isBack;
+}
+
+// Detect the HSV color range based on the current color data params
+Mat Vision::detectColors(Mat frame)
+{
+    Mat imgHSV;
+
+    Scalar scalarlh[2];
+    Scalar scalelow = Scalar(colorData.hLow, colorData.sLow, colorData.vLow);
+    Scalar scalehigh = Scalar(colorData.hHigh, colorData.sHigh, colorData.vHigh);
+
+    scalarlh[0] = scalelow;
+    scalarlh[1] = scalehigh;
+
+    cvtColor(frame, imgHSV, COLOR_BGR2HSV);
+
+    Mat imgGray = thresholdImage(imgHSV, scalarlh);
+
+    return imgGray;
+}
+
+// Thesholds the image to isolate the given colors
+Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
 {
     Mat imgGray;
-    thresholdImage(imgHsv, imgGray, color);
-    Mat imgThresholded = imgGray.clone();
+    inRange(imgHSV, color[0], color[1], imgGray);
+    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    return imgGray;
+}
 
+// Given a thresholded gray image, calculate the moments in the image
+vector<Moments> Vision::calcMoments(Mat imgGray)
+{
+    // Calculate contours
     vector< vector<Point> > contours;
-    vector<Moments> mm;
     vector<Vec4i> hierarchy;
     findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
-    if (hierarchy.size() != 2)
-        return imgThresholded;
-
+    // Isolate
+    vector<Moments> mm;
     for(int i = 0; i < hierarchy.size(); i++)
         mm.push_back(moments((Mat)contours[i]));
+
+    return mm;
+}
+
+// Determines the position of a robot
+geometry_msgs::Pose2D Vision::getRobotPose(vector<Moments> mm)
+{
+    geometry_msgs::Pose2D robotPose;
+
+    if (mm.size() != 2)
+    {
+        //return imgThresholded;
+        return robotPose;
+    }
 
     std::sort(mm.begin(), mm.end(), compareMomentAreas);
     Moments mmLarge = mm[mm.size() - 1];
@@ -135,138 +202,73 @@ Mat Vision::getRobotPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& rob
     robotPose.x = robotCenter.x;
     robotPose.y = robotCenter.y;
     robotPose.theta = angle;
-    return imgThresholded ;
+    //return imgThresholded;
+    return robotPose;
 }
 
-Mat Vision::getBallPose(Mat& imgHsv, Scalar color[], geometry_msgs::Pose2D& ballPose)
+// Determines the position of a ball
+geometry_msgs::Pose2D Vision::getBallPose(vector<Moments> mm)
 {
-    Mat imgGray;
-    thresholdImage(imgHsv, imgGray, color);
-    Mat imgThresholded = imgGray.clone();
+    geometry_msgs::Pose2D ballPose;
 
-    vector< vector<Point> > contours;
-    vector<Vec4i> hierarchy;
-    findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+    if (mm.size() != 1)
+    {
+        return ballPose;
+    }
 
-    if (hierarchy.size() != 1)
-        return imgThresholded;
-
-    Moments mm = moments((Mat)contours[0]);
-    Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(mm));
+    Moments moments = mm[0];
+    //Moments mm = moments((Mat)contours[0]);
+    Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(moments));
 
     ballPose.x = ballCenter.x;
     ballPose.y = ballCenter.y;
     ballPose.theta = 0;
-    return imgThresholded;
+    return ballPose;
 }
 
-void Vision::processImage(Mat frame)
+// Gets the center point of a given moment
+Point2d Vision::getCenterOfMass(Moments moment)
 {
-    Mat imgHsv;
-    cvtColor(frame, imgHsv, COLOR_BGR2HSV);
-    Scalar scalelh[2];
-
-    // home 1 vision
-    //printf("home1");
-    home1slide.exportScalar(scalelh);
-    Mat home1 = getRobotPose(imgHsv, scalelh, poseHome1);
-    imshow("home1", home1);
-
-
-    //home2slide.exportScalar(scalelh);
-    //getRobotPose(imgHsv, scalelh,  poseHome2);
-
-    //away1slide.exportScalar(scalelh);
-    //getRobotPose(imgHsv, scalelh,    poseAway1);
-
-    //away2slide.exportScalar(scalelh);
-    //getRobotPose(imgHsv, scalelh, poseAway2);
-
-    // ball vision
-    //printf("ball");
-    ballslide.exportScalar(scalelh);
-    Mat ball = getBallPose(imgHsv,  scalelh, poseBall);
-    imshow("ball", ball);
-
-    publish();    
+    double m10 = moment.m10;
+    double m01 = moment.m01;
+    double mass = moment.m00;
+    double x = m10 / mass;
+    double y = m01 / mass;
+    return Point2d(x, y);
 }
 
-void Vision::publish()
+// Decides which moment has greater area
+bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
 {
-    home1_pub.publish(poseHome1);
-    home2_pub.publish(poseHome2);
-    away1_pub.publish(poseAway1);
-    away2_pub.publish(poseAway2);
-    ball_pub.publish(poseBall);
+    double area1 = moment1.m00;
+    double area2 = moment2.m00;
+    return area1 < area2;
 }
 
-
-void Vision::imageCallback(const sensor_msgs::ImageConstPtr& msg)
+// Converts image pixels to world coordinates in meters
+Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 {
-    try
-    {
-        Mat frame = cv_bridge::toCvShare(msg, "bgr8")->image;
-        processImage(frame);
-        //imshow(GUI_NAME, frame);
-        waitKey(30);
-    }
-    catch (cv_bridge::Exception& e)
-    {
-        ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-    }
+    Point2d centerOfField(FIELD_X_OFFSET + FIELD_WIDTH_PIXELS/2, FIELD_Y_OFFSET + FIELD_HEIGHT_PIXELS/2);
+    Point2d center_w = (point_i - centerOfField);
+
+    // You have to split up the pixel to meter conversion
+    // because it is a rect, not a square!
+    center_w.x *= (FIELD_WIDTH/FIELD_WIDTH_PIXELS);
+    center_w.y *= (FIELD_HEIGHT/FIELD_HEIGHT_PIXELS);
+
+    // Reflect y
+    center_w.y = -center_w.y;
+    
+    return center_w;
+}
+
+// Publishes the messages
+void Vision::publish(geometry_msgs::Pose2D& pos)
+{
+    pub.publish(pos);
 }
 
 bool Vision::ok()
 {
     return nh.ok();
 }
-
-/*
-void Vision::sendBallMessage(int x, int y)
-{
-    // Expects x, y in pixels
-
-    // Convert pixels to meters for sending  simulated ball position from mouse clicks
-    float x_meters, y_meters;
-
-    // shift data by half the pixels so (0, 0) is in center
-    x_meters = x - (CAMERA_WIDTH/2.0);   
-    y_meters = y - (CAMERA_HEIGHT/2.0);
-
-    // Multiply by aspect-ratio scaling factor
-    x_meters = x_meters * (FIELD_WIDTH/FIELD_WIDTH_PIXELS);
-    y_meters = y_meters * (FIELD_HEIGHT/FIELD_HEIGHT_PIXELS);
-
-    // mirror y over y-axis
-    y_meters = -1*y_meters;
-
-    // cout << "x: " << x_meters << ", y: " << y_meters << endl;
-
-    geometry_msgs::Vector3 msg;
-    msg.x = x_meters;
-    msg.y = y_meters;
-    msg.z = 0;
-    ball_position_pub.publish(msg);
-} */
-
-/*
-void Vision::mouseCallback(int event, int x, int y, int flags, void* userdata) {
-    static bool mouse_left_down = false;
-
-    if (event == EVENT_LBUTTONDOWN) {
-        mouse_left_down = true;
-        Point2d point_meters = imageToWorldCoordinates(Point2d(x, y));
-        char buffer[50];
-        sprintf(buffer, "Location: (%.3f m, %.3f m)", point_meters.x, point_meters.y);
-        displayStatusBar(GUI_NAME, buffer, 10000);
-
-    //} else if (event == EVENT_MOUSEMOVE) {
-       // if (mouse_left_down) sendBallMessage(x, y);
-
-    } else if (event == EVENT_LBUTTONUP) {
-        sendBallMessage(x, y);
-        mouse_left_down = false;
-    }
-    
-}
-*/
