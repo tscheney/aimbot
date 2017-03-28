@@ -3,6 +3,10 @@
 
 namespace GlobalData
 {
+    const QString settingsPath = QDesktopServices::storageLocation(QDesktopServices::HomeLocation) + "/.config/aimbot/";
+    const QString profilesFile = "profiles.xml";
+    const QString robotGroupName = "robots";
+    const QString ballGroupName = "balls";
     const int edgeThreshMax = 255;
     const int blurSizeMin = 1;
     const int shapeMaxSize = 50000;

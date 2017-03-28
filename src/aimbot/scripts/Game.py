@@ -88,12 +88,55 @@ class Game:
         """Sets up the subscription to the raw vision"""
         if self.sim_mode: # if sim mode, look at the simulation vision
             namespace = "/vision/"
+
+            game_to_team = self.game_to_team()
+
+            name = "ally1"
+            rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                             lambda msg: self.positions["ally1"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "ally2"
+            rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                             lambda msg: self.positions["ally2"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "opp1"
+            rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                             lambda msg: self.positions["opp1"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "opp2"
+            rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                             lambda msg: self.positions["opp2"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "ball"
+            rospy.Subscriber(namespace + game_to_team[name], Pose2D,
+                             lambda msg: self.positions["ball"].import_msg_raw(msg, self.team_side, self.game_state))
         else: # if not sim mode, look at our vision
             namespace = "/aimbot_" + self.team_side + "/raw_vision/"
 
-        game_to_team = self.game_to_team()
+
         # Uses the dictionary of position objects to subscribe to all the vision topics
         #print(self.positions)
+
+            name = "ally1"
+            rospy.Subscriber(namespace + name, Pose2D,
+                             lambda msg: self.positions["ally1"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "ally2"
+            rospy.Subscriber(namespace + name, Pose2D,
+                             lambda msg: self.positions["ally2"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "opp1"
+            rospy.Subscriber(namespace + name, Pose2D,
+                             lambda msg: self.positions["opp1"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "opp2"
+            rospy.Subscriber(namespace + name, Pose2D,
+                             lambda msg: self.positions["opp2"].import_msg_raw(msg, self.team_side, self.game_state))
+
+            name = "ball"
+            rospy.Subscriber(namespace + name, Pose2D,
+                             lambda msg: self.positions["ball"].import_msg_raw(msg, self.team_side, self.game_state))
+
 
         #for name, pos in self.positions.iteritems():
             #exec("name%d = name" % (n)) in locals()
@@ -103,25 +146,6 @@ class Game:
 
         ## Apparently Ros can't handle subscriptions that hanppen in a for loop, so we have to do them one-by-one for now
         # the issue is when the self.positions[x] have the same variable x
-        name = "ally1"
-        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
-                         lambda msg: self.positions["ally1"].import_msg_raw(msg, self.team_side, self.game_state))
-
-        name = "ally2"
-        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
-                         lambda msg: self.positions["ally2"].import_msg_raw(msg, self.team_side, self.game_state))
-
-        name = "opp1"
-        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
-                         lambda msg: self.positions["opp1"].import_msg_raw(msg, self.team_side, self.game_state))
-
-        name = "opp2"
-        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
-                         lambda msg: self.positions["opp2"].import_msg_raw(msg, self.team_side, self.game_state))
-
-        name = "ball"
-        rospy.Subscriber(namespace + game_to_team[name], Pose2D,
-                         lambda msg: self.positions["ball"].import_msg_raw(msg, self.team_side, self.game_state))
 
     def init_vision_pub(self):
         """Inits publishers for the correctly oriented positions"""

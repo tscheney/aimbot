@@ -84,7 +84,7 @@ Mat Vision::applyMask(Mat frame, Mat mask)
 // Detect shapes based on the current shape data params
 Mat Vision::detectShapes(Mat frame)
 {
-    std::cout << shapeData.toString();
+    //std::cout << shapeData.toString();
     Mat imgGray;
 
     cvtColor( frame, imgGray, CV_BGR2GRAY );

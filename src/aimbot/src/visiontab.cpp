@@ -53,6 +53,7 @@ void VisionTab::setUpVisionOptions()
 void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
 {
     QGroupBox *colorOptionsGroupBox = new QGroupBox(tr("Color Options"));
+    colorOptionsGroupBox->setObjectName("Color Options");
     QFormLayout *colorOptionsLayout = new QFormLayout();
 
     // Labels
@@ -69,16 +70,33 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
     const int svMax = 255;
     QSlider *hLowSlider = new QSlider(Qt::Horizontal);
     setUpSlider(hLowSlider, min, hMax, min);
+    //hLowSlider->setObjectName("hLowSlider");
+    colorSliders.insert(pair<string, QSlider*>("hLow", hLowSlider));
+
     QSlider *hHighSlider = new QSlider(Qt::Horizontal);
     setUpSlider(hHighSlider, min, hMax, hMax);
+    //hHighSlider->setObjectName("hHighSlider");
+    colorSliders.insert(pair<string, QSlider*>("hHigh", hHighSlider));
+
     QSlider *sLowSlider = new QSlider(Qt::Horizontal);
     setUpSlider(sLowSlider, min, svMax, min);
+    //sLowSlider->setObjectName("sLowSlider");
+    colorSliders.insert(pair<string, QSlider*>("sLow", sLowSlider));
+
     QSlider *sHighSlider = new QSlider(Qt::Horizontal);
     setUpSlider(sHighSlider, min, svMax, svMax);
+    //sHighSlider->setObjectName("sHighSlider");
+    colorSliders.insert(pair<string, QSlider*>("sHigh", sHighSlider));
+
     QSlider *vLowSlider = new QSlider(Qt::Horizontal);
     setUpSlider(vLowSlider, min, svMax, min);
+    //vLowSlider->setObjectName("vLowSlider");
+    colorSliders.insert(pair<string, QSlider*>("vLow", vLowSlider));
+
     QSlider *vHighSlider = new QSlider(Qt::Horizontal);
     setUpSlider(vHighSlider, min, svMax, svMax);
+    //vHighSlider->setObjectName("vHighSlider");
+    colorSliders.insert(pair<string, QSlider*>("vHigh", vHighSlider));
 
     // Connect Sliders
     connect(hLowSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
@@ -123,22 +141,39 @@ void VisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     ShapeData shapeData;
     QSlider *blurSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(blurSizeSlider, GlobalData::blurSizeMin, 10, 3);
+    shapeSliders.insert(pair<std::string, QSlider *>("blurSize", blurSizeSlider));
+
     QSlider *edgeThreshSlider = new QSlider(Qt::Horizontal);
     setUpSlider(edgeThreshSlider, 0, GlobalData::edgeThreshMax, shapeData.edgeThresh);
+    shapeSliders.insert(pair<std::string, QSlider *>("edgeThresh", edgeThreshSlider));
+
     QSlider *polyErrorSlider = new QSlider(Qt::Horizontal);
     setUpSlider(polyErrorSlider, 0, 10, 3);
+    shapeSliders.insert(pair<std::string, QSlider *>("polyError", polyErrorSlider));
+
     QSlider *frontNumVertSlider = new QSlider(Qt::Horizontal);
     setUpSlider(frontNumVertSlider, 0, 10, 4);
+    shapeSliders.insert(pair<std::string, QSlider *>("frontNumVert", frontNumVertSlider));
+
     QSlider *frontMinSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(frontMinSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMinSizeDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("frontMinSize", frontMinSizeSlider));
+
     QSlider *frontMaxSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(frontMaxSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMaxSizeDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("frontMaxSize", frontMaxSizeSlider));
+
     QSlider *backNumVertSlider = new QSlider(Qt::Horizontal);
     setUpSlider(backNumVertSlider, 0, 10, 4);
+    shapeSliders.insert(pair<std::string, QSlider *>("backNumVert", backNumVertSlider));
+
     QSlider *backMinSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(backMinSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMaxSizeDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("backMinSize", backMinSizeSlider));
+
     QSlider *backMaxSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(backMaxSizeSlider, 0, GlobalData::shapeMaxSize, 500);
+    shapeSliders.insert(pair<std::string, QSlider *>("backMaxSize", backMaxSizeSlider));
 
     // Connect Sliders
     connect(blurSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
@@ -278,4 +313,16 @@ void VisionTab::shapeSlidersChanged(int val)
     shapeData.backMaxSize = sliderList.at(8)->value();
 
     emit newShapeData(shapeData);
+}
+
+// Retrieve the list of color slider pointers
+map<std::string, QSlider*> VisionTab::getColorSliders()
+{
+    return colorSliders;
+}
+
+// Retrieve the list of shape slider pointers
+map<std::string, QSlider*> VisionTab::getShapeSliders()
+{
+    return shapeSliders;
 }

@@ -10,7 +10,9 @@
 #include <QImage>
 #include <QString>
 #include <QThread>
+#include <QSignalMapper>
 #include <string>
+#include <map>
 #include <opencv2/core/core.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include "vision.h"
@@ -28,6 +30,8 @@ public:
     explicit VisionTab(QWidget *parent = 0, QString name = "default");
     ~VisionTab();
     Vision* getVision();
+    map<std::string, QSlider*> getColorSliders();
+    map<std::string, QSlider*> getShapeSliders();
 signals:
     void newColorData(ColorData colorData);
     void newShapeData(ShapeData shapeData);
@@ -41,6 +45,10 @@ private:
     QVBoxLayout *layout;
     QLabel *video;
     QGroupBox *visionOptionsGroupBox;
+    map<std::string, QSlider*> colorSliders;
+    //QSignalMapper *colorOptionsMapper;
+    map<std::string, QSlider*> shapeSliders;
+    //QSignalMapper *shapeOptionsMapper;
 
     void setUpVision(string name);
     void setUpVideo();

@@ -9,6 +9,9 @@
 #include <QVBoxLayout>
 #include <QTabWidget>
 #include <QString>
+#include <QMenuBar>
+#include <QSettings>
+#include <QtXml>
 #include "ui_mainwindow.h"
 #include <opencv2/core/core.hpp>
 #include "maintab.h"
@@ -31,14 +34,19 @@ private slots:
     //Display video frame in player UI
     //void updatePlayerUI(cv::Mat frame);
     void insertNewTab(QString name);
+    void tabChanged(int tabIndex);
+    void saveClicked();
 
 signals:
     void sliderChanged(QVector<int> hsv);
 
 private:
     Ui::MainWindow *ui;
+    QMenu *fileMenu;
     CamListener* camListener;
     QTabWidget *tabs;
+
+    void setUpMenuBar();
 
 };
 #endif // MAINWINDOW_H

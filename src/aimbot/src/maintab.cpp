@@ -23,8 +23,18 @@ MainTab::~MainTab()
 void MainTab::addNewClicked()
 {
     QInputDialog dialog(this, Qt::Dialog);
-        if(dialog.exec() == QDialog::Accepted)
-        {
-            emit addNewTab(dialog.textValue());
-        }
+    if(dialog.exec() == QDialog::Accepted)
+    {
+       emit addNewTab(dialog.textValue());
+    }
+
+    //AddNewDialog dialog;
+    //dialog.exec();
+
+
+
+//    if(dialog.exec() == QDialog::Accepted)
+//    {
+//        //emit addNewTab(dialog.textValue());
+//    }
 }

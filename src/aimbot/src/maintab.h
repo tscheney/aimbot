@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QString>
 #include "mainwindow.h"
+#include "addnewdialog.h"
 
 class MainTab : public QWidget
 {
