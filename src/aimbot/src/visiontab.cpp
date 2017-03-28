@@ -130,15 +130,15 @@ void VisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     QSlider *frontNumVertSlider = new QSlider(Qt::Horizontal);
     setUpSlider(frontNumVertSlider, 0, 10, 4);
     QSlider *frontMinSizeSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(frontMinSizeSlider, 0, 1000, 100);
+    setUpSlider(frontMinSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMinSizeDefault);
     QSlider *frontMaxSizeSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(frontMaxSizeSlider, 0, 1000, 500);
+    setUpSlider(frontMaxSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMaxSizeDefault);
     QSlider *backNumVertSlider = new QSlider(Qt::Horizontal);
     setUpSlider(backNumVertSlider, 0, 10, 4);
     QSlider *backMinSizeSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(backMinSizeSlider, 0, 1000, 100);
+    setUpSlider(backMinSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMaxSizeDefault);
     QSlider *backMaxSizeSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(backMaxSizeSlider, 0, 1000, 500);
+    setUpSlider(backMaxSizeSlider, 0, GlobalData::shapeMaxSize, 500);
 
     // Connect Sliders
     connect(blurSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
@@ -197,15 +197,15 @@ void VisionTab::updateVideo(cv::Mat frame)
 
     if (frame.channels()== 3){
         cv::cvtColor(frame, RGBframe, CV_BGR2RGB);
-        //img = QImage((const unsigned char*)(RGBframe.data), RGBframe.cols,RGBframe.rows,QImage::Format_RGB888);
-        QImage dest((const uchar*) RGBframe.data, RGBframe.cols, RGBframe.rows, RGBframe.step, QImage::Format_RGB888);
+        QImage dest((const unsigned char*) RGBframe.data, RGBframe.cols, RGBframe.rows, RGBframe.step, QImage::Format_RGB888);
         dest.bits();
         img = dest;
     }
     else
     {
-        img = QImage((const unsigned char*)(frame.data),
-                             frame.cols,frame.rows,QImage::Format_Indexed8);
+        QImage dest((const unsigned char*) frame.data, frame.cols, frame.rows, frame.step, QImage::Format_Indexed8);
+        dest.bits();
+        img = dest;
     }
 
     if (!img.isNull())

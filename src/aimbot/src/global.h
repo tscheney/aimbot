@@ -8,6 +8,9 @@ namespace GlobalData
 {
     extern const int edgeThreshMax;
     extern const int blurSizeMin;
+    extern const int shapeMaxSize;
+    extern const int shapeMinSizeDefault;
+    extern const int shapeMaxSizeDefault;
 }
 
 class ColorData

@@ -48,6 +48,7 @@ public:
     // methods
     void initSliders();
     void initPublishers(string name);
+    Mat applyMask(Mat frame, Mat mask);
     Mat thresholdImage(Mat& imgHSV, Scalar color[]);
     Mat detectShapes(Mat frame);
     bool isCorrectShape(vector<Point> shape);

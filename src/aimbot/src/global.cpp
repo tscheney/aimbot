@@ -5,6 +5,9 @@ namespace GlobalData
 {
     const int edgeThreshMax = 255;
     const int blurSizeMin = 1;
+    const int shapeMaxSize = 50000;
+    const int shapeMinSizeDefault = 100;
+    const int shapeMaxSizeDefault = 20000;
 }
 
 ColorData::ColorData(int inhLow, int inhHigh, int insLow, int insHigh, int invLow, int invHigh)

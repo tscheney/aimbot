@@ -53,7 +53,7 @@ void Vision::process(cv::Mat frame)
     Mat shapeResult = detectShapes(frame);
 
     // threshold the image according to given HSV parameters
-    //Mat colorThresh = detectColors(shapeResult);
+    Mat colorResult = detectColors(shapeResult);
 
     // Calculate moments to
     //vector<Moments> mm = calcMoments(colorThresh);
@@ -70,7 +70,15 @@ void Vision::process(cv::Mat frame)
     }
 
     publish(pos);
-    emit processedImage(shapeResult);
+    emit processedImage(applyMask(frame, colorResult));
+}
+
+// Apply the mask to the frame
+Mat Vision::applyMask(Mat frame, Mat mask)
+{
+    Mat output = frame.clone().setTo(0);
+    frame.copyTo(output, mask);
+    return output;
 }
 
 // Detect shapes based on the current shape data params
@@ -97,19 +105,14 @@ Mat Vision::detectShapes(Mat frame)
     for(vector<Point> contour : contours)
     {
         vector<Point> result;
-        //obtain a sequence of points of the countour, pointed by the variable 'countour'
         approxPolyDP(Mat(contour), result, arcLength(contour, true)*shapeData.polyError, true);
-        //printf("%ldu\n\r", result.size());
-        //if there are 3 vertices  in the contour and the area of the triangle is more than 100 pixels
         if(isCorrectShape(result))
         {
-            printf("correct shape\n\r");
             fillConvexPoly(mask, result, Scalar(255,255,255));
         }
     }
-    Mat output = frame.clone().setTo(0);
-    frame.copyTo(output, mask);
-    return output;
+
+    return applyMask(frame, mask);
 }
 
 // Returns whether the given shape fits the criteria for the front or back
