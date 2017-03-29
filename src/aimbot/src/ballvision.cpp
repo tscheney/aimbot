@@ -36,7 +36,7 @@ geometry_msgs::Pose2D BallVision::getPos(vector<Moments> mm)
 
     if (mm.size() != 1)
     {
-        return ballPos;
+        return prevPos;
     }
 
     Moments moments = mm[0];

@@ -41,7 +41,7 @@ geometry_msgs::Pose2D RobotVision::getPos(vector<Moments> mm)
 
     if (mm.size() != 2)
     {
-        return robotPos;
+        return prevPos;
     }
 
     std::sort(mm.begin(), mm.end(), compareMomentAreas);

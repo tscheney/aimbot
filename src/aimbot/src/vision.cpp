@@ -59,6 +59,7 @@ void Vision::process(cv::Mat frame)
 
     // Get position
     pos = getPos(mm);
+    prevPos = pos;
 
     publish(pos);
     emit processedImage(applyMask(frame, colorResult));

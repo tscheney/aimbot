@@ -40,6 +40,8 @@ public:
     ColorData colorData;
     //ShapeData shapeData;
 
+    geometry_msgs::Pose2D prevPos;
+
     string name;
     ros::Publisher pub;
     ros::NodeHandle nh;
