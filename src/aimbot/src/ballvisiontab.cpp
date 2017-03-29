@@ -55,7 +55,7 @@ void BallVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     // Sliders
     ShapeData shapeData;
     QSlider *blurSizeSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(blurSizeSlider, GlobalData::blurSizeMin, 10, 3);
+    setUpSlider(blurSizeSlider, GlobalData::blurSizeMin, GlobalData::blurSizeMax, GlobalData::blurSizeDefault);
     shapeSliders.insert(pair<std::string, QSlider *>("blurSize", blurSizeSlider));
 
     QSlider *edgeThreshSlider = new QSlider(Qt::Horizontal);
@@ -63,7 +63,9 @@ void BallVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     shapeSliders.insert(pair<std::string, QSlider *>("edgeThresh", edgeThreshSlider));
 
     QSlider *polyErrorSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(polyErrorSlider, 0, 10, 3);
+    int polyErrorSliderMax = int(GlobalData::polyErrorMax * GlobalData::polyErrorSliderDivisor);
+    int polyErrorSliderDefault = int(GlobalData::polyErrorDefault * GlobalData::polyErrorSliderDivisor);
+    setUpSlider(polyErrorSlider, 0, polyErrorSliderMax, polyErrorSliderDefault);
     shapeSliders.insert(pair<std::string, QSlider *>("polyError", polyErrorSlider));
 
     QSlider *minNumVertSlider = new QSlider(Qt::Horizontal);
@@ -112,7 +114,7 @@ void BallVisionTab::shapeSlidersChanged(int val)
     BallShapeData ballShapeData;
     ballShapeData.blurSize = shapeSliders.at("blurSize")->value();
     ballShapeData.edgeThresh = shapeSliders.at("edgeThresh")->value();
-    ballShapeData.polyError = double(shapeSliders.at("polyError")->value()) / 100;
+    ballShapeData.polyError = double(shapeSliders.at("polyError")->value()) / GlobalData::polyErrorSliderDivisor;
     ballShapeData.minNumVert = shapeSliders.at("minNumVert")->value();
     ballShapeData.maxNumVert = shapeSliders.at("maxNumVert")->value();
     ballShapeData.minSize = shapeSliders.at("minSize")->value();

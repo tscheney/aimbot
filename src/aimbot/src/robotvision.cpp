@@ -21,14 +21,16 @@ Mat RobotVision::detectShapes(Mat frame)
 bool RobotVision::isCorrectShape(vector<Point> shape)
 {
     double area = fabs(contourArea(shape));
-    bool isFrontNumVert = (shape.size() == shapeData.frontNumVert);
+    bool isGreaterFrontMinNumVert = (shape.size() >= shapeData.frontMinNumVert);
+    bool isLessFrontMaxNumVert = (shape.size() <= shapeData.frontMaxNumVert);
     bool isGreaterFrontMin = (area >= shapeData.frontMinSize);
     bool isLessFrontMax = (area <= shapeData.frontMaxSize);
-    bool isBackNumVert = (shape.size() == shapeData.backNumVert);
+    bool isGreaterBackMinNumVert = (shape.size() >= shapeData.backMinNumVert);
+    bool isLessBackMaxNumVert = (shape.size() <= shapeData.backMaxNumVert);
     bool isGreaterBackMin = (area >= shapeData.backMinSize);
     bool isLessBackMax = (area <= shapeData.backMaxSize);
-    bool isFront = isFrontNumVert && isGreaterFrontMin && isLessFrontMax;
-    bool isBack = isBackNumVert && isGreaterBackMin && isLessBackMax;
+    bool isFront = isGreaterFrontMinNumVert && isLessFrontMaxNumVert && isGreaterFrontMin && isLessFrontMax;
+    bool isBack = isGreaterBackMinNumVert && isLessBackMaxNumVert && isGreaterBackMin && isLessBackMax;
     return isFront || isBack;
 }
 

@@ -41,17 +41,19 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     QLabel *blurSizeLabel = new QLabel(tr("Blur Size:"));
     QLabel *edgeThreshLabel = new QLabel(tr("Edge Threshold:"));
     QLabel *polyErrorLabel = new QLabel(tr("Polynomial Error:"));
-    QLabel *frontNumVertLabel = new QLabel(tr("Front # Verticies:"));
+    QLabel *frontMinNumVertLabel = new QLabel(tr("Front Min # Verticies:"));
+    QLabel *frontMaxNumVertLabel = new QLabel(tr("Front Max # Verticies:"));
     QLabel *frontMinSizeLabel = new QLabel(tr("Front Min Size:"));
     QLabel *frontMaxSizeLabel = new QLabel(tr("Front Max Size:"));
-    QLabel *backNumVertLabel = new QLabel(tr("Back # Verticies:"));
+    QLabel *backMinNumVertLabel = new QLabel(tr("Back Min # Verticies:"));
+    QLabel *backMaxNumVertLabel = new QLabel(tr("Back Max # Verticies:"));
     QLabel *backMinSizeLabel = new QLabel(tr("Back Min Size:"));
     QLabel *backMaxSizeLabel = new QLabel(tr("Back Max Size:"));
 
     // Sliders
     ShapeData shapeData;
     QSlider *blurSizeSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(blurSizeSlider, GlobalData::blurSizeMin, 10, 3);
+    setUpSlider(blurSizeSlider, GlobalData::blurSizeMin, GlobalData::blurSizeMax, GlobalData::blurSizeDefault);
     shapeSliders.insert(pair<std::string, QSlider *>("blurSize", blurSizeSlider));
 
     QSlider *edgeThreshSlider = new QSlider(Qt::Horizontal);
@@ -59,12 +61,18 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     shapeSliders.insert(pair<std::string, QSlider *>("edgeThresh", edgeThreshSlider));
 
     QSlider *polyErrorSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(polyErrorSlider, 0, 10, 3);
+    int polyErrorSliderMax = int(GlobalData::polyErrorMax * GlobalData::polyErrorSliderDivisor);
+    int polyErrorSliderDefault = int(GlobalData::polyErrorDefault * GlobalData::polyErrorSliderDivisor);
+    setUpSlider(polyErrorSlider, 0, polyErrorSliderMax, polyErrorSliderDefault);
     shapeSliders.insert(pair<std::string, QSlider *>("polyError", polyErrorSlider));
 
-    QSlider *frontNumVertSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(frontNumVertSlider, 0, 10, 4);
-    shapeSliders.insert(pair<std::string, QSlider *>("frontNumVert", frontNumVertSlider));
+    QSlider *frontMinNumVertSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(frontMinNumVertSlider, 0, GlobalData::shapeMaxNumVert, GlobalData::shapeMinNumVertDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("frontMinNumVert", frontMinNumVertSlider));
+
+    QSlider *frontMaxNumVertSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(frontMaxNumVertSlider, 0, GlobalData::shapeMaxNumVert, GlobalData::shapeMaxNumVertDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("frontMaxNumVert", frontMaxNumVertSlider));
 
     QSlider *frontMinSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(frontMinSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMinSizeDefault);
@@ -74,9 +82,13 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     setUpSlider(frontMaxSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMaxSizeDefault);
     shapeSliders.insert(pair<std::string, QSlider *>("frontMaxSize", frontMaxSizeSlider));
 
-    QSlider *backNumVertSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(backNumVertSlider, 0, 10, 4);
-    shapeSliders.insert(pair<std::string, QSlider *>("backNumVert", backNumVertSlider));
+    QSlider *backMinNumVertSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(backMinNumVertSlider, 0, GlobalData::shapeMaxNumVert, GlobalData::shapeMinNumVertDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("backMinNumVert", backMinNumVertSlider));
+
+    QSlider *backMaxNumVertSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(backMaxNumVertSlider, 0, GlobalData::shapeMaxNumVert, GlobalData::shapeMaxNumVertDefault);
+    shapeSliders.insert(pair<std::string, QSlider *>("backMaxNumVert", backMaxNumVertSlider));
 
     QSlider *backMinSizeSlider = new QSlider(Qt::Horizontal);
     setUpSlider(backMinSizeSlider, 0, GlobalData::shapeMaxSize, GlobalData::shapeMinSizeDefault);
@@ -90,10 +102,12 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     connect(blurSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(edgeThreshSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(polyErrorSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
-    connect(frontNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(frontMinNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(frontMaxNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(frontMinSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(frontMaxSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
-    connect(backNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(backMinNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(backMaxNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(backMinSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(backMaxSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
 
@@ -101,10 +115,12 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     shapeOptionsLayout->addRow(blurSizeLabel, blurSizeSlider);
     shapeOptionsLayout->addRow(edgeThreshLabel, edgeThreshSlider);
     shapeOptionsLayout->addRow(polyErrorLabel, polyErrorSlider);
-    shapeOptionsLayout->addRow(frontNumVertLabel, frontNumVertSlider);
+    shapeOptionsLayout->addRow(frontMinNumVertLabel, frontMinNumVertSlider);
+    shapeOptionsLayout->addRow(frontMaxNumVertLabel, frontMaxNumVertSlider);
     shapeOptionsLayout->addRow(frontMinSizeLabel, frontMinSizeSlider);
     shapeOptionsLayout->addRow(frontMaxSizeLabel, frontMaxSizeSlider);
-    shapeOptionsLayout->addRow(backNumVertLabel, backNumVertSlider);
+    shapeOptionsLayout->addRow(backMinNumVertLabel, backMinNumVertSlider);
+    shapeOptionsLayout->addRow(backMaxNumVertLabel, backMaxNumVertSlider);
     shapeOptionsLayout->addRow(backMinSizeLabel, backMinSizeSlider);
     shapeOptionsLayout->addRow(backMaxSizeLabel, backMaxSizeSlider);
 
@@ -120,11 +136,13 @@ void RobotVisionTab::shapeSlidersChanged(int val)
     RobotShapeData robotShapeData;
     robotShapeData.blurSize = shapeSliders.at("blurSize")->value();
     robotShapeData.edgeThresh = shapeSliders.at("edgeThresh")->value();
-    robotShapeData.polyError = double(shapeSliders.at("polyError")->value()) / 100;
-    robotShapeData.frontNumVert = shapeSliders.at("frontNumVert")->value();
+    robotShapeData.polyError = double(shapeSliders.at("polyError")->value()) / GlobalData::polyErrorSliderDivisor;
+    robotShapeData.frontMinNumVert = shapeSliders.at("frontMinNumVert")->value();
+    robotShapeData.frontMaxNumVert = shapeSliders.at("frontMaxNumVert")->value();
     robotShapeData.frontMinSize = shapeSliders.at("frontMinSize")->value();
     robotShapeData.frontMaxSize = shapeSliders.at("frontMaxSize")->value();
-    robotShapeData.backNumVert = shapeSliders.at("backNumVert")->value();
+    robotShapeData.backMinNumVert = shapeSliders.at("backMinNumVert")->value();
+    robotShapeData.backMaxNumVert = shapeSliders.at("backMaxNumVert")->value();
     robotShapeData.backMinSize = shapeSliders.at("backMinSize")->value();
     robotShapeData.backMaxSize = shapeSliders.at("backMaxSize")->value();
 

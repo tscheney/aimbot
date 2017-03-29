@@ -238,7 +238,7 @@ void VisionTab::setUpSlider(QSlider *slider, int min, int max, int val)
     slider->setMinimum(min);
     slider->setMaximum(max);
     slider->setValue(val);
-    slider->setMinimumWidth(680);
+    slider->setMinimumWidth(650);
 }
 
 // Updates the video with a new frame
