@@ -13,15 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     // Set up tabs
     tabs = new QTabWidget(this);
-    MainTab *mainTab = new MainTab();
+    MainTab *mainTab = new MainTab(this);
     mainTab->setObjectName("Main");
     tabs->addTab(mainTab, tr("Main"));
     setCentralWidget(tabs);
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
     setUpMenuBar();
-
-    // Establish connections
-    connect(mainTab, SIGNAL(addNewTab(QString)), this, SLOT(insertNewTab(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -31,7 +28,7 @@ MainWindow::~MainWindow()
     QList<QWidget *> tabsList = tabs->findChildren<QWidget *>();
     for(QWidget *tab : tabsList)
     {
-    //    delete tab;
+        //    delete tab;
     }
     delete tabs;
 }
@@ -44,8 +41,7 @@ void MainWindow::setUpMenuBar()
     QAction *addVision = new QAction(tr("&Add Vision..."), this);
     addVision->setObjectName("addVision");
     fileMenu->addAction(addVision);
-    MainTab *mainTab = tabs->findChild<MainTab *>("Main");
-    connect(addVision, SIGNAL(triggered()), mainTab, SLOT(addNewClicked()));
+    connect(addVision, SIGNAL(triggered()), this, SLOT(addNewClicked()));
 
     QAction *saveSettings = new QAction(tr("&Save Settings"), this);
     saveSettings->setObjectName("saveSettings");
@@ -61,7 +57,7 @@ void MainWindow::setUpMenuBar()
 
 //// Updates the video with a new frame
 //void MainWindow::updatePlayerUI(cv::Mat frame)
-//{
+//{Writer
 //    cv::Mat RGBframe;
 //    QImage img;
 //    if (frame.channels()== 3){
@@ -82,14 +78,28 @@ void MainWindow::setUpMenuBar()
 //    }
 //}
 
+// Inserts the given vision tab into the tabs
+void MainWindow::insertNewTab(VisionTab *visionTab)
+{
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), visionTab->getVision(), SLOT(process(cv::Mat)));
+    tabs->addTab(visionTab, visionTab->objectName());
+    tabs->setCurrentIndex(tabs->count() - 1);
+}
+
 // Inserts a new tab into the tabs container
 void MainWindow::insertNewTab(QString name)
 {
     VisionTab *visionTab = new VisionTab(this, name);
     visionTab->setObjectName(name);
-    connect(camListener, SIGNAL(rawImage(cv::Mat)), visionTab->getVision(), SLOT(process(cv::Mat)));
-    tabs->addTab(visionTab, name);
-    tabs->setCurrentIndex(tabs->count() - 1);
+    insertNewTab(visionTab);
+}
+
+// Inserts a new tab into the tabs container with the given profile
+void MainWindow::insertNewTab(QString name, map<string, int> profile)
+{
+    VisionTab *visionTab = new VisionTab(this, name, profile);
+    visionTab->setObjectName(name);
+    insertNewTab(visionTab);
 }
 
 // Hide save settings if on main tab
@@ -106,137 +116,75 @@ void MainWindow::tabChanged(int tabIndex)
     }
 }
 
-// Save settings
+// Handle add new clicked event
+void MainWindow::addNewClicked()
+{
+    AddNewDialog dialog;
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        if(dialog.getProfile() != GlobalData::newProfileName)
+        {
+            Settings settings;
+            map<string, int> profile = settings.getRobotProfile(dialog.getProfile());
+            printf("hLow %d\n\r", profile.at("hLow"));
+            printf("edgeThresh %d\n\r", profile.at("edgeThresh"));
+            insertNewTab(dialog.getName(), profile);
+        }
+        else
+        {
+            insertNewTab(dialog.getName());
+        }
+    }
+}
+
+// Handle Save settings clicked event
 void MainWindow::saveClicked()
 {
-    std::cout << "save clicked\n";
     QInputDialog dialog(this, Qt::Dialog);
     dialog.setWindowTitle("Save Settings");
     dialog.setLabelText("Enter a name:");
     if(dialog.exec() == QDialog::Accepted)
     {
-
-
-        //printf("ok");
         VisionTab *visionTab = (VisionTab *) tabs->currentWidget();
-        //string prefix = "robot/" + dialog.textValue().toStdString() + "/";
-        std::cout << "begin vision tab get\n";
+
+        map<string, int> params;
+
         // get color params
         int hLow = visionTab->getColorSliders().at("hLow")->value();
+        params.insert(pair<string, int>("hLow", hLow));
         int hHigh = visionTab->getColorSliders().at("hHigh")->value();
+        params.insert(pair<string, int>("hHigh", hHigh));
         int sLow = visionTab->getColorSliders().at("sLow")->value();
+        params.insert(pair<string, int>("sLow", sLow));
         int sHigh = visionTab->getColorSliders().at("sHigh")->value();
+        params.insert(pair<string, int>("sHigh", sHigh));
         int vLow = visionTab->getColorSliders().at("vLow")->value();
+        params.insert(pair<string, int>("vLow", vLow));
         int vHigh = visionTab->getColorSliders().at("vHigh")->value();
-        std::cout << "one down\n";
+        params.insert(pair<string, int>("vHigh", vHigh));
 
         // get shape params
         int blurSize = visionTab->getShapeSliders().at("blurSize")->value();
+        params.insert(pair<string, int>("blurSize", blurSize));
         int edgeThresh = visionTab->getShapeSliders().at("edgeThresh")->value();
+        params.insert(pair<string, int>("edgeThresh", edgeThresh));
         int polyError = visionTab->getShapeSliders().at("polyError")->value();
+        params.insert(pair<string, int>("polyError", polyError));
         int frontNumVert = visionTab->getShapeSliders().at("frontNumVert")->value();
+        params.insert(pair<string, int>("frontNumVert", frontNumVert));
         int frontMinSize = visionTab->getShapeSliders().at("frontMinSize")->value();
+        params.insert(pair<string, int>("frontMinSize", frontMinSize));
         int frontMaxSize = visionTab->getShapeSliders().at("frontMaxSize")->value();
+        params.insert(pair<string, int>("frontMaxSize", frontMaxSize));
         int backNumVert = visionTab->getShapeSliders().at("backNumVert")->value();
+        params.insert(pair<string, int>("backNumVert", backNumVert));
         int backMinSize = visionTab->getShapeSliders().at("backMinSize")->value();
+        params.insert(pair<string, int>("backMinSize", backMinSize));
         int backMaxSize = visionTab->getShapeSliders().at("backMaxSize")->value();
+        params.insert(pair<string, int>("backMaxSize", backMaxSize));
 
-        std::cout << "begin xml\n";
-        QString filename = GlobalData::settingsPath + GlobalData::profilesFile;
-        std::cout << filename.toStdString();
+        Settings settings;
 
-        QFile file(filename);
-        file.open(QIODevice::WriteOnly);
-
-        QXmlStreamWriter xmlWriter(&file);
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.writeStartDocument();
-        xmlWriter.writeStartElement(GlobalData::robotGroupName);
-        xmlWriter.writeStartElement(dialog.textValue());
-
-        std::cout << "being writing elements\n";
-        // write color params to settings
-        xmlWriter.writeTextElement("hLow", QString(hLow));
-        xmlWriter.writeTextElement("hHigh", QString(hHigh));
-        xmlWriter.writeTextElement("sLow", QString(sLow));
-        xmlWriter.writeTextElement("sHigh", QString(sHigh));
-        xmlWriter.writeTextElement("vLow", QString(vLow));
-        xmlWriter.writeTextElement("vHigh", QString(vHigh));
-
-        // write shape params to settings
-        xmlWriter.writeTextElement("blurSize", QString(blurSize));
-        xmlWriter.writeTextElement("edgeThresh", QString(edgeThresh));
-        xmlWriter.writeTextElement("polyError", QString(polyError));
-        xmlWriter.writeTextElement("frontNumVert", QString(frontNumVert));
-        xmlWriter.writeTextElement("frontMinSize", QString(frontMinSize));
-        xmlWriter.writeTextElement("frontMaxSize", QString(frontMaxSize));
-        xmlWriter.writeTextElement("backNumVert", QString(backNumVert));
-        xmlWriter.writeTextElement("backMinSize", QString(backMinSize));
-        xmlWriter.writeTextElement("backMaxSize", QString(backMaxSize));
-
-        xmlWriter.writeEndElement();
-        xmlWriter.writeEndElement();
-
-        file.close();
+        settings.writeRobotProfile(dialog.textValue(), params);
     }
 }
-
-//// Save settings
-//void MainWindow::saveClicked()
-//{
-
-//    QSettings settings(GlobalData::settingsFolder, GlobalData::profilesFile);
-//    QInputDialog dialog(this, Qt::Dialog);
-//    dialog.setWindowTitle("Save Settings");
-//    dialog.setLabelText("Enter a name:");
-//    if(dialog.exec() == QDialog::Accepted)
-//    {
-//        //printf("ok");
-//        VisionTab *visionTab = (VisionTab *) tabs->currentWidget();
-//        //string prefix = "robot/" + dialog.textValue().toStdString() + "/";
-
-//        // get color params
-//        int hLow = visionTab->getColorSliders().at("hLow")->value();
-//        int hHigh = visionTab->getColorSliders().at("hHigh")->value();
-//        int sLow = visionTab->getColorSliders().at("sLow")->value();
-//        int sHigh = visionTab->getColorSliders().at("sHigh")->value();
-//        int vLow = visionTab->getColorSliders().at("vLow")->value();
-//        int vHigh = visionTab->getColorSliders().at("vHigh")->value();
-
-//        // get shape params
-//        int blurSize = visionTab->getShapeSliders().at("blurSize")->value();
-//        int edgeThresh = visionTab->getShapeSliders().at("edgeThresh")->value();
-//        double polyError = visionTab->getShapeSliders().at("polyError")->value();
-//        int frontNumVert = visionTab->getShapeSliders().at("frontNumVert")->value();
-//        int frontMinSize = visionTab->getShapeSliders().at("frontMinSize")->value();
-//        int frontMaxSize = visionTab->getShapeSliders().at("frontMaxSize")->value();
-//        int backNumVert = visionTab->getShapeSliders().at("backNumVert")->value();
-//        int backMinSize = visionTab->getShapeSliders().at("backMinSize")->value();
-//        int backMaxSize = visionTab->getShapeSliders().at("backMaxSize")->value();
-
-//        settings.beginGroup(GlobalData::robotGroupName);
-
-//        settings.beginGroup(dialog.textValue());
-//        // write color params to settings
-//        settings.setValue("hLow", hLow);
-//        settings.setValue("hHigh", hHigh);
-//        settings.setValue("sLow", hLow);
-//        settings.setValue("sHigh", hHigh);
-//        settings.setValue("vLow", hLow);
-//        settings.setValue("vHigh", hHigh);
-
-//        // write shape params to settings
-//        settings.setValue("blurSize", blurSize);
-//        settings.setValue("edgeThresh", edgeThresh);
-//        settings.setValue("polyError", polyError);
-//        settings.setValue("frontNumVert", frontNumVert);
-//        settings.setValue("frontMinSize", frontMinSize);
-//        settings.setValue("frontMaxSize", frontMaxSize);
-//        settings.setValue("backNumVert", backNumVert);
-//        settings.setValue("backMinSize", backMinSize);
-//        settings.setValue("backMaxSize", backMaxSize);
-//        settings.endGroup();
-
-//        settings.endGroup();
-//    }
-//}

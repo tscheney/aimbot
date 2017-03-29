@@ -7,6 +7,7 @@ namespace GlobalData
     const QString profilesFile = "profiles.xml";
     const QString robotGroupName = "robots";
     const QString ballGroupName = "balls";
+    extern const QString newProfileName = "New";
     const int edgeThreshMax = 255;
     const int blurSizeMin = 1;
     const int shapeMaxSize = 50000;

@@ -10,6 +10,16 @@ VisionTab::VisionTab(QWidget *parent, QString name) : QWidget(parent)
     setLayout(layout);
 }
 
+VisionTab::VisionTab(QWidget *parent, QString name, map<string, int> profile) : QWidget(parent)
+{
+    setUpVision(name.toStdString());
+    layout = new QVBoxLayout();
+    setUpVideo();
+    setUpVisionOptions();
+    setLayout(layout);
+    loadProfile(profile);
+}
+
 VisionTab::~VisionTab()
 {
     //Todo Delete everything
@@ -47,6 +57,23 @@ void VisionTab::setUpVisionOptions()
 
     visionOptionsGroupBox->setLayout(visionOptionsLayout);
     layout->addWidget(visionOptionsGroupBox);
+}
+
+// Loads the given profile
+void VisionTab::loadProfile(map<string, int> profile)
+{
+    for (auto const& element : profile)
+    {
+        if(colorSliders.count(element.first))
+        {
+            colorSliders.at(element.first)->setValue(element.second);
+        }
+
+        if(shapeSliders.count(element.first))
+        {
+            shapeSliders.at(element.first)->setValue(element.second);
+        }
+    }
 }
 
 // Set up the color options sliders

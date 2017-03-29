@@ -16,7 +16,7 @@
 #include <opencv2/core/core.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include "vision.h"
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include "global.h"
 
 
@@ -27,7 +27,8 @@ class VisionTab : public QWidget
 {
     Q_OBJECT
 public:
-    explicit VisionTab(QWidget *parent = 0, QString name = "default");
+    VisionTab(QWidget *parent = 0, QString name = "default");
+    VisionTab(QWidget *parent, QString name, map<string, int>);
     ~VisionTab();
     Vision* getVision();
     map<std::string, QSlider*> getColorSliders();
@@ -53,6 +54,7 @@ private:
     void setUpVision(string name);
     void setUpVideo();
     void setUpVisionOptions();
+    void loadProfile(map<string, int> profile);
     void setUpColorOptions(QVBoxLayout *visionOptionsLayout);
     void setUpShapeOptions(QVBoxLayout *visionOptionsLayout);
     void setUpSlider(QSlider *slider, int min, int max, int val);

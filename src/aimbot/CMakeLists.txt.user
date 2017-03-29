@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.2.1, 2017-03-28T15:27:25. -->
+<!-- Written by QtCreator 4.2.1, 2017-03-28T17:43:05. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -345,7 +345,7 @@
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguation.Title">camera</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments"></value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory"></value>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/tom/catkin_ws/devel_cb/.private/aimbot/lib/aimbot</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/tom/catkin_ws/build_cb/aimbot/devel/lib/aimbot</value>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">camera</value>
@@ -401,7 +401,7 @@
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguation.Title">raw_vision</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments"></value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory"></value>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/tom/catkin_ws/devel_cb/.private/aimbot/lib/aimbot</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/tom/catkin_ws/build_cb/aimbot/devel/lib/aimbot</value>
     <value type="int" key="PE.EnvironmentAspect.Base">-1</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">raw_vision</value>

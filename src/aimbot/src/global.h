@@ -12,6 +12,7 @@ namespace GlobalData
     extern const QString profilesFile;
     extern const QString robotGroupName;
     extern const QString ballGroupName;
+    extern const QString newProfileName;
     extern const int edgeThreshMax;
     extern const int blurSizeMin;
     extern const int shapeMaxSize;

@@ -18,6 +18,7 @@
 #include "visiontab.h"
 #include "camlistener.h"
 #include "vision.h"
+#include "settings.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,8 +34,8 @@ public:
 private slots:
     //Display video frame in player UI
     //void updatePlayerUI(cv::Mat frame);
-    void insertNewTab(QString name);
     void tabChanged(int tabIndex);
+    void addNewClicked();
     void saveClicked();
 
 signals:
@@ -47,6 +48,9 @@ private:
     QTabWidget *tabs;
 
     void setUpMenuBar();
+    void insertNewTab(VisionTab *visionTab);
+    void insertNewTab(QString name);
+    void insertNewTab(QString name, map<string, int> profile);
 
 };
 #endif // MAINWINDOW_H

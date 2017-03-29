@@ -16,15 +16,9 @@ public:
     explicit MainTab(QWidget *parent = 0);
     ~MainTab();
 
-signals:
-    void addNewTab(QString name);
-public slots:
-    //
-    void addNewClicked();
-
 private:
     QGridLayout *layout;
-    QPushButton *addNewVision;
+    QPushButton *addNewVisionButton;
 };
 
 #endif // MAINTAB_H

@@ -4,20 +4,27 @@
 #include <QDialog>
 #include <QGridLayout>
 #include <QComboBox>
-#include <QSettings>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QtXml>
+#include <QString>
 #include "global.h"
+#include "settings.h"
 
 class AddNewDialog : public QDialog
 {
     Q_OBJECT
 public:
     AddNewDialog();
+    QString getName();
+    QString getProfile();
 
 private slots:
     void namesComboBoxChanged(QString newName);
 
 private:
-    QGridLayout *layout;
+    QGridLayout *layout;    
+    QDialogButtonBox *buttonBox;
     QComboBox *namesComboBox;
     QComboBox *profileComboBox;
 
