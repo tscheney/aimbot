@@ -1,4 +1,5 @@
 #include "global.h"
+#include "moc_global.cpp"
 
 
 namespace GlobalData
@@ -13,6 +14,9 @@ namespace GlobalData
     const int shapeMaxSize = 50000;
     const int shapeMinSizeDefault = 100;
     const int shapeMaxSizeDefault = 20000;
+    const int shapeMaxNumVert = 200;
+    const int shapeMinNumVertDefault = 10;
+    const int shapeMaxNumVertDefault = 100;
 }
 
 ColorData::ColorData(int inhLow, int inhHigh, int insLow, int insHigh, int invLow, int invHigh)
@@ -25,8 +29,23 @@ ColorData::ColorData(int inhLow, int inhHigh, int insLow, int insHigh, int invLo
     vHigh = invHigh;
 }
 
+ShapeData::ShapeData(int inBlurSize, int inEdgeThresh, double inPolyError)
+{
+    blurSize = inBlurSize;
+    edgeThresh = inEdgeThresh;
+    polyError = inPolyError;
+}
 
-ShapeData::ShapeData(int inBlurSize, int inEdgeThresh, double inPolyError, int inFrontNumVert, int inFrontMinSize, int inFrontMaxSize,
+std::string ShapeData::toString()
+{
+    std::string out = "blur size: " + std::to_string(blurSize) + "\n";
+    out += "edge threshold: " + std::to_string(edgeThresh) + "\n";
+    out += "polynomial error: " + std::to_string(polyError) + "\n";
+
+    return out;
+}
+
+RobotShapeData::RobotShapeData(int inBlurSize, int inEdgeThresh, double inPolyError, int inFrontNumVert, int inFrontMinSize, int inFrontMaxSize,
                      int inBackNumVert, int inBackMinSize, int inBackMaxSize)
 {
     blurSize = inBlurSize;
@@ -40,7 +59,7 @@ ShapeData::ShapeData(int inBlurSize, int inEdgeThresh, double inPolyError, int i
     backMaxSize = inBackMaxSize;
 }
 
-std::string ShapeData::toString()
+std::string RobotShapeData::toString()
 {
     std::string out = "blur size: " + std::to_string(blurSize) + "\n";
     out += "edge threshold: " + std::to_string(edgeThresh) + "\n";
@@ -51,6 +70,30 @@ std::string ShapeData::toString()
     out += "back num verticies: " + std::to_string(backNumVert) + "\n";
     out += "back min size: " + std::to_string(backMinSize)  + "\n";
     out += "back max size: " + std::to_string(backMaxSize) + "\n";
+
+    return out;
+}
+
+BallShapeData::BallShapeData(int inBlurSize, int inEdgeThresh, double inPolyError, int inMinNumVert, int inMaxNumVert, int inMinSize, int inMaxSize)
+{
+    blurSize = inBlurSize;
+    edgeThresh = inEdgeThresh;
+    polyError = inPolyError;
+    minNumVert = inMinNumVert;
+    maxNumVert = inMaxNumVert;
+    minSize = inMinSize;
+    maxSize = inMaxSize;
+}
+
+std::string BallShapeData::toString()
+{
+    std::string out = "blur size: " + std::to_string(blurSize) + "\n";
+    out += "edge threshold: " + std::to_string(edgeThresh) + "\n";
+    out += "polynomial error: " + std::to_string(polyError) + "\n";
+    out += "min num vert: " + std::to_string(minNumVert) + "\n";
+    out += "max num vert: " + std::to_string(maxNumVert) + "\n";
+    out += "min size: " + std::to_string(minSize) + "\n";
+    out += "max size: " + std::to_string(maxSize) + "\n";
 
     return out;
 }

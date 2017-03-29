@@ -78,28 +78,52 @@ void MainWindow::setUpMenuBar()
 //    }
 //}
 
-// Inserts the given vision tab into the tabs
-void MainWindow::insertNewTab(VisionTab *visionTab)
+// Inserts the given robot vision tab into the tabs
+void MainWindow::insertRobotNewTab(RobotVisionTab *robotVisionTab)
 {
-    connect(camListener, SIGNAL(rawImage(cv::Mat)), visionTab->getVision(), SLOT(process(cv::Mat)));
-    tabs->addTab(visionTab, visionTab->objectName());
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), robotVisionTab->getVision(), SLOT(process(cv::Mat)));
+    tabs->addTab(robotVisionTab, robotVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }
 
-// Inserts a new tab into the tabs container
-void MainWindow::insertNewTab(QString name)
+// Inserts a new robot tab into the tabs container
+void MainWindow::insertNewRobotTab(QString name)
 {
-    VisionTab *visionTab = new VisionTab(this, name);
-    visionTab->setObjectName(name);
-    insertNewTab(visionTab);
+    RobotVisionTab *robotVisionTab = new RobotVisionTab(this, name);
+    robotVisionTab->setObjectName(name);
+    insertRobotNewTab(robotVisionTab);
 }
 
-// Inserts a new tab into the tabs container with the given profile
-void MainWindow::insertNewTab(QString name, map<string, int> profile)
+// Inserts a new robot tab into the tabs container with the given profile
+void MainWindow::insertNewRobotTab(QString name, map<string, int> profile)
 {
-    VisionTab *visionTab = new VisionTab(this, name, profile);
-    visionTab->setObjectName(name);
-    insertNewTab(visionTab);
+    RobotVisionTab *robotVisionTab = new RobotVisionTab(this, name, profile);
+    robotVisionTab->setObjectName(name);
+    insertRobotNewTab(robotVisionTab);
+}
+
+// Inserts the given ball vision tab into the tabs
+void MainWindow::insertNewBallTab(BallVisionTab *ballVisionTab)
+{
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
+    tabs->addTab(ballVisionTab, ballVisionTab->objectName());
+    tabs->setCurrentIndex(tabs->count() - 1);
+}
+
+// Inserts a new ball tab into the tabs container
+void MainWindow::insertNewBallTab(QString name)
+{
+    BallVisionTab *ballVisionTab = new BallVisionTab(this, name);
+    ballVisionTab->setObjectName(name);
+    insertNewBallTab(ballVisionTab);
+}
+
+// Inserts a new tab ball into the tabs container with the given profile
+void MainWindow::insertNewBallTab(QString name, map<string, int> profile)
+{
+    BallVisionTab *ballVisionTab = new BallVisionTab(this, name, profile);
+    ballVisionTab->setObjectName(name);
+    insertNewBallTab(ballVisionTab);
 }
 
 // Hide save settings if on main tab
@@ -122,17 +146,30 @@ void MainWindow::addNewClicked()
     AddNewDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {
-        if(dialog.getProfile() != GlobalData::newProfileName)
+        Settings settings;
+        if(dialog.getName() == "ball") //ball
         {
-            Settings settings;
-            map<string, int> profile = settings.getRobotProfile(dialog.getProfile());
-            printf("hLow %d\n\r", profile.at("hLow"));
-            printf("edgeThresh %d\n\r", profile.at("edgeThresh"));
-            insertNewTab(dialog.getName(), profile);
+            if(dialog.getProfile() != GlobalData::newProfileName) // load profile
+            {
+                map<string, int> profile = settings.getBallProfile(dialog.getProfile());
+                insertNewBallTab(dialog.getName(), profile);
+            }
+            else
+            {
+                insertNewBallTab(dialog.getName());
+            }
         }
-        else
+        else // robot
         {
-            insertNewTab(dialog.getName());
+            if(dialog.getProfile() != GlobalData::newProfileName) // load profile
+            {
+                map<string, int> profile = settings.getRobotProfile(dialog.getProfile());
+                insertNewRobotTab(dialog.getName(), profile);
+            }
+            else
+            {
+                insertNewRobotTab(dialog.getName());
+            }
         }
     }
 }
@@ -149,42 +186,27 @@ void MainWindow::saveClicked()
 
         map<string, int> params;
 
-        // get color params
-        int hLow = visionTab->getColorSliders().at("hLow")->value();
-        params.insert(pair<string, int>("hLow", hLow));
-        int hHigh = visionTab->getColorSliders().at("hHigh")->value();
-        params.insert(pair<string, int>("hHigh", hHigh));
-        int sLow = visionTab->getColorSliders().at("sLow")->value();
-        params.insert(pair<string, int>("sLow", sLow));
-        int sHigh = visionTab->getColorSliders().at("sHigh")->value();
-        params.insert(pair<string, int>("sHigh", sHigh));
-        int vLow = visionTab->getColorSliders().at("vLow")->value();
-        params.insert(pair<string, int>("vLow", vLow));
-        int vHigh = visionTab->getColorSliders().at("vHigh")->value();
-        params.insert(pair<string, int>("vHigh", vHigh));
+        // Collect params from sliders
+        for (auto const& colorSlider : visionTab->getColorSliders())
+        {
+            params.insert(pair<string, int>(colorSlider.first, colorSlider.second->value()));
+        }
 
-        // get shape params
-        int blurSize = visionTab->getShapeSliders().at("blurSize")->value();
-        params.insert(pair<string, int>("blurSize", blurSize));
-        int edgeThresh = visionTab->getShapeSliders().at("edgeThresh")->value();
-        params.insert(pair<string, int>("edgeThresh", edgeThresh));
-        int polyError = visionTab->getShapeSliders().at("polyError")->value();
-        params.insert(pair<string, int>("polyError", polyError));
-        int frontNumVert = visionTab->getShapeSliders().at("frontNumVert")->value();
-        params.insert(pair<string, int>("frontNumVert", frontNumVert));
-        int frontMinSize = visionTab->getShapeSliders().at("frontMinSize")->value();
-        params.insert(pair<string, int>("frontMinSize", frontMinSize));
-        int frontMaxSize = visionTab->getShapeSliders().at("frontMaxSize")->value();
-        params.insert(pair<string, int>("frontMaxSize", frontMaxSize));
-        int backNumVert = visionTab->getShapeSliders().at("backNumVert")->value();
-        params.insert(pair<string, int>("backNumVert", backNumVert));
-        int backMinSize = visionTab->getShapeSliders().at("backMinSize")->value();
-        params.insert(pair<string, int>("backMinSize", backMinSize));
-        int backMaxSize = visionTab->getShapeSliders().at("backMaxSize")->value();
-        params.insert(pair<string, int>("backMaxSize", backMaxSize));
+        for (auto const& shapeSlider : visionTab->getShapeSliders())
+        {
+            params.insert(pair<string, int>(shapeSlider.first, shapeSlider.second->value()));
+        }
 
         Settings settings;
+        // Write profile to file
+        if(visionTab->objectName() == "ball")
+        {
+            settings.writeBallProfile(dialog.textValue(), params);
+        }
+        else
+        {
+            settings.writeRobotProfile(dialog.textValue(), params);
+        }
 
-        settings.writeRobotProfile(dialog.textValue(), params);
     }
 }

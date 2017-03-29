@@ -21,7 +21,6 @@ private:
 private slots:
     void process(cv::Mat frame);
     void newColorData(ColorData newColorData);
-    void newShapeData(ShapeData newShapeData);
 signals:
     void processedImage(cv::Mat frame);
 public:
@@ -39,7 +38,7 @@ public:
 
     // Processing Params
     ColorData colorData;
-    ShapeData shapeData;
+    //ShapeData shapeData;
 
     string name;
     ros::Publisher pub;
@@ -50,15 +49,15 @@ public:
     void initPublishers(string name);
     Mat applyMask(Mat frame, Mat mask);
     Mat thresholdImage(Mat& imgHSV, Scalar color[]);
-    Mat detectShapes(Mat frame);
-    bool isCorrectShape(vector<Point> shape);
+    virtual Mat detectShapes(Mat frame) = 0;
+    Mat detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError);
+    virtual bool isCorrectShape(vector<Point> shape) = 0;
     Mat detectColors(Mat frame);
     vector<Moments> calcMoments(Mat imgGray);
 	Point2d getCenterOfMass(Moments moment);
 	static bool compareMomentAreas(Moments moment1, Moments moment2);
 	Point2d imageToWorldCoordinates(Point2d point_i);
-    geometry_msgs::Pose2D getRobotPose(vector<Moments> mm);
-    geometry_msgs::Pose2D getBallPose(vector<Moments> mm);
+    virtual geometry_msgs::Pose2D getPos(vector<Moments> mm) = 0;
 	void imageCallback(const sensor_msgs::ImageConstPtr& msg);
     void publish(geometry_msgs::Pose2D& pos);
 	void sendBallMessage(int x, int y);

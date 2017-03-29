@@ -7,28 +7,28 @@ Settings::Settings()
 
 }
 
-// Write a robot profile to the profiles file
-void Settings::writeRobotProfile(QString name, std::map<std::string, int> elements)
+// Write a profile to the profiles file
+void Settings::writeProfile(QString name, QString groupName, std::map<std::string, int> elements)
 {
-    QDomDocument doc = profilesDocument();
+    QDomDocument doc = createProfilesDoc();
     QDomElement root = doc.documentElement();
-    QDomElement robots;
-    if(root.firstChildElement(GlobalData::robotGroupName).isNull() == false)
+    QDomElement group;
+    if(root.firstChildElement(groupName).isNull() == false)
     {
-        robots = root.firstChildElement(GlobalData::robotGroupName);
+        group = root.firstChildElement(groupName);
     }
     else
     {
-        robots = doc.createElement(GlobalData::robotGroupName);
-        root.appendChild(robots);
+        group = doc.createElement(groupName);
+        root.appendChild(group);
     }
 
-    if(robots.firstChildElement(name).isNull() == false)
+    if(group.firstChildElement(name).isNull() == false)
     {
-        robots.removeChild(robots.firstChildElement(name));
+        group.removeChild(group.firstChildElement(name));
     }
     QDomElement profile = doc.createElement(name);
-    robots.appendChild(profile);
+    group.appendChild(profile);
 
     for (auto const& element : elements)
     {
@@ -38,11 +38,23 @@ void Settings::writeRobotProfile(QString name, std::map<std::string, int> elemen
         profile.appendChild(cur);
     }
 
-    writeProfileDomDocument(doc);
+    writeProfileDomDoc(doc);
+}
+
+// Write a robot profile to the profiles file
+void Settings::writeRobotProfile(QString name, std::map<std::string, int> elements)
+{
+    writeProfile(name, GlobalData::robotGroupName, elements);
+}
+
+// Write a ball profile to the profiles file
+void Settings::writeBallProfile(QString name, std::map<std::string, int> elements)
+{
+    writeProfile(name, GlobalData::ballGroupName, elements);
 }
 
 // Returns an XmlStreamWriter for the profiles file
-void Settings::writeProfileDomDocument(QDomDocument doc)
+void Settings::writeProfileDomDoc(QDomDocument doc)
 {
     QDir dir(GlobalData::settingsPath);
     if (!dir.exists()) // if the directory doesn't exist
@@ -52,11 +64,11 @@ void Settings::writeProfileDomDocument(QDomDocument doc)
 
     QString filename = GlobalData::settingsPath + GlobalData::profilesFile;
 
-    writeDomDocument(filename, doc);
+    writeDomDoc(filename, doc);
 }
 
 // Write a dom document to the filename
-void Settings::writeDomDocument(QString filename, QDomDocument doc)
+void Settings::writeDomDoc(QString filename, QDomDocument doc)
 {
     QFile file(filename);
     QByteArray xml = doc.toByteArray();
@@ -68,7 +80,7 @@ void Settings::writeDomDocument(QString filename, QDomDocument doc)
 }
 
 // Create a new profiles document
-QDomDocument Settings::profilesDocument()
+QDomDocument Settings::createProfilesDoc()
 {
     QDomDocument doc("profiles");
     QString filename = GlobalData::settingsPath + GlobalData::profilesFile;
@@ -101,14 +113,26 @@ QDomDocument Settings::getProfilesDoc()
     return doc;
 }
 
+// Gets the profile with the given name from the given group
+std::map<std::string, int> Settings::getProfile(QString name, QString groupName)
+{
+    QDomDocument doc = createProfilesDoc();
+    QDomElement root = doc.documentElement();
+    QDomElement group = root.firstChildElement(groupName);
+    QDomElement profile = group.firstChildElement(name);
+    return getMapFromDom(profile);
+}
+
 // Gets the robot profile with the given name
 std::map<std::string, int> Settings::getRobotProfile(QString name)
 {
-    QDomDocument doc = profilesDocument();
-    QDomElement root = doc.documentElement();
-    QDomElement robots = root.firstChildElement(GlobalData::robotGroupName);
-    QDomElement profile = robots.firstChildElement(name);
-    return getMapFromDom(profile);
+    return getProfile(name, GlobalData::robotGroupName);
+}
+
+// Gets the ball profile with the given name
+std::map<std::string, int> Settings::getBallProfile(QString name)
+{
+    return getProfile(name, GlobalData::ballGroupName);
 }
 
 // Converts the dom element into a map
@@ -119,7 +143,6 @@ std::map<std::string, int> Settings::getMapFromDom(QDomElement profile)
     {
         QDomNode curNode = profile.childNodes().at(i);
         elements.insert(std::pair<std::string, int>(curNode.nodeName().toStdString(), curNode.firstChild().nodeValue().toInt()));
-        ////std::cout << curNode.nodeName().toStdString() + ": " + curNode.firstChild().nodeValue().toStdString() + "\n";
     }
     return elements;
 }

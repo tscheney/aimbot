@@ -11,16 +11,19 @@ class Settings
 {
 public:
     Settings();
-    void writeRobotProfile(QString name, std::map<std::string, int>);
+    void writeRobotProfile(QString name, std::map<std::string, int> elements);
+    void writeBallProfile(QString name, std::map<std::string, int> elements);
     QDomDocument getProfilesDoc();
     std::map<std::string, int> getRobotProfile(QString name);
+    std::map<std::string, int> getBallProfile(QString name);
 
 private:
-    QXmlStreamWriter *openProfileWriter();
-    QDomDocument profilesDocument();
-    void writeProfileDomDocument(QDomDocument doc);
-    void writeDomDocument(QString filename, QDomDocument doc);
+    QDomDocument createProfilesDoc();
+    void writeProfileDomDoc(QDomDocument doc);
+    void writeDomDoc(QString filename, QDomDocument doc);
+    void writeProfile(QString name, QString groupName, std::map<std::string, int> elements);
     std::map<std::string, int> getMapFromDom(QDomElement profile);
+    std::map<std::string, int> getProfile(QString name, QString groupName);
 };
 
 #endif // SETTINGS_H

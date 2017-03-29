@@ -15,7 +15,6 @@
 #include <map>
 #include <opencv2/core/core.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include "vision.h"
 //#include "mainwindow.h"
 #include "global.h"
 
@@ -28,35 +27,31 @@ class VisionTab : public QWidget
     Q_OBJECT
 public:
     VisionTab(QWidget *parent = 0, QString name = "default");
-    VisionTab(QWidget *parent, QString name, map<string, int>);
+    VisionTab(QWidget *parent, QString name, std::map<std::string, int>);
     ~VisionTab();
-    Vision* getVision();
-    map<std::string, QSlider*> getColorSliders();
-    map<std::string, QSlider*> getShapeSliders();
+    //Vision* getVision() ;
+    std::map<std::string, QSlider*> getColorSliders();
+    std::map<std::string, QSlider*> getShapeSliders();
 signals:
     void newColorData(ColorData colorData);
-    void newShapeData(ShapeData shapeData);
 public slots:
     void updateVideo(cv::Mat frame);
     void colorSlidersChanged(int val);
-    void shapeSlidersChanged(int val);
-private:
-    Vision *vision;
+    virtual void shapeSlidersChanged(int val) = 0;
+protected:
     QThread visionThread;
     QVBoxLayout *layout;
     QLabel *video;
     QGroupBox *visionOptionsGroupBox;
-    map<std::string, QSlider*> colorSliders;
-    //QSignalMapper *colorOptionsMapper;
-    map<std::string, QSlider*> shapeSliders;
-    //QSignalMapper *shapeOptionsMapper;
+    std::map<std::string, QSlider*> colorSliders;
+    std::map<std::string, QSlider*> shapeSliders;
 
-    void setUpVision(string name);
+    virtual void setUpVision(std::string name) = 0;
     void setUpVideo();
     void setUpVisionOptions();
-    void loadProfile(map<string, int> profile);
+    void loadProfile(std::map<std::string, int> profile);
     void setUpColorOptions(QVBoxLayout *visionOptionsLayout);
-    void setUpShapeOptions(QVBoxLayout *visionOptionsLayout);
+    virtual void setUpShapeOptions(QVBoxLayout *visionOptionsLayout) = 0;
     void setUpSlider(QSlider *slider, int min, int max, int val);
     void fitVideo(cv::Mat frame);
 };

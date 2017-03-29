@@ -1,4 +1,3 @@
-
 #include "vision.h"
 #include "moc_vision.cpp"
 
@@ -38,11 +37,11 @@ void Vision::newColorData(ColorData newColorData)
     colorData = newColorData;
 }
 
-// Update shape data
-void Vision::newShapeData(ShapeData newShapeData)
-{
-    shapeData = newShapeData;
-}
+//// Update shape data
+//void Vision::newShapeData(ShapeData newShapeData)
+//{
+//    shapeData = newShapeData;
+//}
 
 // Processes the image
 void Vision::process(cv::Mat frame)
@@ -56,18 +55,10 @@ void Vision::process(cv::Mat frame)
     Mat colorResult = detectColors(shapeResult);
 
     // Calculate moments to
-    //vector<Moments> mm = calcMoments(colorThresh);
+    vector<Moments> mm = calcMoments(colorResult);
 
-
-    // Hacky solution to get ball correct, probably should use inheritance here
-    if(name == "ball")
-    {
-        //pos = getBallPose(mm);
-    }
-    else
-    {
-        //pos = getRobotPose(mm);
-    }
+    // Get position
+    pos = getPos(mm);
 
     publish(pos);
     emit processedImage(applyMask(frame, colorResult));
@@ -81,31 +72,28 @@ Mat Vision::applyMask(Mat frame, Mat mask)
     return output;
 }
 
-// Detect shapes based on the current shape data params
-Mat Vision::detectShapes(Mat frame)
+//// Detect shapes based on the current shape data params
+Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError)
 {
-    //std::cout << shapeData.toString();
     Mat imgGray;
 
     cvtColor( frame, imgGray, CV_BGR2GRAY );
-    blur( imgGray, imgGray, Size(shapeData.blurSize,shapeData.blurSize) );
-    threshold( imgGray, imgGray, shapeData.edgeThresh, GlobalData::edgeThreshMax, THRESH_BINARY );
+    blur( imgGray, imgGray, Size(blurSize, blurSize) );
+    threshold( imgGray, imgGray, edgeThresh, GlobalData::edgeThreshMax, THRESH_BINARY );
 
     Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
     vector< vector<Point> > contours; // vector of contours, which are vectors of points
-    //Contour<Point> contours;
     vector<Vec4i> hierarchy;
 
     //finding all contours in the image
-    //cvFindContours(imgGray, storage, &contours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
     findContours(imgGray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
-
 
     //iterating through each contour
     for(vector<Point> contour : contours)
     {
         vector<Point> result;
-        approxPolyDP(Mat(contour), result, arcLength(contour, true)*shapeData.polyError, true);
+        approxPolyDP(Mat(contour), result, arcLength(contour, true)*polyError, true);
+
         if(isCorrectShape(result))
         {
             fillConvexPoly(mask, result, Scalar(255,255,255));
@@ -113,21 +101,6 @@ Mat Vision::detectShapes(Mat frame)
     }
 
     return applyMask(frame, mask);
-}
-
-// Returns whether the given shape fits the criteria for the front or back
-bool Vision::isCorrectShape(vector<Point> shape)
-{
-    double area = fabs(contourArea(shape));
-    bool isFrontNumVert = (shape.size() == shapeData.frontNumVert);
-    bool isGreaterFrontMin = (area >= shapeData.frontMinSize);
-    bool isLessFrontMax = (area <= shapeData.frontMaxSize);
-    bool isBackNumVert = (shape.size() == shapeData.backNumVert);
-    bool isGreaterBackMin = (area >= shapeData.backMinSize);
-    bool isLessBackMax = (area <= shapeData.backMaxSize);
-    bool isFront = isFrontNumVert && isGreaterFrontMin && isLessFrontMax;
-    bool isBack = isBackNumVert && isGreaterBackMin && isLessBackMax;
-    return isFront || isBack;
 }
 
 // Detect the HSV color range based on the current color data params
@@ -173,57 +146,6 @@ vector<Moments> Vision::calcMoments(Mat imgGray)
         mm.push_back(moments((Mat)contours[i]));
 
     return mm;
-}
-
-// Determines the position of a robot
-geometry_msgs::Pose2D Vision::getRobotPose(vector<Moments> mm)
-{
-    geometry_msgs::Pose2D robotPose;
-
-    if (mm.size() != 2)
-    {
-        //return imgThresholded;
-        return robotPose;
-    }
-
-    std::sort(mm.begin(), mm.end(), compareMomentAreas);
-    Moments mmLarge = mm[mm.size() - 1];
-    Moments mmSmall = mm[mm.size() - 2];
-
-    Point2d centerLarge = imageToWorldCoordinates(getCenterOfMass(mmLarge));
-    Point2d centerSmall = imageToWorldCoordinates(getCenterOfMass(mmSmall));
-
-    Point2d robotCenter = (centerLarge + centerSmall) * (1.0 / 2);
-    Point2d diff = centerSmall - centerLarge;
-    double angle = atan2(diff.y, diff.x);
-
-    //convert angle to degrees
-    angle = angle *180/M_PI;
-    robotPose.x = robotCenter.x;
-    robotPose.y = robotCenter.y;
-    robotPose.theta = angle;
-    //return imgThresholded;
-    return robotPose;
-}
-
-// Determines the position of a ball
-geometry_msgs::Pose2D Vision::getBallPose(vector<Moments> mm)
-{
-    geometry_msgs::Pose2D ballPose;
-
-    if (mm.size() != 1)
-    {
-        return ballPose;
-    }
-
-    Moments moments = mm[0];
-    //Moments mm = moments((Mat)contours[0]);
-    Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(moments));
-
-    ballPose.x = ballCenter.x;
-    ballPose.y = ballCenter.y;
-    ballPose.theta = 0;
-    return ballPose;
 }
 
 // Gets the center point of a given moment

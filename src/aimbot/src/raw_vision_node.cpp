@@ -11,6 +11,8 @@ int main(int argc, char *argv[])
     qRegisterMetaType<QVector<int> >("QVector<int>");
     qRegisterMetaType<ColorData>("ColorData");
     qRegisterMetaType<ShapeData>("ShapeData");
+    qRegisterMetaType<RobotShapeData>("RobotShapeData");
+    qRegisterMetaType<BallShapeData>("BallShapeData");
 
     QApplication a(argc, argv);
     MainWindow* w = new MainWindow();
