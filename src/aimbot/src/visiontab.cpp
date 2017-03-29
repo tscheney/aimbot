@@ -56,7 +56,9 @@ void VisionTab::setUpVisionOptions()
     setUpShapeOptions(visionOptionsLayout);
 
     visionOptionsGroupBox->setLayout(visionOptionsLayout);
-    layout->addWidget(visionOptionsGroupBox);
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidget(visionOptionsGroupBox);
+    layout->addWidget(scrollArea);
 }
 
 // Loads the given profile
@@ -236,6 +238,7 @@ void VisionTab::setUpSlider(QSlider *slider, int min, int max, int val)
     slider->setMinimum(min);
     slider->setMaximum(max);
     slider->setValue(val);
+    slider->setMinimumWidth(680);
 }
 
 // Updates the video with a new frame

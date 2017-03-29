@@ -10,7 +10,7 @@
 #include <QImage>
 #include <QString>
 #include <QThread>
-#include <QSignalMapper>
+#include <QScrollArea>
 #include <string>
 #include <map>
 #include <opencv2/core/core.hpp>
