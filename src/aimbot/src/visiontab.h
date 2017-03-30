@@ -15,12 +15,7 @@
 #include <map>
 #include <opencv2/core/core.hpp>
 #include <cv_bridge/cv_bridge.h>
-//#include "mainwindow.h"
 #include "global.h"
-
-
-
-#include <opencv2/highgui/highgui.hpp>
 
 class VisionTab : public QWidget
 {

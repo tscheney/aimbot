@@ -73,7 +73,7 @@ Mat Vision::applyMask(Mat frame, Mat mask)
     return output;
 }
 
-//// Detect shapes based on the current shape data params
+// Detect shapes based on the current shape data params
 Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError)
 {
     Mat imgGray;
