@@ -153,14 +153,16 @@ class Robot(Moving):
             #self.go_to(0.3, -0.3, 0)
             #self.rotate()
             #self.move_to_center()
-            if self.withinError(5):
-                if self.state < 3:
-                    self.state += 1
-                else:
-                    self.state = 0
-                print(self.state)
+            # if self.withinError(5):
+            #     if self.state < 3:
+            #         self.state += 1
+            #     else:
+            #         self.state = 0
+            #     print(self.state)
+            #
+            # self.move_square()
+            self.stay_put();
 
-            self.move_square()
 
         elif self.role == 1:
             #self.go_to(self.pos.x, self.pos.y, 0)
@@ -237,7 +239,12 @@ class Robot(Moving):
         self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
     def go_to(self, x, y, theta):
+        """Go to the x, y and theta position given as parameters"""
         self.set_des_pos(x, y, theta)
+
+    def stay_put(self):
+        """Stay in the spot the robot is current int"""
+        self.go_to(self.pos.x,self.pos.y, self.pos.theta);
 
     def move_to_center(self):
         return self.go_to(0, 0, 0)
