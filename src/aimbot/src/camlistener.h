@@ -21,7 +21,6 @@ private:
 
     void imageCallback(const sensor_msgs::ImageConstPtr &msg);
 
-
 signals:
     // Broadcasts the subsribed frame
     void rawImage(const cv::Mat &frame);

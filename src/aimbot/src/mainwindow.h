@@ -18,7 +18,8 @@
 #include "visiontab.h"
 #include "robotvisiontab.h"
 #include "ballvisiontab.h"
-#include "camlistener.h"
+//#include "camlistener.h"
+#include "roshandler.h"
 #include "vision.h"
 #include "settings.h"
 
@@ -47,9 +48,11 @@ private:
     Ui::MainWindow *ui;
     QMenu *fileMenu;
     CamListener* camListener;
+    RosHandler *rosHandler;
     QTabWidget *tabs;
 
     void setUpMenuBar();
+    void setUpMainTab();
     void insertRobotNewTab(RobotVisionTab *robotVisionTab);
     void insertNewRobotTab(QString name);
     void insertNewRobotTab(QString name, map<string, int> profile);

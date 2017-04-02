@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QInputDialog>
 #include <QString>
+#include <QRadioButton>
 #include "mainwindow.h"
 #include "addnewdialog.h"
 
@@ -16,9 +17,25 @@ public:
     explicit MainTab(QWidget *parent = 0);
     ~MainTab();
 
+signals:
+    void changeRosState(bool isRun);
+    void teamSideChanged(bool isHome);
+public slots:
+    void startRosNodesClicked();
+    void rosNodesRunning(bool value);
+    void homeCheckedChanged(bool value);
+    void rosNodesOutput(std::string text);
 private:
     QGridLayout *layout;
     QPushButton *addNewVisionButton;
+    QPushButton *startRosNodesButton;
+    QLabel *outputLabel;
+    QRadioButton *homeRadioButton;
+    QRadioButton *awayRadioButton;
+    bool isRosRunning;
+
+    void setUpRosNode();
+
 };
 
 #endif // MAINTAB_H

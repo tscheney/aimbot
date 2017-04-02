@@ -8,22 +8,22 @@ MainWindow::MainWindow(QWidget *parent) :
     setAttribute(Qt::WA_DeleteOnClose, true);
     // Connect vision threads
     camListener = new CamListener();
-    camListener->start(QThread::LowPriority); // starts the thread making run() function run continuousl
+    camListener->start(QThread::LowPriority); // starts the thread making run() function run continuous
+    rosHandler = new RosHandler(this);
+
 
     ui->setupUi(this);
     // Set up tabs
     tabs = new QTabWidget(this);
-    MainTab *mainTab = new MainTab(this);
-    mainTab->setObjectName("Main");
-    tabs->addTab(mainTab, tr("Main"));
     setCentralWidget(tabs);
-    connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+    setUpMainTab();
     setUpMenuBar();
 }
 
 MainWindow::~MainWindow()
 {
     delete camListener;
+    delete rosHandler;
     delete ui;
     QList<QWidget *> tabsList = tabs->findChildren<QWidget *>();
     for(QWidget *tab : tabsList)
@@ -53,6 +53,19 @@ void MainWindow::setUpMenuBar()
     QAction *exit = new QAction(tr("E&xit"), this);
     fileMenu->addAction(exit);
     connect(exit, SIGNAL(triggered()), this, SLOT(close()));
+}
+
+// Set up the main tab
+void MainWindow::setUpMainTab()
+{
+    MainTab *mainTab = new MainTab(this);
+    mainTab->setObjectName("Main");
+    tabs->addTab(mainTab, tr("Main"));
+    connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+    connect(rosHandler, SIGNAL(rosNodesRunning(bool)), mainTab, SLOT(rosNodesRunning(bool)));
+    connect(mainTab, SIGNAL(teamSideChanged(bool)), rosHandler, SLOT(teamSideChanged(bool)));
+    connect(mainTab, SIGNAL(changeRosState(bool)), rosHandler, SLOT(changeRosState(bool)));
+    connect(rosHandler, SIGNAL(rosNodesOutput(std::string)), mainTab, SLOT(rosNodesOutput(std::string)));
 }
 
 //// Updates the video with a new frame
