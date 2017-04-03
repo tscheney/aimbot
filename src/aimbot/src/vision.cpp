@@ -49,10 +49,10 @@ void Vision::process(cv::Mat frame)
     geometry_msgs::Pose2D pos;
 
     // Mask based on shape
-    Mat shapeResult = detectShapes(frame);
+    //Mat shapeResult = detectShapes(frame);
 
     // threshold the image according to given HSV parameters
-    Mat colorResult = detectColors(shapeResult);
+    Mat colorResult = detectColors(frame);
 
     // Calculate moments to
     vector<Moments> mm = calcMoments(colorResult);
