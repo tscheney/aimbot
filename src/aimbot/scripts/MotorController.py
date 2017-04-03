@@ -12,7 +12,7 @@ class MotorController:
         self.PIQ = (p, i, qpps)
         self.init_serial()
         self.setPID(0, p, i, self.PULSE_PER_ROTATION)
-        self.setBoost(0,1) #(600,1.01)
+        self.setBoost(600,1.01)
         #self.setPID(2, p, i, qpps)
         #self.setPID(3, p, i, qpps/2)
         self.setSpeed(0,0,0)
