@@ -169,7 +169,7 @@ class Robot(Moving):
             #self.rush_goal(self.pos, self.ball_pos)
             #self.move_to_center()
 
-            if self.withinError(5):
+            if self.withinError(10):
                  if self.state < 3:
                      self.state += 1
                  else:
