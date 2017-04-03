@@ -3,7 +3,7 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-xy_scale = 3
+xy_scale = 2
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
@@ -44,7 +44,7 @@ yP = {
     'type': 'y'
 }
 
-th_scale = 1 #good for simulator
+th_scale = 0.5 #good for simulator
 #th_scale = 0.01
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
@@ -83,7 +83,7 @@ class Controller:
         self.th_obsv = Observer(thetaP)
         self.position = Position()
         self.vel = [0.0, 0.0, 0.0]  # (vx, vy, w)
-        self.motor_ctrl = MotorController(1, 0.4, 116.2*4)
+        self.motor_ctrl = MotorController(1.5, 0.2, 116.2*4)
         self.wheel_vel = [0.0, 0.0, 0.0]  # (wheel1, wheel2, wheel3)
         self.tick = 0
 
