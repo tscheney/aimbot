@@ -39,7 +39,7 @@ geometry_msgs::Pose2D RobotVision::getPos(vector<Moments> mm)
 {
     geometry_msgs::Pose2D robotPos;
 
-    if (mm.size() != 2)
+    if (mm.size() < 2)
     {
         return prevPos;
     }
