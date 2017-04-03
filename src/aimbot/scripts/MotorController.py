@@ -106,9 +106,10 @@ class MotorController:
 
     def setBoost(self, zeroBoost, rolloff):
         """Sets the values for the low speed boost"""
-        self.ser.write('b')
-        self.writeFloat(zeroBoost)
-        self.writeFloat(rolloff)
+        if self.serial_conn:
+            self.ser.write('b')
+            self.writeFloat(zeroBoost)
+            self.writeFloat(rolloff)
 
     def setT(self, period_ms, tau_ms):
         """Set tick period (triggers PID control) and velocity filter corner frequency"""
