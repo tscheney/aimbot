@@ -22,6 +22,9 @@ class GameStateObj():
         self.home_bot_count = msg.home_bot_count
         self.away_bot_count = msg.away_bot_count
         self.remaining_seconds = msg.remaining_seconds
+        #couldnt get the penalty stuff to work, it gives errors
+        #self.home_penalty = msg.home_penalty
+        #self.away_penalty = msg.away_penalty
         self.play = msg.play
         self.reset_field = msg.reset_field
         self.second_half = msg.second_half
@@ -39,5 +42,7 @@ class GameStateObj():
         msg.play = self.play
         msg.reset_field = self.reset_field
         msg.second_half = self.second_half
+        #msg.home_penalty = self.home_penalty
+        #msg.away_penalty = self.away_penalty
 
         return msg

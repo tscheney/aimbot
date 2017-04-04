@@ -112,9 +112,21 @@ class Team:
         if(self.game_state.play):
             self.roles['ally1'] = 1 # these are just test roles
             self.roles['ally2'] = 2
+        elif(self.game_state.reset_field):
+            self.roles['ally1'] = 3
+            self.roles['ally2'] = 4
+        #the penalty stuff is below but the msg in gamestate doesnt seem to want to work, im missing somthing
+        #elif(self.game_state.home_penalty and self.team_side == 'home'):
+        #    print("home penalty")
+        #    self.roles['ally1'] = 5
+        #    self.roles['ally1'] = 6
+        #elif(self.game_state.away_penalty and self.team_side == 'away'):
+        #    print("away penalty")
+        #    self.roles['ally1'] = 7
+        #    self.roles['ally1'] = 8
         else:
-            self.roles['ally1'] = 1  # these are just test roles
-            self.roles['ally2'] = 2
+            self.roles['ally1'] = 0  # these are just test roles
+            self.roles['ally2'] = 0
 
     def determine_game_state(self):
         """Based on known positions and score, determine which state the game is in"""

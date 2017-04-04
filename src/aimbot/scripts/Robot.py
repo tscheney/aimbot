@@ -33,6 +33,7 @@ class Robot(Moving):
         self.hertz_20 = 1
         self.first = True
         self.state = 0
+        self.pause = 10
         self.path_planner = PathPlanner()
 
     def my_pos_sub(self):
@@ -166,19 +167,40 @@ class Robot(Moving):
 
         elif self.role == 1:
             #self.go_to(self.pos.x, self.pos.y, 0)
-            #self.rush_goal(self.pos, self.ball_pos)
+            if (self.pause == 10):
+                self.rush_goal(self.pos, self.ball_pos)
+                self.pause = 0
+            else:
+                self.pause = self.pause + 1
             #self.move_to_center()
 
-            if self.withinError(10):
-                 if self.state < 3:
-                     self.state += 1
-                 else:
-                     self.state = 0
-                 print(self.state)
+            #if self.withinError(10):
+            #     if self.state < 3:
+            #         self.state += 1
+            #     else:
+            #         self.state = 0
+            #     print(self.state)
             #
-            self.move_square()
+            #self.move_square()
         elif self.role == 2:
             self.follow_ball_on_line(self.ball_pos, -1.25)
+
+        elif self.role == 3: #reset field is true
+            self.go_to(-.5,0, 0)
+        elif self.role == 4: #reset field is true
+            self.go_to(-1.2, 0, 0)
+        elif self.role == 4:  # reset field is true
+            self.go_to(-.5, 0, 0)
+        elif self.role == 5:  # penalty and home ally1
+            self.go_to(-.06, 1.7, 0)
+        elif self.role == 6:  # penalty and home ally2
+            self.go_to(-.06, -1.7, 0)
+        elif self.role == 7:  # penalty and away ally1
+            self.go_to(-.06, 1.7, 0)
+        elif self.role == 8:  # penalty and away ally2
+            self.go_to(-.06, -1.7, 0)
+        else:
+            print("not a valid role")
 
     def set_des_pos(self, des_x, des_y, des_th):
         """Sets the desired position"""
@@ -193,7 +215,7 @@ class Robot(Moving):
 
     def rush_goal(self, me, ball):
         cmdvec = np.array([[0], [0]])
-
+        theta = 0
         # Use numpy to create vectors
         ballvec = np.array([[ball.x], [ball.y]])
         mevec = np.array([[me.x], [me.y]])
@@ -205,48 +227,71 @@ class Robot(Moving):
         uv = uv / np.linalg.norm(uv)
 
         # compute a position 20cm behind ball, but aligned with goal
-        p = ballvec - 0.20 * uv
+        p = ballvec - 0.14 * uv
 
-        # If I am sufficiently close to the point behind the ball,
-        # or in other words, once I am 21cm behind the ball, just
-        # drive to the goal.
-        #if np.linalg.norm(p - mevec) < 0.21:
-        #    cmdvec = goalvec
-        #else:
-        #    cmdvec = p
+        if (ball.x >= 0):
+            adj_length = 1.595 - ball.x
+            opp_length = ball.y
+        else:
+            adj_length = 1.595 + ball.x
+            opp_length = ball.y
+        if (ball.y >= 0):
+            theta = np.tan(opp_length / adj_length)
+            if theta > 0:
+                theta = -np.rad2deg(theta)
+            else:
+                theta = np.rad2deg(theta)
+        else:
+            theta = np.tan(opp_length/adj_length)
+            if theta > 0:
+                theta = np.rad2deg(theta)
+            else:
+                theta = -np.rad2deg(theta)
+
+        while (theta > 90):
+            theta = theta - 90
+        while (theta < -90):
+            theta = theta + 90
+        print("theta is", theta)
 
         if ball.x < me.x:
+            print("get behind ball")
             if ball.y < 0:
                 if ball.x -.5 > -1.595:
                     x = ball.x-.5
                     y = ball.y+.3
                     cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-                    return
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+                    #return
                 else:
                     x = ball.x + .05
                     y = ball.y+.3
                     cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-                    return
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+                    #return
             else:
                 if ball.x -.5 > -1.595:
                     x = ball.x -.5
                     y = ball.y -.3
                     cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-                    return
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+                    #return
                 else:
                     x = ball.x + .05
                     y = ball.y -.3
                     cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
-                    return
-        elif np.linalg.norm(p - mevec) < 0.21:
+                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+                    #return
+        # If I am sufficiently close to the point behind the ball,
+        # or in other words, once I am 21cm behind the ball, just
+        # drive to the goal.
+        elif np.linalg.norm(p - mevec) < 0.15:
             cmdvec = goalvec
+            print("rush goal")
         else:
+            print("get in line")
             cmdvec = p
-        self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
+        self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
 
     def go_to(self, x, y, theta):
         """Go to the x, y and theta position given as parameters"""
