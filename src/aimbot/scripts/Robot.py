@@ -229,6 +229,11 @@ class Robot(Moving):
         # compute a position 20cm behind ball, but aligned with goal
         p = ballvec - 0.14 * uv
 
+        #calculate theta based on the balls position relative to the goal
+        # idealy it will face the front of the bot on a straight line path to the
+        # goal. then rush the goal and score.
+        # it seems to be a bit buggy when the ball is really close to the goal
+        # but to some y above or below it.
         if (ball.x >= 0):
             adj_length = 1.595 - ball.x
             opp_length = ball.y
