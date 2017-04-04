@@ -3,7 +3,7 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-xy_scale = 2
+xy_scale = 1
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
@@ -44,7 +44,7 @@ yP = {
     'type': 'y'
 }
 
-th_scale = 0.5 #good for simulator
+th_scale = 1 #good for simulator
 #th_scale = 0.01
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
@@ -68,7 +68,7 @@ thetaP = {
     #'Ld': 0,
     'F_max': 30,  # Maximum force applied to the system
     #'F_max': 3,  # Maximum force applied to the system
-    'max_step': np.pi / 8,  # Max step size
+    'max_step': np.pi / 16,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'theta'
 }
