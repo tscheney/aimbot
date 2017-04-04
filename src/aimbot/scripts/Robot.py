@@ -314,16 +314,16 @@ class Robot(Moving):
         square_size = 0.4
         if (self.state == 0):  # going to upper right
             state = 1
-            self.go_to(square_size, square_size, -90)
+            self.go_to(square_size, square_size, self.pos.theta)
         elif (self.state == 1):  # going to lower right
             state = 2
-            self.go_to(square_size, -square_size, -180)
+            self.go_to(square_size, -square_size, self.pos.theta)
         elif (self.state == 2):  # going to lower left
             state = 3
-            self.go_to(-square_size, -square_size, 90)
+            self.go_to(-square_size, -square_size, self.pos.theta)
         elif (self.state == 3):  # going to upper left
             state = 0
-            self.go_to(-square_size, square_size, 0)
+            self.go_to(-square_size, square_size, self.pos.theta)
 
     def tolerance(self, pos, desired, error):
         # if(pos >= 0):
