@@ -19,7 +19,7 @@ xP = {
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
     'F_max': 60,  # Maximum force applied to the system
-    'max_step': 1/16,  # Max step size
+    'max_step': 1/8,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'x'
 }
@@ -39,7 +39,7 @@ yP = {
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
     'F_max': 60,  # Maximum force applied to the system
-    'max_step': 1/16,  # Max step size
+    'max_step': 1/8,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'y'
 }
