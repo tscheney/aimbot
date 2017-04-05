@@ -396,7 +396,12 @@ class Robot(Moving):
         th_offset = 360 * errorPercent / 100
         x_good = abs(self.pos.x - self.des_pos.x) < xy_offset
         y_good = abs(self.pos.y - self.des_pos.y) < xy_offset
-        th_good = abs(self.pos.theta - self.des_pos.theta) < th_offset
+        effective_th = self.pos.theta
+        if(self.pos.theta < th_offset and self.des_pos > 360 - th_offset):
+            effective_th = self.pos.theta + 360
+        elif(self.pos.theta > 360 - th_offset and self.des_pos < th_offset):
+            effective_th = self.pos.theta - 360
+        th_good = abs(effective_th - self.des_pos.theta) < th_offset
         return x_good and y_good and th_good
 
 
