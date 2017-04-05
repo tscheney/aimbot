@@ -35,6 +35,7 @@ class Robot(Moving):
         self.state = 0
         self.pause = 10
         self.path_planner = PathPlanner()
+        self.control_ball = False
 
     def my_pos_sub(self):
         """Subscribe to my position"""
@@ -243,11 +244,16 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        self.go_behind_ball_facing_target()
-        if (self.withinError(3)):
-            self.control_ball_facing_target()
+        if(not self.control_ball):
+            self.go_behind_ball_facing_target()
             if (self.withinError(3)):
+                self.control_ball = True
+        else:
+            self.control_ball_facing_target()
+            if (self.withinError(10)):
                 self.attack_ball()
+            else:
+                self.control_ball = False
 
 
     def go_behind_ball_facing_target(self):
