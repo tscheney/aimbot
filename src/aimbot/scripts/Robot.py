@@ -243,11 +243,11 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        self.control_ball_facing_target()
+        self.go_behind_ball_facing_target()
         if (self.withinError(3)):
-            self.attack_ball()
-        else:
-            self.go_behind_ball_facing_target()
+            self.control_ball_facing_target()
+            if (self.withinError(3)):
+                self.attack_ball()
 
 
     def go_behind_ball_facing_target(self):
