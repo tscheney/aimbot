@@ -49,8 +49,8 @@ private:
     QMenu *fileMenu;
     CamListener* camListener;
     QTabWidget *tabs;
-    PreFilter *prefilter;
-    QThread prefilterThread;
+    //PreFilter *prefilter;
+    //QThread prefilterThread;
 
     void setUpMenuBar();
     void insertRobotNewTab(RobotVisionTab *robotVisionTab);

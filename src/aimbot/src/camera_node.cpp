@@ -71,7 +71,7 @@ int main(int argc, char** argv)
                         imageNum = 0;
                     }
                 }
-                printf("imageNum: %d\n\r", imageNum + 2);
+                //printf("imageNum: %d\n\r", imageNum + 2);
                 frame = images.at(imageNum);
             }
 

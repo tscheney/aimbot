@@ -111,7 +111,8 @@ void MainWindow::insertNewRobotTab(QString name, map<string, int> profile)
 // Inserts the given ball vision tab into the tabs
 void MainWindow::insertNewBallTab(BallVisionTab *ballVisionTab)
 {
-    connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
+    //connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
     tabs->addTab(ballVisionTab, ballVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }

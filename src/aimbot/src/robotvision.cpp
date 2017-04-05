@@ -41,6 +41,7 @@ bool RobotVision::isCorrectShape(vector<Point> shape)
 
     bool isFront = isGreaterFrontMinNumVert && isLessFrontMaxNumVert;
     bool isBack = isGreaterBackMinNumVert && isLessBackMaxNumVert;
+
     return isFront || isBack;
 }
 
