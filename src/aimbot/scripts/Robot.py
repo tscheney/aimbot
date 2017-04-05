@@ -243,9 +243,12 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        self.go_behind_ball_facing_target()
-        if(self.withinError(3)):
+        self.control_ball_facing_target(self)
+        if (self.withinError(3)):
             self.attack_ball()
+        else:
+            self.go_behind_ball_facing_target()
+
 
     def go_behind_ball_facing_target(self):
         """Get behind the ball facing the goal"""
@@ -255,6 +258,19 @@ class Robot(Moving):
         robot_half_width = robot_width / 2
         des_distance_from_ball = 0.21
         hypotenuse = robot_half_width + des_distance_from_ball
+        x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
+        y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
+        theta = np.rad2deg(theta)
+
+        self.set_des_pos(x_c, y_c, theta)
+
+    def control_ball_facing_target(self):
+        """Get behind the ball facing the goal"""
+        field_width = 3.53
+        theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, field_width/2, 0)
+        robot_width = 0.175  # (7.0 in)
+        robot_half_width = robot_width / 2
+        hypotenuse = robot_half_width
         x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
         y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
         theta = np.rad2deg(theta)
