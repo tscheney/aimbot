@@ -59,6 +59,12 @@ geometry_msgs::Pose2D BallVision::getPos(vector<Moments> mm)
     ballPos.x = ballCenter.x;
     ballPos.y = ballCenter.y;
     ballPos.theta = 0;
-
-    return ballPos;
+    if(!isnan(ballPos.x) && !isnan(ballPos.y) && !isnan(ballPos.theta))
+    {
+        return ballPos;
+    }
+    else
+    {
+        return prevPos;
+    }
 }

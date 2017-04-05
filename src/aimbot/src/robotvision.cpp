@@ -78,5 +78,13 @@ geometry_msgs::Pose2D RobotVision::getPos(vector<Moments> mm)
     robotPos.y = robotCenter.y;
     robotPos.theta = angle;
 
-    return robotPos;
+    if(!isnan(robotPos.x) && !isnan(robotPos.y) && !isnan(robotPos.theta))
+    {
+        return robotPos;
+    }
+    else
+    {
+        return prevPos;
+    }
+
 }
