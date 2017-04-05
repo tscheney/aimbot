@@ -168,20 +168,20 @@ class Robot(Moving):
         elif self.role == 1:
             #self.go_to(self.pos.x, self.pos.y, 0)
             #if (self.pause == 10):
-            #    self.rush_goal(self.pos, self.ball_pos)
+            self.rush_goal()
             #    self.pause = 0
             #else:
             #    self.pause = self.pause + 1
             #self.move_to_center()
 
-            if self.withinError(10):
-                 if self.state < 3:
-                     self.state += 1
-                 else:
-                     self.state = 0
-                 print(self.state)
+            #if self.withinError(10):
+            #     if self.state < 3:
+            #         self.state += 1
+            #     else:
+            #         self.state = 0
+            #     print(self.state)
             #
-            self.move_square()
+            #self.move_square()
         elif self.role == 2:
             self.follow_ball_on_line(self.ball_pos, -1.25)
 
@@ -213,12 +213,10 @@ class Robot(Moving):
         theta_c = 0
         self.set_des_pos(x_c, y_c, theta_c)
 
-    def rush_goal(self, me, ball):
-        cmdvec = np.array([[0], [0]])
-        theta = 0
+    def rush_goal(self):
         # Use numpy to create vectors
-        ballvec = np.array([[ball.x], [ball.y]])
-        mevec = np.array([[me.x], [me.y]])
+        ballvec = np.array([[self.ball_pos.x], [self.ball_pos.y]])
+        mevec = np.array([[self.pos.x], [self.pos.y]])
         field_width = 3.53
         goalvec = np.array([[field_width / 2], [0]])
 
@@ -227,76 +225,109 @@ class Robot(Moving):
         uv = uv / np.linalg.norm(uv)
 
         # compute a position 20cm behind ball, but aligned with goal
-        p = ballvec - 0.14 * uv
+        p = ballvec - 0.20 * uv
+
+        # If I am sufficiently close to the point behind the ball,
+        # or in other words, once I am 21cm behind the ball, just
+        # drive to the goal.
+        if np.linalg.norm(p - mevec) < 0.21:
+            cmdvec = goalvec
+        else:
+            cmdvec = p
+
+        self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
         #calculate theta based on the balls position relative to the goal
         # idealy it will face the front of the bot on a straight line path to the
         # goal. then rush the goal and score.
         # it seems to be a bit buggy when the ball is really close to the goal
         # but to some y above or below it.
-        if (ball.x >= 0):
-            adj_length = 1.595 - ball.x
-            opp_length = ball.y
-        else:
-            adj_length = 1.595 + ball.x
-            opp_length = ball.y
-        if (ball.y >= 0):
-            theta = np.tan(opp_length / adj_length)
-            if theta > 0:
-                theta = -np.rad2deg(theta)
-            else:
-                theta = np.rad2deg(theta)
-        else:
-            theta = np.tan(opp_length/adj_length)
-            if theta > 0:
-                theta = np.rad2deg(theta)
-            else:
-                theta = -np.rad2deg(theta)
+        # if (ball.x >= 0):
+        #     adj_length = 1.595 - ball.x
+        #     opp_length = ball.y
+        # else:
+        #     adj_length = 1.595 + ball.x
+        #     opp_length = ball.y
+        # if (ball.y >= 0):
+        #     theta = np.tan(opp_length / adj_length)
+        #     if theta > 0:
+        #         theta = -np.rad2deg(theta)
+        #     else:
+        #         theta = np.rad2deg(theta)
+        # else:
+        #     theta = np.tan(opp_length/adj_length)
+        #     if theta > 0:
+        #         theta = np.rad2deg(theta)
+        #     else:
+        #         theta = -np.rad2deg(theta)
+        #
+        # while (theta > 90):
+        #     theta = theta - 90
+        # while (theta < -90):
+        #     theta = theta + 90
+        # print("theta is", theta)
+        #
+        # if ball.x < me.x:
+        #     print("get behind ball")
+        #     if ball.y < 0:
+        #         if ball.x -.5 > -1.595:
+        #             x = ball.x-.5
+        #             y = ball.y+.3
+        #             cmdvec = np.array([[x], [y]])
+        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+        #             #return
+        #         else:
+        #             x = ball.x + .05
+        #             y = ball.y+.3
+        #             cmdvec = np.array([[x], [y]])
+        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+        #             #return
+        #     else:
+        #         if ball.x -.5 > -1.595:
+        #             x = ball.x -.5
+        #             y = ball.y -.3
+        #             cmdvec = np.array([[x], [y]])
+        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+        #             #return
+        #         else:
+        #             x = ball.x + .05
+        #             y = ball.y -.3
+        #             cmdvec = np.array([[x], [y]])
+        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+        #             #return
+        # # If I am sufficiently close to the point behind the ball,
+        # # or in other words, once I am 21cm behind the ball, just
+        # # drive to the goal.
+        #elif np.linalg.norm(p - mevec) < 0.15:
+        #    cmdvec = goalvec
+        #     print("rush goal")
+        # else:
+        #     print("get in line")
+        #    cmdvec = p
+        #self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
 
-        while (theta > 90):
-            theta = theta - 90
-        while (theta < -90):
-            theta = theta + 90
-        print("theta is", theta)
+    def go_behind_ball_facing_target(self):
+        field_width = 3.53
+        #theta = self.get_angle_between_points(self.ball_pos.pos.x, self.ball_pos.y, target_x, target_y)
+        #hypotenuse = Constants.robot_half_width + des_distance_from_ball
+        #x_c = ball.xhat - hypotenuse * np.cos(theta)
+        #y_c = ball.yhat - hypotenuse * np.sin(theta)
+        #theta = Utilities.rad_to_deg(theta)
 
-        if ball.x < me.x:
-            print("get behind ball")
-            if ball.y < 0:
-                if ball.x -.5 > -1.595:
-                    x = ball.x-.5
-                    y = ball.y+.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-                    #return
-                else:
-                    x = ball.x + .05
-                    y = ball.y+.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-                    #return
-            else:
-                if ball.x -.5 > -1.595:
-                    x = ball.x -.5
-                    y = ball.y -.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-                    #return
-                else:
-                    x = ball.x + .05
-                    y = ball.y -.3
-                    cmdvec = np.array([[x], [y]])
-                    self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-                    #return
-        # If I am sufficiently close to the point behind the ball,
-        # or in other words, once I am 21cm behind the ball, just
-        # drive to the goal.
-        elif np.linalg.norm(p - mevec) < 0.15:
-            cmdvec = goalvec
-            print("rush goal")
-        else:
-            print("get in line")
-            cmdvec = p
-        self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
+        #return (x_c, y_c, theta)
+
+
+    def get_distance_between_points(self, x1, y1, x2, y2):
+        a = x2 - x1
+        b = y2 - y1
+        c = np.sqrt(a ** 2 + b ** 2)
+        return c
+
+    def get_angle_between_points(self, x1, y1, x2, y2):
+        a = x2 - x1
+        b = y2 - y1
+        theta = np.arctan2(b, a)
+        return theta
 
     def go_to(self, x, y, theta):
         """Go to the x, y and theta position given as parameters"""

@@ -11,9 +11,17 @@
     <arg name="kick_ally1" default="kick" />
     <arg name="kick_ally2" default="kick" />
 
-    <include file="$(find aimbot)/launch/central.launch">
-        <arg name="team_side" value="$(arg team_side)" />
-    </include>
+    <group ns="aimbot_$(arg team_side)">
+        <param name="team_side" type="string" value="$(arg team_side)" />
+        <param name="sim_mode" type="bool" value="$(arg sim_mode)" />
+        <include file="$(find aimbot)/launch/game.launch">
+            <arg name="team_side" value="$(arg team_side)" />
+        </include>
+
+        <include file="$(find aimbot)/launch/team.launch">
+            <arg name="team_side" value="$(arg team_side)" />
+        </include>
+    </group>
 
     <include file="$(find aimbot)/launch/robot.launch">
         <arg name="team_side" value="$(arg team_side)" />

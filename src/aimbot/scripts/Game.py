@@ -87,6 +87,7 @@ class Game:
     def vision_sub(self):
         """Sets up the subscription to the raw vision"""
         if self.sim_mode: # if sim mode, look at the simulation vision
+            print("is simmode")
             namespace = "/vision/"
 
             game_to_team = self.game_to_team()
@@ -111,6 +112,7 @@ class Game:
             rospy.Subscriber(namespace + game_to_team[name], Pose2D,
                              lambda msg: self.positions["ball"].import_msg_raw(msg, self.team_side, self.game_state))
         else: # if not sim mode, look at our vision
+            print("isnot sim mode")
             namespace = "/aimbot_" + self.team_side + "/raw_vision/"
 
 

@@ -125,7 +125,7 @@ class Team:
         #    self.roles['ally1'] = 7
         #    self.roles['ally1'] = 8
         else:
-            self.roles['ally1'] = 1  # these are just test roles
+            self.roles['ally1'] = 0  # these are just test roles
             self.roles['ally2'] = 0
 
     def determine_game_state(self):

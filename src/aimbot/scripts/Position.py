@@ -25,7 +25,7 @@ class Position:
 
     def invert(self):
         self.x = -1*self.x
-        #self.y = -1*self.y
+        self.y = -1*self.y
         if self.theta < 180:
             self.theta += 180
         else:
@@ -33,7 +33,7 @@ class Position:
 
     def handleFlip(self, team_side, game_state):
         # Invert if away or second half
-        if (team_side != 'home') or bool(game_state.second_half):
+        if (team_side != 'home') != bool(game_state.second_half): #xor
             self.invert()
 
     def update(self, x, y, theta):
