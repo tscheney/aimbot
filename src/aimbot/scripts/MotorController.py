@@ -16,7 +16,7 @@ class MotorController:
         #self.setPID(2, p, i, qpps)
         #self.setPID(3, p, i, qpps/2)
         self.setSpeed(0,0,0)
-        self.setT(5, 50)
+        self.setT(10, 50)
 
     def init_serial(self):
         """Init the serial connection.  If the process fails, the self.serial_conn is set to false and no
