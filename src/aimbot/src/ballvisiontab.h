@@ -3,6 +3,7 @@
 
 #include "visiontab.h"
 #include "ballvision.h"
+#include <QCheckBox>
 
 class BallVisionTab : public VisionTab
 {

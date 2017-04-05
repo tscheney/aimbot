@@ -52,6 +52,12 @@ void BallVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 //    int minSize;
 //    int maxSize;
 
+    QLabel *useShapeLabel = new QLabel(tr("Use Shape"));
+    QCheckBox *useShapeCheckBox = new QCheckBox();
+    useShapeCheckBox->setChecked(true);
+    connect(useShapeCheckBox, SIGNAL(toggled(bool)), vision, SLOT(useShape(bool)));
+    shapeOptionsLayout->addRow(useShapeLabel, useShapeCheckBox);
+
     // Sliders
     ShapeData shapeData;
     QSlider *blurSizeSlider = new QSlider(Qt::Horizontal);
