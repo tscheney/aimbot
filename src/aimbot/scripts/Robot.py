@@ -36,6 +36,7 @@ class Robot(Moving):
         self.pause = 10
         self.path_planner = PathPlanner()
         self.control_ball = False
+        self.des_distance_from_ball = 0.21
 
     def my_pos_sub(self):
         """Subscribe to my position"""
@@ -244,16 +245,19 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        if(not self.control_ball):
-            self.go_behind_ball_facing_target()
-            if (self.withinError(3)):
-                self.control_ball = True
-        else:
-            self.control_ball_facing_target()
-            if (self.withinError(10)):
-                self.attack_ball()
-            else:
-                self.control_ball = False
+        # if(not self.control_ball):
+        #     self.go_behind_ball_facing_target()
+        #     if (self.withinError(3)):
+        #         self.control_ball = True
+        # else:
+        #     self.control_ball_facing_target()
+        #     if (self.withinError(10)):
+        #         self.attack_ball()
+        #     else:
+        #         self.control_ball = False
+        self.go_behind_ball_facing_target()
+        if (self.withinError(10)):
+            self.attack_ball()
 
 
     def go_behind_ball_facing_target(self):
@@ -262,8 +266,13 @@ class Robot(Moving):
         theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, field_width/2, 0)
         robot_width = 0.175  # (7.0 in)
         robot_half_width = robot_width / 2
-        des_distance_from_ball = 0.21
-        hypotenuse = robot_half_width + des_distance_from_ball
+        if (self.withinError(3)):
+            self.des_distance_from_ball -= 0.03
+        elif(self.des_distance_from_ball <= 0):
+            self.des_distance_from_ball = 0
+        elif(not self.withinError(3)):
+            self.des_distance_from_ball = 0.21
+        hypotenuse = robot_half_width + self.des_distance_from_ball
         x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
         y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
         theta = np.rad2deg(theta)
