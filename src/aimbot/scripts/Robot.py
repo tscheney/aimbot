@@ -168,7 +168,11 @@ class Robot(Moving):
         elif self.role == 1:
             #self.go_to(self.pos.x, self.pos.y, 0)
             #if (self.pause == 10):
-            self.rush_goal()
+            #self.rush_goal()
+            self.score_a_goal()
+
+
+
             #    self.pause = 0
             #else:
             #    self.pause = self.pause + 1
@@ -237,6 +241,38 @@ class Robot(Moving):
 
         self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], 0)
 
+    def score_a_goal(self):
+        """Attempt to score a goal"""
+        self.go_behind_ball_facing_target()
+        if(self.withinError(5)):
+            self.attack_ball()
+
+    def go_behind_ball_facing_target(self):
+        """Get behind the ball facing the goal"""
+        field_width = 3.53
+        theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, field_width/2, 0)
+        robot_width = 0.175  # (7.0 in)
+        robot_half_width = robot_width / 2
+        des_distance_from_ball = 0.21
+        hypotenuse = robot_half_width + des_distance_from_ball
+        x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
+        y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
+        theta = np.rad2deg(theta)
+
+        self.set_des_pos(x_c, y_c, theta)
+
+    def attack_ball(self):
+        """
+        Simply pushes the ball along the "vector" from robot to ball
+        """
+        theta = self.get_angle_between_points(self.pos.x, self.pos.y, self.ball_pos.x, self.ball_pos.y)
+        kick_dist = 0.1524  # (6.0in)
+        x_c = self.ball_pos.x + kick_dist * np.cos(theta)
+        y_c = self.ball_pos.y + kick_dist * np.sin(theta)
+        theta_c = np.rad2deg(theta)
+
+        self.set_des_pos(x_c, y_c, theta_c)
+
         #calculate theta based on the balls position relative to the goal
         # idealy it will face the front of the bot on a straight line path to the
         # goal. then rush the goal and score.
@@ -304,17 +340,8 @@ class Robot(Moving):
         # else:
         #     print("get in line")
         #    cmdvec = p
-        #self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-
-    def go_behind_ball_facing_target(self):
-        field_width = 3.53
-        #theta = self.get_angle_between_points(self.ball_pos.pos.x, self.ball_pos.y, target_x, target_y)
-        #hypotenuse = Constants.robot_half_width + des_distance_from_ball
-        #x_c = ball.xhat - hypotenuse * np.cos(theta)
-        #y_c = ball.yhat - hypotenuse * np.sin(theta)
-        #theta = Utilities.rad_to_deg(theta)
-
-        #return (x_c, y_c, theta)
+        #    cmdvec = p
+        #self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta
 
 
     def get_distance_between_points(self, x1, y1, x2, y2):
