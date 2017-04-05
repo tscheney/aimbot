@@ -49,20 +49,23 @@ void Vision::process(cv::Mat frame)
     geometry_msgs::Pose2D pos;
 
     // threshold the image according to given HSV parameters
-    Mat colorResult = detectColors(frame);
+    Mat result = detectColors(frame);
 
     // Mask based on shape
-    Mat shapeResult = detectShapes(colorResult);
+    if(isUseShape)
+    {
+        result = detectShapes(result);
+    }
 
     // Calculate moments to
-    vector<Moments> mm = calcMoments(shapeResult);
+    vector<Moments> mm = calcMoments(result);
 
     // Get position
     pos = getPos(mm);
     prevPos = pos;
 
     publish(pos);
-    emit processedImage(applyMask(frame, shapeResult));
+    emit processedImage(applyMask(frame, result));
 }
 
 // Apply the mask to the frame
@@ -219,6 +222,12 @@ Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 void Vision::publish(geometry_msgs::Pose2D& pos)
 {
     pub.publish(pos);
+}
+
+// Recieve new use shape value
+void Vision::useShape(bool value)
+{
+    isUseShape = value;
 }
 
 bool Vision::ok()

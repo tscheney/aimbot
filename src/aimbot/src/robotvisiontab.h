@@ -1,6 +1,7 @@
 #ifndef ROBOTVISIONTAB_H
 #define ROBOTVISIONTAB_H
 
+#include <QCheckBox>
 #include "visiontab.h"
 #include "robotvision.h"
 
