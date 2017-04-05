@@ -61,7 +61,7 @@ include_directories( ${CMAKE_BINARY_DIR} ${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INC
 add_executable(camera src/camera_node.cpp)
 target_link_libraries(camera ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
-add_executable(raw_vision src/raw_vision_node.cpp src/mainwindow.cpp src/camlistener.cpp src/vision.cpp src/robotvision.cpp src/ballvision.cpp src/mainwindow.ui src/maintab.cpp src/visiontab.cpp src/robotvisiontab.cpp src/ballvisiontab.cpp src/global.cpp src/addnewdialog.cpp src/settings.cpp)
+add_executable(raw_vision src/raw_vision_node.cpp src/mainwindow.cpp src/camlistener.cpp src/prefilter.cpp src/vision.cpp src/robotvision.cpp src/ballvision.cpp src/mainwindow.ui src/maintab.cpp src/visiontab.cpp src/robotvisiontab.cpp src/ballvisiontab.cpp src/global.cpp src/addnewdialog.cpp src/settings.cpp)
 target_link_libraries(raw_vision ${OpenCV_LIBS} ${catkin_LIBRARIES} ${QT_LIBRARIES})
 
 # Specify additional locations of header files

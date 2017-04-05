@@ -14,6 +14,7 @@ namespace GlobalData
     const int blurSizeMax = 50;
     const int blurSizeDefault = 3;
     const int edgeThreshMax = 255;
+    const int glareThreshMax = 255;
     const double polyErrorMax = 0.2;
     const double polyErrorDefault = 0.03;
     const int polyErrorSliderDivisor = 1000;

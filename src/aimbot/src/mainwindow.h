@@ -21,6 +21,7 @@
 #include "camlistener.h"
 #include "vision.h"
 #include "settings.h"
+#include "prefilter.h"
 
 namespace Ui {
 class MainWindow;
@@ -48,6 +49,8 @@ private:
     QMenu *fileMenu;
     CamListener* camListener;
     QTabWidget *tabs;
+    PreFilter *prefilter;
+    QThread prefilterThread;
 
     void setUpMenuBar();
     void insertRobotNewTab(RobotVisionTab *robotVisionTab);

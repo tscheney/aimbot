@@ -11,6 +11,19 @@
 using namespace std;
 using namespace cv;
 
+vector<Mat> loadImages()
+{
+    vector<Mat> images;
+    for(int i = 2; i <= 12; i++)
+    {
+        string filename = "/home/tom/Downloads/ss/image" + to_string(i) + ".png";
+        //string filename = "/home/tom/Downloads/ss/image1.png";
+        Mat image = imread(filename);
+        images.push_back(image);
+    }
+    return images;
+}
+
 // This is a debugging tool that publishes the webcam feed to the same node as used in the robot soccer lab
 int main(int argc, char** argv)
 {
@@ -19,7 +32,9 @@ int main(int argc, char** argv)
 
     VideoCapture capture(CV_CAP_ANY);
 
-    Mat image = imread("/home/tom/Downloads/shapes.jpg");
+    vector<Mat> images = loadImages();
+    int imageNum = 0;
+    int frameNum = 0;
 
     ros::init(argc, argv, "camera");
     ros::NodeHandle nh;
@@ -40,7 +55,24 @@ int main(int argc, char** argv)
             }
             else
             {
-                frame = image;
+                if(frameNum < 60)
+                {
+                    frameNum++;
+                }
+                else
+                {
+                    frameNum = 0;
+                    if(imageNum != 10)
+                    {
+                        imageNum++;
+                    }
+                    else
+                    {
+                        imageNum = 0;
+                    }
+                }
+                printf("imageNum: %d\n\r", imageNum + 2);
+                frame = images.at(imageNum);
             }
 
             msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", frame).toImageMsg();

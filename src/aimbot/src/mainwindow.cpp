@@ -10,6 +10,11 @@ MainWindow::MainWindow(QWidget *parent) :
     camListener = new CamListener();
     camListener->start(QThread::LowPriority); // starts the thread making run() function run continuousl
 
+    //prefilter = new PreFilter();
+    //connect(camListener, SIGNAL(rawImage(cv::Mat)), prefilter, SLOT(rawFrame(cv::Mat)));
+    //prefilter->moveToThread(&prefilterThread);
+    //prefilterThread.start();
+
     ui->setupUi(this);
     // Set up tabs
     tabs = new QTabWidget(this);
@@ -82,6 +87,7 @@ void MainWindow::setUpMenuBar()
 void MainWindow::insertRobotNewTab(RobotVisionTab *robotVisionTab)
 {
     connect(camListener, SIGNAL(rawImage(cv::Mat)), robotVisionTab->getVision(), SLOT(process(cv::Mat)));
+    //connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), robotVisionTab->getVision(), SLOT(process(cv::Mat)));
     tabs->addTab(robotVisionTab, robotVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }
@@ -105,7 +111,7 @@ void MainWindow::insertNewRobotTab(QString name, map<string, int> profile)
 // Inserts the given ball vision tab into the tabs
 void MainWindow::insertNewBallTab(BallVisionTab *ballVisionTab)
 {
-    connect(camListener, SIGNAL(rawImage(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
+    connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
     tabs->addTab(ballVisionTab, ballVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }

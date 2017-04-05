@@ -18,6 +18,7 @@ extern const int blurSizeMin;
 extern const int blurSizeMax;
 extern const int blurSizeDefault;
 extern const int edgeThreshMax;
+extern const int glareThreshMax;
 extern const double polyErrorMax;
 extern const double polyErrorDefault;
 extern const int polyErrorSliderDivisor;

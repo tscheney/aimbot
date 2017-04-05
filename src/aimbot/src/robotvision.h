@@ -14,7 +14,9 @@ private:
     RobotShapeData shapeData;
 
     Mat detectShapes(Mat frame);
-    bool isCorrectShape(vector<Point> shape);
+    bool isCorrectSize(vector<Point> shape);
+    bool isCorrectShape(vector<Point> shape);    
+    bool isShapeLargeEnough(vector<vector<Point>> shapeResults);
     geometry_msgs::Pose2D getPos(vector<Moments> mm);
 };
 

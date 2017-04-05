@@ -17,21 +17,37 @@ Mat RobotVision::detectShapes(Mat frame)
     return detectShapesBase(frame, shapeData.blurSize, shapeData.edgeThresh, shapeData.polyError);
 }
 
+// Returns whether the robot is the correct size
+bool RobotVision::isCorrectSize(vector<Point> shape)
+{
+    double area = fabs(contourArea(shape));
+    bool isGreaterFrontMin = (area >= shapeData.frontMinSize);
+    bool isLessFrontMax = (area <= shapeData.frontMaxSize);
+    bool isGreaterBackMin = (area >= shapeData.backMinSize);
+    bool isLessBackMax = (area <= shapeData.backMaxSize);
+    bool isFront = isGreaterFrontMin && isLessFrontMax;
+    bool isBack = isGreaterBackMin && isLessBackMax;
+    return isFront || isBack;
+}
+
 // Returns whether the given shape fits the criteria for the front or back
 bool RobotVision::isCorrectShape(vector<Point> shape)
 {
-    double area = fabs(contourArea(shape));
     bool isGreaterFrontMinNumVert = (shape.size() >= shapeData.frontMinNumVert);
     bool isLessFrontMaxNumVert = (shape.size() <= shapeData.frontMaxNumVert);
-    bool isGreaterFrontMin = (area >= shapeData.frontMinSize);
-    bool isLessFrontMax = (area <= shapeData.frontMaxSize);
+
     bool isGreaterBackMinNumVert = (shape.size() >= shapeData.backMinNumVert);
     bool isLessBackMaxNumVert = (shape.size() <= shapeData.backMaxNumVert);
-    bool isGreaterBackMin = (area >= shapeData.backMinSize);
-    bool isLessBackMax = (area <= shapeData.backMaxSize);
-    bool isFront = isGreaterFrontMinNumVert && isLessFrontMaxNumVert && isGreaterFrontMin && isLessFrontMax;
-    bool isBack = isGreaterBackMinNumVert && isLessBackMaxNumVert && isGreaterBackMin && isLessBackMax;
+
+    bool isFront = isGreaterFrontMinNumVert && isLessFrontMaxNumVert;
+    bool isBack = isGreaterBackMinNumVert && isLessBackMaxNumVert;
     return isFront || isBack;
+}
+
+// Return if the shape results vector is large enough
+bool RobotVision::isShapeLargeEnough(vector<vector<Point>> shapeResults)
+{
+    return shapeResults.size() >= 2;
 }
 
 // Determines the position of a robot

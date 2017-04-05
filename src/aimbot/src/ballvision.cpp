@@ -20,13 +20,26 @@ Mat BallVision::detectShapes(Mat frame)
 // Returns whether the given shape fits the criteria for the ball
 bool BallVision::isCorrectShape(vector<Point> shape)
 {
-    double area = fabs(contourArea(shape));
     bool isGreaterMinNumVert = (shape.size() >= shapeData.minNumVert);
     bool isLessMaxNumVert = (shape.size() <= shapeData.maxNumVert);
+
+    return isGreaterMinNumVert && isLessMaxNumVert;
+}
+
+// Returns whether the given shape fits the criteria for the ball
+bool BallVision::isCorrectSize(vector<Point> shape)
+{
+    double area = fabs(contourArea(shape));
     bool isGreaterMinSize = (area >= shapeData.minSize);
     bool isLessMaxSize = (area <= shapeData.maxSize);
 
-    return isGreaterMinNumVert && isLessMaxNumVert && isGreaterMinSize && isLessMaxSize;
+    return isGreaterMinSize && isLessMaxSize;
+}
+
+// Return if the shape result is large enough
+bool BallVision::isShapeLargeEnough(vector<vector<Point>> shapeResults)
+{
+    return shapeResults.size() >= 1;
 }
 
 // Determines the position of a ball

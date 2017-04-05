@@ -48,21 +48,21 @@ void Vision::process(cv::Mat frame)
 {
     geometry_msgs::Pose2D pos;
 
-    // Mask based on shape
-    //Mat shapeResult = detectShapes(frame);
-
     // threshold the image according to given HSV parameters
     Mat colorResult = detectColors(frame);
 
+    // Mask based on shape
+    Mat shapeResult = detectShapes(colorResult);
+
     // Calculate moments to
-    vector<Moments> mm = calcMoments(colorResult);
+    vector<Moments> mm = calcMoments(shapeResult);
 
     // Get position
     pos = getPos(mm);
     prevPos = pos;
 
     publish(pos);
-    emit processedImage(applyMask(frame, colorResult));
+    emit processedImage(applyMask(frame, shapeResult));
 }
 
 // Apply the mask to the frame
@@ -76,32 +76,62 @@ Mat Vision::applyMask(Mat frame, Mat mask)
 // Detect shapes based on the current shape data params
 Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError)
 {
-    Mat imgGray;
+    Mat imgGray = frame;
 
-    cvtColor( frame, imgGray, CV_BGR2GRAY );
+    //cvtColor( frame, imgGray, CV_BGR2GRAY );
     blur( imgGray, imgGray, Size(blurSize, blurSize) );
     threshold( imgGray, imgGray, edgeThresh, GlobalData::edgeThreshMax, THRESH_BINARY );
 
-    Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
     vector< vector<Point> > contours; // vector of contours, which are vectors of points
     vector<Vec4i> hierarchy;
 
     //finding all contours in the image
     findContours(imgGray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
+    vector<vector<Point>> sizeResults;
+    vector<vector<Point>> shapeResults;
     //iterating through each contour
     for(vector<Point> contour : contours)
     {
         vector<Point> result;
         approxPolyDP(Mat(contour), result, arcLength(contour, true)*polyError, true);
 
-        if(isCorrectShape(result))
+        if(isCorrectSize(result)) // check for correct size
         {
-            fillConvexPoly(mask, result, Scalar(255,255,255));
+            sizeResults.push_back(result);
+            if(isCorrectShape(result)) // check for correct shape
+            {
+                shapeResults.push_back(result);
+            }
         }
     }
+    //    Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
+    Mat mask = getShapeMask(frame, sizeResults, shapeResults);
 
     return applyMask(frame, mask);
+}
+
+// get the shape mask
+Mat Vision::getShapeMask(Mat frame, vector<vector<Point>> sizeResults, vector<vector<Point>> shapeResults)
+{
+    Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
+    vector<vector<Point>> results;
+    if(isShapeLargeEnough(shapeResults))
+    {
+        results = shapeResults;
+    }
+    else
+    {
+        results = sizeResults;
+    }
+
+    // add result shapes to mask
+    for(vector<Point> result : results)
+    {
+        fillConvexPoly(mask, result, Scalar(255,255,255));
+    }
+
+    return mask;
 }
 
 // Detect the HSV color range based on the current color data params

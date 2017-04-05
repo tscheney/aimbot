@@ -53,7 +53,10 @@ public:
     Mat thresholdImage(Mat& imgHSV, Scalar color[]);
     virtual Mat detectShapes(Mat frame) = 0;
     Mat detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError);
+    virtual bool isCorrectSize(vector<Point> shape) = 0;
     virtual bool isCorrectShape(vector<Point> shape) = 0;
+    Mat getShapeMask(Mat frame, vector<vector<Point>> sizeResults, vector<vector<Point>> shapeResults);
+    virtual bool isShapeLargeEnough(vector<vector<Point>> shapeResults) = 0;
     Mat detectColors(Mat frame);
     vector<Moments> calcMoments(Mat imgGray);
 	Point2d getCenterOfMass(Moments moment);
