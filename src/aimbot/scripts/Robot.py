@@ -190,17 +190,20 @@ class Robot(Moving):
             #self.move_square()
         elif self.role == 2:
             self.follow_ball_on_line(self.ball_pos, -1.25)
-
         elif self.role == 3: #reset field is true
+            if (self.withinError(10)):
+                return #dont do anything
             self.go_to(-.5,0, 0)
         elif self.role == 4: #reset field is true
+            if (self.withinError(10)):
+                return
             self.go_to(-1.2, 0, 0)
-        elif self.role == 4:  # reset field is true
-            self.go_to(-.5, 0, 0)
+
         elif self.role == 5:  # penalty and home ally1
             self.go_to(-.06, 1.7, 0)
         elif self.role == 6:  # penalty and home ally2
             self.go_to(-.06, -1.7, 0)
+
         elif self.role == 7:  # penalty and away ally1
             self.go_to(-.06, 1.7, 0)
         elif self.role == 8:  # penalty and away ally2

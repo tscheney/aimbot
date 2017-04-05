@@ -109,21 +109,25 @@ class Team:
 
     def update(self):
         """Update the teams strategy and roles"""
+        print("penalty for home is", self.game_state.home_penalty)
+        #print("team side is", self.team_side)
+        print("penalty for away is", self.game_state.away_penalty)
         if(self.game_state.play):
             self.roles['ally1'] = 1 # these are just test roles
             self.roles['ally2'] = 2
+        #penalty stuff must be here due to the way it is set up the the ref code.
+            #if you are not in penalty they send the reset field signal and if this is after the elif for reset field
+            #then it takes that branch and just resets the field. So leave this section before the reset field branch.
+        elif (self.game_state.home_penalty and self.team_side == 'home'):
+            self.roles['ally1'] = 5
+            self.roles['ally2'] = 6
+        elif (self.game_state.away_penalty and self.team_side == 'away'):
+            self.roles['ally1'] = 7
+            self.roles['ally2'] = 8
+        #reset field branch here
         elif(self.game_state.reset_field):
             self.roles['ally1'] = 3
             self.roles['ally2'] = 4
-        #the penalty stuff is below but the msg in gamestate doesnt seem to want to work, im missing somthing
-        #elif(self.game_state.home_penalty and self.team_side == 'home'):
-        #    print("home penalty")
-        #    self.roles['ally1'] = 5
-        #    self.roles['ally1'] = 6
-        #elif(self.game_state.away_penalty and self.team_side == 'away'):
-        #    print("away penalty")
-        #    self.roles['ally1'] = 7
-        #    self.roles['ally1'] = 8
         else:
             self.roles['ally1'] = 0  # these are just test roles
             self.roles['ally2'] = 0
