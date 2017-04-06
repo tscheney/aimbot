@@ -109,9 +109,9 @@ class Team:
 
     def update(self):
         """Update the teams strategy and roles"""
-        print("penalty for home is", self.game_state.home_penalty)
+        #print("penalty for home is", self.game_state.home_penalty)
         #print("team side is", self.team_side)
-        print("penalty for away is", self.game_state.away_penalty)
+        #print("penalty for away is", self.game_state.away_penalty)
         if(self.game_state.play):
             self.roles['ally1'] = 1 # these are just test roles
             self.roles['ally2'] = 2
