@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from geometry_msgs.msg import Pose2D
-from soccerref.msg import GameState
+#from geometry_msgs.msg import Pose2D
+#from soccerref.msg import GameState
 
 class Position:
     def __init__(self):

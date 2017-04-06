@@ -10,6 +10,7 @@ path_plan = PathPlanner()
 waypoints = []
 robotopp1 = Position()
 opp2 = Position()
+thing = Position()
 
 ball = Position()
 objects = []
@@ -20,8 +21,12 @@ robotopp1.y = -0.5
 
 opp2.x = 0
 opp2.y = 1.2
-objects.append(robotopp1)
-objects.append(opp2)
+
+thing.x = 1
+thing.y = -.5 - 0.2032
+#objects.append(robotopp1)
+#objects.append(opp2)
+objects.append(thing)
 
 #path_plan.obj_to_avoid.append(robotopp1)
 

@@ -1,6 +1,9 @@
 
 import numpy as np
+from numpy import ones,vstack
+from numpy.linalg import lstsq
 from Position import Position
+import math as math
 
 class PathPlanner:
     """This class uses the position of the robot and of the all the objects necessary to avoid and
@@ -30,12 +33,11 @@ class PathPlanner:
         i = 0
         del self.obj_to_avoid[:] # clears the old positions from the list before adding the new ones
         for pos in obj_to_avoid:
-
+            print("in loop")
             print(obj_to_avoid[i].x, obj_to_avoid[i].y)
             self.obj_to_avoid.append(pos)  # add all the new positions
             i = i + 1
 
-    #TODO here down is new or modified
     def calc_waypoints(self, curr_position, des_position, obj_to_avoid):
         """Calculates intermediate position to head to"""
         #need to calculate where to go next one point at a time, pass this back and go there then call this again
@@ -48,18 +50,70 @@ class PathPlanner:
         #update things to avoid
         self.update_obj_avoid(obj_to_avoid)
 
-        robot_radius = 0.1016 #4 inches in meters asuming this is true of all robots
-        distX = self.pos.x - self.obj_to_avoid[0].x
-        self.point = des_position
-        self.add_waypoint()
+        # 4 inches in meters asuming this is true of all robots, this is their max radius according to the rules
+
+
+        #create vector from where we are to where we want to be
+        current_pos_vec = np.array([[self.pos.x], [self.pos.y]])
+        desired_pos_vec = np.array([[self.des_pos.x], [self.des_pos.y]])
+
+        #make a straight line from current to desired
+        movement_vec = current_pos_vec - desired_pos_vec
 
 
 
+        #check to see if there is anything in our way on our way to our desired position
+        for point in obj_to_avoid:
+            print("in other loop")
+            print(point.x, point.y)
+            if (self.check_line(point.x, point.y)): #pass in x,y values of thing to avoid
+                print("current path is no bueno")
+                #make new path
+            else:
+                print("go ahead on this path you have chosen for yourself")
+                self.point = des_position
+                self.add_waypoint()
 
+    def check_line(self, avoid_x, avoid_y):
+        '''This will move allong the our line of desired movement and check points every radius
+        down the line to see if they are less than 2*Radius of the thing to avoid.
+        Returns a boolean'''
+        #calculate the line of movement
+        points = [(self.pos.x, self.pos.y), (self.des_pos.x, self.des_pos.y)]
+        x_coords, y_coords = zip(*points)
+        A = vstack([x_coords, ones(len(x_coords))]).T
+        m, b = lstsq(A, y_coords)[0]
+        print "Line Solution is y = {m}x + {b}".format(m=m, b=b)
 
+        #radius of robots assuming they are as wide as the rules allow
+        robot_radius = 0.1016
 
+        #calculate x and y to plug into our line equation to move down it 1 radius of length
+        x_next = self.pos.x + robot_radius/(math.sqrt(robot_radius**2 + (robot_radius*m)**2))
+        y_next = self.pos.y + (robot_radius*m)/(math.sqrt(robot_radius**2 + (robot_radius*m)**2))
+        print("x:", x_next)
+        print("y:", y_next)
+        while (x_next <= self.des_pos.x):
+            print("checking values")
+            #grab distance between x and y next values and the thing to avoid.
+            dist = math.hypot(x_next - avoid_x, y_next - avoid_y)
+            if dist < 2*robot_radius:
+                return True
+            else:
+                #update our new points to check
+                x_next = x_next + robot_radius / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2))
+                y_next = y_next + (robot_radius * m) / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2))
+                print("x:", x_next)
+                print("y:", y_next)
+        return False #no collision
 
-
+    def truncate(self, f, n):
+        '''Truncates/pads a float f to n decimal places without rounding'''
+        s = '{}'.format(f)
+        if 'e' in s or 'E' in s:
+            return '{0:.{1}f}'.format(f, n)
+        i, p, d = s.partition('.')
+        return '.'.join([i, (d + '0' * n)[:n]])
 
     def add_waypoint(self):
         self.waypoints.append(self.point)
