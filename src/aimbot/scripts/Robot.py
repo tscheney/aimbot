@@ -180,14 +180,7 @@ class Robot(Moving):
             #    self.pause = self.pause + 1
             #self.move_to_center()
 
-            #if self.withinError(10):
-            #     if self.state < 3:
-            #         self.state += 1
-            #     else:
-            #         self.state = 0
-            #     print(self.state)
-            #
-            #self.move_square()
+
         elif self.role == 2:
             self.follow_ball_on_line(self.ball_pos, -1.25)
         elif self.role == 3: #reset field is true
@@ -208,6 +201,15 @@ class Robot(Moving):
             self.go_to(-.06, 1.7, 0)
         elif self.role == 8:  # penalty and away ally2
             self.go_to(-.06, -1.7, 0)
+        elif self.role == 99: # debug role
+            if self.withinError(10):
+                if self.state < 3:
+                    self.state += 1
+                else:
+                    self.state = 0
+                print(self.state)
+
+            self.move_square()
         else:
             print("not a valid role")
 

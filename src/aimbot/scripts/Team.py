@@ -24,6 +24,7 @@ class Team:
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
+        self.debug = True
 
     def init_pos(self):
         """Init the position dictionary"""
@@ -112,7 +113,9 @@ class Team:
         #print("penalty for home is", self.game_state.home_penalty)
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
-        if(self.game_state.play):
+        if (self.debug == True):
+            self.roles['ally1'] = 99
+        elif(self.game_state.play):
             self.roles['ally1'] = 1 # these are just test roles
             self.roles['ally2'] = 2
         #penalty stuff must be here due to the way it is set up the the ref code.
