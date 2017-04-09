@@ -24,7 +24,7 @@ class Team:
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
-        self.debug = False
+        self.debug = True
 
     def init_pos(self):
         """Init the position dictionary"""
