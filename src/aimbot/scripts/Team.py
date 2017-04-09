@@ -133,7 +133,7 @@ class Team:
             self.roles['ally2'] = 4
         else:
             self.roles['ally1'] = 1  # these are just test roles
-            self.roles['ally2'] = 1
+            self.roles['ally2'] = 2
 
     def determine_game_state(self):
         """Based on known positions and score, determine which state the game is in"""
