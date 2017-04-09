@@ -22,8 +22,8 @@ class MotorController:
         """Init the serial connection.  If the process fails, the self.serial_conn is set to false and no
         other method in the class with run to prevent errors"""
         try:
-            self.ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=None)
-            #self.ser = serial.Serial('/dev/ttyAMA0', 230400, timeout=None)
+            #self.ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=None)
+            self.ser = serial.Serial('/dev/ttyAMA0', 230400, timeout=None)
             self.serial_conn = True
         except serial.SerialException:
             self.serial_conn = False
