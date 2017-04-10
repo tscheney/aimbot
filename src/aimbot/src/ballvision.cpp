@@ -11,10 +11,27 @@ void BallVision::newShapeData(BallShapeData newShapeData)
     shapeData = newShapeData;
 }
 
+// Apply blur to the image
+Mat BallVision::applyBlur(Mat frame)
+{
+    return applyBlurBase(frame, shapeData.blurSize);
+}
+
+// detecte edges in the image
+Mat BallVision::detectShapeEdges(Mat frame)
+{
+    return detectShapeEdgesBase(frame, shapeData.edgeThresh1, shapeData.edgeThresh2);
+}
+
+Mat BallVision::applyDilate(Mat frame)
+{
+    return applyDilateBase(frame, shapeData.dilationIter);
+}
+
 // Detect shapes based on the current shape data params
 Mat BallVision::detectShapes(Mat frame)
 {
-    return detectShapesBase(frame, shapeData.blurSize, shapeData.edgeThresh, shapeData.polyError);
+    return detectShapesBase(frame, shapeData.blurSize, shapeData.edgeThresh1, shapeData.edgeThresh2, shapeData.polyError);
 }
 
 // Returns whether the given shape fits the criteria for the ball
@@ -47,12 +64,13 @@ geometry_msgs::Pose2D BallVision::getPos(vector<Moments> mm)
 {
     geometry_msgs::Pose2D ballPos;
 
-    if (mm.size() != 1)
+    if (mm.size() < 1)
     {
+        cout << "prev pos\n";
         return prevPos;
     }
 
-    Moments moments = mm[0];
+    Moments moments = mm[mm.size() - 1]; // grab the largest moment
     //Moments mm = moments((Mat)contours[0]);
     Point2d ballCenter = imageToWorldCoordinates(getCenterOfMass(moments));
 

@@ -39,7 +39,9 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 
     // Labels
     QLabel *blurSizeLabel = new QLabel(tr("Blur Size:"));
-    QLabel *edgeThreshLabel = new QLabel(tr("Edge Threshold:"));
+    QLabel *edgeThresh1Label = new QLabel(tr("Edge Threshold 1:"));
+    QLabel *edgeThresh2Label = new QLabel(tr("Edge Threshold 2:"));
+    QLabel *dilationIterLabel = new QLabel(tr("Dilate Iterations:"));
     QLabel *polyErrorLabel = new QLabel(tr("Polynomial Error:"));
     QLabel *frontMinNumVertLabel = new QLabel(tr("Front Min # Verticies:"));
     QLabel *frontMaxNumVertLabel = new QLabel(tr("Front Max # Verticies:"));
@@ -62,9 +64,17 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     setUpSlider(blurSizeSlider, GlobalData::blurSizeMin, GlobalData::blurSizeMax, GlobalData::blurSizeDefault);
     shapeSliders.insert(pair<std::string, QSlider *>("blurSize", blurSizeSlider));
 
-    QSlider *edgeThreshSlider = new QSlider(Qt::Horizontal);
-    setUpSlider(edgeThreshSlider, 0, GlobalData::edgeThreshMax, shapeData.edgeThresh);
-    shapeSliders.insert(pair<std::string, QSlider *>("edgeThresh", edgeThreshSlider));
+    QSlider *edgeThresh1Slider = new QSlider(Qt::Horizontal);
+    setUpSlider(edgeThresh1Slider, 0, GlobalData::edgeThreshMax, shapeData.edgeThresh1);
+    shapeSliders.insert(pair<std::string, QSlider *>("edgeThresh1", edgeThresh1Slider));
+
+    QSlider *edgeThresh2Slider = new QSlider(Qt::Horizontal);
+    setUpSlider(edgeThresh2Slider, 0, GlobalData::edgeThreshMax, shapeData.edgeThresh2);
+    shapeSliders.insert(pair<std::string, QSlider *>("edgeThresh2", edgeThresh2Slider));
+
+    QSlider *dilationIterSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(dilationIterSlider, 0, GlobalData::dilationIterMax, shapeData.dilationIter);
+    shapeSliders.insert(pair<std::string, QSlider *>("dilationIter", dilationIterSlider));
 
     QSlider *polyErrorSlider = new QSlider(Qt::Horizontal);
     int polyErrorSliderMax = int(GlobalData::polyErrorMax * GlobalData::polyErrorSliderDivisor);
@@ -106,7 +116,9 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 
     // Connect Sliders
     connect(blurSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
-    connect(edgeThreshSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(edgeThresh1Slider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(edgeThresh2Slider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
+    connect(dilationIterSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(polyErrorSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(frontMinNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(frontMaxNumVertSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
@@ -119,7 +131,9 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 
     // Add rows to form layout
     shapeOptionsLayout->addRow(blurSizeLabel, blurSizeSlider);
-    shapeOptionsLayout->addRow(edgeThreshLabel, edgeThreshSlider);
+    shapeOptionsLayout->addRow(edgeThresh1Label, edgeThresh1Slider);
+    shapeOptionsLayout->addRow(edgeThresh2Label, edgeThresh2Slider);
+    shapeOptionsLayout->addRow(dilationIterLabel, dilationIterSlider);
     shapeOptionsLayout->addRow(polyErrorLabel, polyErrorSlider);
     shapeOptionsLayout->addRow(frontMinNumVertLabel, frontMinNumVertSlider);
     shapeOptionsLayout->addRow(frontMaxNumVertLabel, frontMaxNumVertSlider);
@@ -140,8 +154,10 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 void RobotVisionTab::shapeSlidersChanged(int val)
 {
     RobotShapeData robotShapeData;
-    robotShapeData.blurSize = shapeSliders.at("blurSize")->value();
-    robotShapeData.edgeThresh = shapeSliders.at("edgeThresh")->value();
+    robotShapeData.blurSize = robotShapeData.edgeThSlidToNum(shapeSliders.at("blurSize")->value());
+    robotShapeData.edgeThresh1 = shapeSliders.at("edgeThresh1")->value();
+    robotShapeData.edgeThresh2 = shapeSliders.at("edgeThresh2")->value();
+    robotShapeData.dilationIter = shapeSliders.at("dilationIter")->value();
     robotShapeData.polyError = double(shapeSliders.at("polyError")->value()) / GlobalData::polyErrorSliderDivisor;
     robotShapeData.frontMinNumVert = shapeSliders.at("frontMinNumVert")->value();
     robotShapeData.frontMaxNumVert = shapeSliders.at("frontMaxNumVert")->value();

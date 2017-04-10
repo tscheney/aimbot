@@ -11,10 +11,28 @@ void RobotVision::newShapeData(RobotShapeData newShapeData)
     shapeData = newShapeData;
 }
 
+// Apply blur to the image
+Mat RobotVision::applyBlur(Mat frame)
+{
+    return applyBlurBase(frame, shapeData.blurSize);
+}
+
+// detecte edges in the image
+Mat RobotVision::detectShapeEdges(Mat frame)
+{
+    return detectShapeEdgesBase(frame, shapeData.edgeThresh1, shapeData.edgeThresh2);
+}
+
+// Apply dilation
+Mat RobotVision::applyDilate(Mat frame)
+{
+    return applyDilateBase(frame, shapeData.dilationIter);
+}
+
 // Detect shapes based on the current shape data params
 Mat RobotVision::detectShapes(Mat frame)
 {
-    return detectShapesBase(frame, shapeData.blurSize, shapeData.edgeThresh, shapeData.polyError);
+    return detectShapesBase(frame, shapeData.blurSize, shapeData.edgeThresh1, shapeData.edgeThresh2, shapeData.polyError);
 }
 
 // Returns whether the robot is the correct size

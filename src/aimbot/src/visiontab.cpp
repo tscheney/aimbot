@@ -1,5 +1,6 @@
 #include "visiontab.h"
 #include "moc_visiontab.cpp"
+#include <iostream>
 
 VisionTab::VisionTab(QWidget *parent, QString name) : QWidget(parent)
 {
@@ -17,7 +18,7 @@ VisionTab::VisionTab(QWidget *parent, QString name, std::map<std::string, int> p
 //    setUpVideo();
 //    setUpVisionOptions();
 //    setLayout(layout);
-//    loadProfile(profile);
+//    Profile(profile);
 }
 
 VisionTab::~VisionTab()
@@ -258,11 +259,16 @@ void VisionTab::updateVideo(cv::Mat frame)
         dest.bits();
         img = dest;
     }
-    else
+    else if (frame.channels()== 1)
     {
+        cv::cvtColor(frame, RGBframe, CV_GRAY2RGB);
         QImage dest((const unsigned char*) frame.data, frame.cols, frame.rows, frame.step, QImage::Format_Indexed8);
         dest.bits();
         img = dest;
+    }
+    else
+    {
+        std::cout << "unknown image format\n";
     }
 
     if (!img.isNull())

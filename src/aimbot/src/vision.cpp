@@ -48,8 +48,19 @@ void Vision::process(cv::Mat frame)
 {
     geometry_msgs::Pose2D pos;
 
+    Mat result = frame;
+
+    result = applyBlur(result);
+
+    if(isUseShape)
+    {
+        result = detectShapeEdges(result);
+        result = applyDilate(result);
+        result = applyMask(frame, result);
+    }
+
     // threshold the image according to given HSV parameters
-    Mat result = detectColors(frame);
+    result = detectColors(result);
 
     // Mask based on shape
     if(isUseShape)
@@ -57,7 +68,7 @@ void Vision::process(cv::Mat frame)
         result = detectShapes(result);
     }
 
-    // Calculate moments to
+    // Calculate moments to find position
     vector<Moments> mm = calcMoments(result);
 
     // Get position
@@ -76,20 +87,24 @@ Mat Vision::applyMask(Mat frame, Mat mask)
     return output;
 }
 
+// Apply a Gaussian blur of size blursize
+Mat Vision::applyBlurBase(Mat frame, int blurSize)
+{
+    Mat result;
+    GaussianBlur(frame, result, Size(blurSize, blurSize), 0, 0);
+    return result;
+}
+
 // Detect shapes based on the current shape data params
-Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError)
+Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh1, int edgeThresh2, double polyError)
 {
     Mat imgGray = frame;
-
-    //cvtColor( frame, imgGray, CV_BGR2GRAY );
-    blur( imgGray, imgGray, Size(blurSize, blurSize) );
-    threshold( imgGray, imgGray, edgeThresh, GlobalData::edgeThreshMax, THRESH_BINARY );
 
     vector< vector<Point> > contours; // vector of contours, which are vectors of points
     vector<Vec4i> hierarchy;
 
     //finding all contours in the image
-    findContours(imgGray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+    findContours(imgGray, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
     vector<vector<Point>> sizeResults;
     vector<vector<Point>> shapeResults;
@@ -97,7 +112,7 @@ Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh, double pol
     for(vector<Point> contour : contours)
     {
         vector<Point> result;
-        approxPolyDP(Mat(contour), result, arcLength(contour, true)*polyError, true);
+        approxPolyDP(Mat(contour), result, arcLength(contour, true)*polyError, false);
 
         if(isCorrectSize(result)) // check for correct size
         {
@@ -111,7 +126,23 @@ Mat Vision::detectShapesBase(Mat frame, int blurSize, int edgeThresh, double pol
     //    Mat mask(frame.rows, frame.cols, CV_8UC1, Scalar(0,0,0));
     Mat mask = getShapeMask(frame, sizeResults, shapeResults);
 
-    return applyMask(frame, mask);
+    return mask;
+}
+
+// Use canny edge detection to detect edges
+Mat Vision::detectShapeEdgesBase(Mat frame, int edgeThresh1, int edgeThresh2)
+{
+    Mat edges(frame.size(), frame.type());
+    Canny(frame, edges, edgeThresh1, edgeThresh2, 3, true);
+    return edges;
+}
+
+// Dilate the image
+Mat Vision::applyDilateBase(Mat frame, int iterations)
+{
+    Mat dilated(frame.size(), frame.type());
+    dilate(frame, dilated, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)), Point(-1,-1) , iterations);
+    return dilated;
 }
 
 // get the shape mask
@@ -161,8 +192,8 @@ Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
 {
     Mat imgGray;
     inRange(imgHSV, color[0], color[1], imgGray);
-    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    //erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    //dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
     return imgGray;
 }
 

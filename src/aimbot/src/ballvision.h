@@ -13,6 +13,9 @@ public slots:
 private:
     BallShapeData shapeData;
 
+    Mat applyBlur(Mat frame);
+    Mat detectShapeEdges(Mat frame);
+    Mat applyDilate(Mat frame);
     Mat detectShapes(Mat frame);
     bool isCorrectSize(vector<Point> shape);
     bool isCorrectShape(vector<Point> shape);

@@ -18,6 +18,8 @@ extern const int blurSizeMin;
 extern const int blurSizeMax;
 extern const int blurSizeDefault;
 extern const int edgeThreshMax;
+extern const int dilationIterDefault;
+extern const int dilationIterMax;
 extern const int glareThreshMax;
 extern const double polyErrorMax;
 extern const double polyErrorDefault;
@@ -47,13 +49,16 @@ class ShapeData
 {
 public:
     int blurSize;
-    int edgeThresh;
+    int edgeThresh1;
+    int edgeThresh2;
+    int dilationIter;
     double polyError;
 
-    ShapeData(int inBlurSize = 3, int inEdgeThresh = 100, double inPolyError = 0.03);
+    ShapeData(int inBlurSize = 3, int inEdgeThresh1 = 100, int inEdgeThresh2 = 200, int inDilationIter = GlobalData::dilationIterDefault, double inPolyError = 0.03);
 
     virtual std::string toString();
 
+    int edgeThSlidToNum(int slideValue);
 };
 
 class RobotShapeData : public ShapeData
@@ -68,7 +73,7 @@ public:
     int backMinSize;
     int backMaxSize;
 
-    RobotShapeData(int inBlurSize = 3, int inEdgeThresh = 100, double inPolyError = 0.03, int inFrontMinNumVert = 3, int inFrontMaxNumVert =5, int inFrontMinSize = GlobalData::shapeMinSizeDefault,
+    RobotShapeData(int inBlurSize = 3, int inEdgeThresh = 100, int inEdgeThresh2 = 200, int inDilationIter = GlobalData::dilationIterDefault, double inPolyError = 0.03, int inFrontMinNumVert = 3, int inFrontMaxNumVert =5, int inFrontMinSize = GlobalData::shapeMinSizeDefault,
                    int inFrontMaxSize = GlobalData::shapeMaxSizeDefault, int inBackMinNumVert = 3, int inBackMaxNumvert = 5, int inBackMinSize = GlobalData::shapeMinSizeDefault,
                    int inBackMaxSize = GlobalData::shapeMaxSizeDefault);
 
@@ -83,7 +88,7 @@ public:
     int minSize;
     int maxSize;
 
-    BallShapeData(int inBlurSize = 3, int inEdgeThresh = 100, double inPolyError = 0.03, int inMinNumVert = 6, int inMaxNumVert = 50, int inMinSize = GlobalData::shapeMinSizeDefault,
+    BallShapeData(int inBlurSize = 3, int inEdgeThresh1 = 100, int inEdgeThresh2 = 200, int inDilationIter = GlobalData::dilationIterDefault, double inPolyError = 0.03, int inMinNumVert = 6, int inMaxNumVert = 50, int inMinSize = GlobalData::shapeMinSizeDefault,
                   int inMaxSize = GlobalData::shapeMaxSizeDefault);
 
     std::string toString();

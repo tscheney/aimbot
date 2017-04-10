@@ -9,6 +9,7 @@
 #endif
 #include "geometry_msgs/Pose2D.h"
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/ximgproc.hpp>
 #include "global.h"
 
 using namespace std;
@@ -53,8 +54,14 @@ public:
     void initPublishers(string name);
     Mat applyMask(Mat frame, Mat mask);
     Mat thresholdImage(Mat& imgHSV, Scalar color[]);
+    virtual Mat applyBlur(Mat frame) = 0;
+    Mat applyBlurBase(Mat frame, int blurSize);
     virtual Mat detectShapes(Mat frame) = 0;
-    Mat detectShapesBase(Mat frame, int blurSize, int edgeThresh, double polyError);
+    Mat detectShapesBase(Mat frame, int blurSize, int edgeThresh1, int edgeThresh2, double polyError);
+    virtual Mat detectShapeEdges(Mat frame) = 0;
+    Mat applyDilateBase(Mat frame, int iterations);
+    virtual Mat applyDilate(Mat frame) = 0;
+    Mat detectShapeEdgesBase(Mat frame, int edgeThresh1, int edgeThresh2);
     virtual bool isCorrectSize(vector<Point> shape) = 0;
     virtual bool isCorrectShape(vector<Point> shape) = 0;
     Mat getShapeMask(Mat frame, vector<vector<Point>> sizeResults, vector<vector<Point>> shapeResults);
