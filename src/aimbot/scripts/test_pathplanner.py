@@ -22,8 +22,8 @@ robotopp1.y = -0.5
 opp2.x = 0
 opp2.y = 1.2
 
-thing.x = 1
-thing.y = -.5 - 0.2032
+thing.x = 0
+thing.y = -.9 - 0.2132
 #objects.append(robotopp1)
 #objects.append(opp2)
 objects.append(thing)
@@ -33,7 +33,7 @@ objects.append(thing)
 #where we want to go
 des_pos = Position()
 des_pos.x = 1.5
-des_pos.y = -0.5
+des_pos.y = -1.5
 #where we are
 pos = Position()
 pos.x = -1

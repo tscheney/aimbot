@@ -33,8 +33,7 @@ class PathPlanner:
         i = 0
         del self.obj_to_avoid[:] # clears the old positions from the list before adding the new ones
         for pos in obj_to_avoid:
-            print("in loop")
-            print(obj_to_avoid[i].x, obj_to_avoid[i].y)
+            #print(obj_to_avoid[i].x, obj_to_avoid[i].y)
             self.obj_to_avoid.append(pos)  # add all the new positions
             i = i + 1
 
@@ -50,21 +49,9 @@ class PathPlanner:
         #update things to avoid
         self.update_obj_avoid(obj_to_avoid)
 
-        # 4 inches in meters asuming this is true of all robots, this is their max radius according to the rules
-
-
-        #create vector from where we are to where we want to be
-        current_pos_vec = np.array([[self.pos.x], [self.pos.y]])
-        desired_pos_vec = np.array([[self.des_pos.x], [self.des_pos.y]])
-
-        #make a straight line from current to desired
-        movement_vec = current_pos_vec - desired_pos_vec
-
-
-
         #check to see if there is anything in our way on our way to our desired position
         for point in obj_to_avoid:
-            print("in other loop")
+            print("point to avoid is: (next line)")
             print(point.x, point.y)
             if (self.check_line(point.x, point.y)): #pass in x,y values of thing to avoid
                 print("current path is no bueno")
@@ -91,18 +78,22 @@ class PathPlanner:
         #calculate x and y to plug into our line equation to move down it 1 radius of length
         x_next = self.pos.x + robot_radius/(math.sqrt(robot_radius**2 + (robot_radius*m)**2))
         y_next = self.pos.y + (robot_radius*m)/(math.sqrt(robot_radius**2 + (robot_radius*m)**2))
-        print("x:", x_next)
-        print("y:", y_next)
+        print("x1:", x_next)
+        print("y1:", y_next)
         while (x_next <= self.des_pos.x):
-            print("checking values")
+            #print("checking values")
             #grab distance between x and y next values and the thing to avoid.
             dist = math.hypot(x_next - avoid_x, y_next - avoid_y)
             if dist < 2*robot_radius:
+                print("distance is: ", dist)
                 return True
             else:
+                print("distance is: ", dist)
                 #update our new points to check
-                x_next = x_next + robot_radius / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2))
-                y_next = y_next + (robot_radius * m) / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2))
+                x_next = x_next + (robot_radius / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2)))*robot_radius
+                y_next = y_next + ((robot_radius * m) / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2)))*robot_radius
+
+                #making it so it doenst move 1 meter down the line multiply by radius of robot
                 print("x:", x_next)
                 print("y:", y_next)
         return False #no collision
@@ -117,8 +108,8 @@ class PathPlanner:
 
     def add_waypoint(self):
         self.waypoints.append(self.point)
-        print("added the following point")
-        print(self.point.x, self.point.y, self.point.theta)
+        #print("added the following point")
+        #print(self.point.x, self.point.y, self.point.theta)
 
     def waypoint_clear(self):
         """clears the waypoints from the list"""
