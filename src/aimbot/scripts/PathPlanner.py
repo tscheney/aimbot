@@ -56,6 +56,9 @@ class PathPlanner:
             if (self.check_line(point.x, point.y)): #pass in x,y values of thing to avoid
                 print("current path is no bueno")
                 #make new path
+                #idea from other team, they say it works.
+                #move the line that we are trying to go down to one side or the other
+                # then check it and move down it till you can go downt the original line that you wanted.
             else:
                 print("go ahead on this path you have chosen for yourself")
                 self.point = des_position
