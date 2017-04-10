@@ -73,6 +73,7 @@ int main(int argc, char** argv)
                 }
                 //printf("imageNum: %d\n\r", imageNum + 2);
                 frame = images.at(imageNum);
+                //Mat noise(frame.size(), frame.type());
             }
 
             msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", frame).toImageMsg();

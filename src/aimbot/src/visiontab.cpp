@@ -53,6 +53,14 @@ void VisionTab::setUpVisionOptions()
 
     QVBoxLayout *visionOptionsLayout = new QVBoxLayout();
 
+
+    QLabel *useBackSubLabel = new QLabel(tr("Use Background Subtraction"));
+    QCheckBox *useBackSubCheckBox = new QCheckBox();
+    useBackSubCheckBox->setChecked(true);
+    connect(useBackSubCheckBox, SIGNAL(toggled(bool)), this, SLOT(useBackSubChanged(bool)));
+    visionOptionsLayout->addWidget(useBackSubLabel);
+    visionOptionsLayout->addWidget(useBackSubCheckBox);
+
     setUpColorOptions(visionOptionsLayout);
     setUpShapeOptions(visionOptionsLayout);
 
@@ -328,31 +336,17 @@ void VisionTab::colorSlidersChanged(int val)
     emit newColorData(colorData);
 }
 
+// Handle use background subtraction change
+void VisionTab::useBackSubChanged(bool value)
+{
+    emit newIsUseBackSub(value);
+}
+
+// Handle use color changed
 void VisionTab::useColorChanged(bool value)
 {
     emit newIsUseColor(value);
 }
-
-//// Send out all values from shape sliders
-//void VisionTab::shapeSlidersChanged(int val)
-//{
-//    QList<QGroupBox *> gbList = visionOptionsGroupBox->findChildren<QGroupBox *>();
-//    QGroupBox *shapeOptionsGroupBox = gbList.at(1); // second group box is the shape options
-//    QList<QSlider *> sliderList = shapeOptionsGroupBox->findChildren<QSlider *>();
-
-//    RobotShapeData robotShapeData;
-//    robotShapeData.blurSize = sliderList.at(0)->value();
-//    robotShapeData.edgeThresh = sliderList.at(1)->value();
-//    robotShapeData.polyError = double(sliderList.at(2)->value()) / 100;
-//    robotShapeData.frontNumVert = sliderList.at(3)->value();
-//    robotShapeData.frontMinSize = sliderList.at(4)->value();
-//    robotShapeData.frontMaxSize = sliderList.at(5)->value();
-//    robotShapeData.backNumVert = sliderList.at(6)->value();
-//    robotShapeData.backMinSize = sliderList.at(7)->value();
-//    robotShapeData.backMaxSize = sliderList.at(8)->value();
-
-//    emit newShapeData(robotShapeData);
-//}
 
 // Retrieve the list of color slider pointers
 std::map<std::string, QSlider*> VisionTab::getColorSliders()

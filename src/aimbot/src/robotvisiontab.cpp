@@ -26,6 +26,7 @@ void RobotVisionTab::setUpVision(string name)
     vision = new RobotVision(0, name);
     connect(vision, SIGNAL(processedImage(cv::Mat)), this, SLOT(updateVideo(cv::Mat)));
     connect(this, SIGNAL(newColorData(ColorData)), vision, SLOT(newColorData(ColorData)));
+    connect(this, SIGNAL(newIsUseBackSub(bool)), vision, SLOT(useBackSub(bool)));
     connect(this, SIGNAL(newIsUseColor(bool)), vision, SLOT(useColor(bool)));
     connect(this, SIGNAL(newShapeData(RobotShapeData)), vision, SLOT(newShapeData(RobotShapeData)));
     vision->moveToThread(&visionThread);

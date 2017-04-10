@@ -10,6 +10,7 @@
 #include "geometry_msgs/Pose2D.h"
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/ximgproc.hpp>
+#include <opencv2/video/background_segm.hpp>
 #include "global.h"
 
 using namespace std;
@@ -22,6 +23,7 @@ private:
 private slots:
     void process(cv::Mat frame);
     void newColorData(ColorData newColorData);
+    void useBackSub(bool value);
     void useColor(bool value);
     void useEdgeDetect(bool value);
     void useShape(bool value);
@@ -43,11 +45,15 @@ public:
     // Processing Params
     ColorData colorData;
     //ShapeData shapeData;
+    bool isUseBackSub = true;
     bool isUseColor = true;
     bool isUseEdgeDetect = true;
     bool isUseShape = true;
 
     geometry_msgs::Pose2D prevPos;
+
+    Ptr<BackgroundSubtractor> pMOG2;
+    Mat fgMaskMOG2;
 
     string name;
     ros::Publisher pub;
@@ -71,6 +77,7 @@ public:
     Mat getShapeMask(Mat frame, vector<vector<Point>> sizeResults, vector<vector<Point>> shapeResults);
     virtual bool isShapeLargeEnough(vector<vector<Point>> shapeResults) = 0;
     Mat detectColors(Mat frame);
+    Mat backgroundSubtraction(Mat frame);
     vector<Moments> calcMoments(Mat imgGray);
 	Point2d getCenterOfMass(Moments moment);
 	static bool compareMomentAreas(Moments moment1, Moments moment2);
