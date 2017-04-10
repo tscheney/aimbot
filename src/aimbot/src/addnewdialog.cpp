@@ -69,5 +69,11 @@ QString AddNewDialog::getProfile()
     return profileComboBox->currentText();
 }
 
+// Get a pointer to the name combo box
+QComboBox *AddNewDialog::getNamesComboBox()
+{
+    return namesComboBox;
+}
+
 
 

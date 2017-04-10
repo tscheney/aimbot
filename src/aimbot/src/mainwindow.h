@@ -40,6 +40,7 @@ private slots:
     void tabChanged(int tabIndex);
     void addNewClicked();
     void saveClicked();
+    void loadClicked();
 
 signals:
     void sliderChanged(QVector<int> hsv);
@@ -49,8 +50,8 @@ private:
     QMenu *fileMenu;
     CamListener* camListener;
     QTabWidget *tabs;
-    //PreFilter *prefilter;
-    //QThread prefilterThread;
+    PreFilter *prefilter;
+    QThread prefilterThread;
 
     void setUpMenuBar();
     void insertRobotNewTab(RobotVisionTab *robotVisionTab);

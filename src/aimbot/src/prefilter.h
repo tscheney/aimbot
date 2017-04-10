@@ -5,6 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "global.h"
 #include <opencv2/photo/photo.hpp>
+#include <opencv2/video/background_segm.hpp>
 
 using namespace cv;
 
@@ -21,7 +22,12 @@ public slots:
     void rawFrame(cv::Mat frame);
 
 private:
-    cv::Mat glareReduction(cv::Mat frame, int thresh);
+    Mat glareReduction(cv::Mat frame, int thresh);
+    Mat backgroundSubtraction(cv::Mat frame);
+    Mat applyMask(cv::Mat frame, cv::Mat mask);
+
+    Ptr<BackgroundSubtractor> pMOG2;
+    Mat fgMaskMOG2;
 };
 
 #endif // PREFILTER_H

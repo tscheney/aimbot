@@ -4,18 +4,18 @@
 
 PreFilter::PreFilter(QObject *parent) : QObject(parent)
 {
-
+    pMOG2 = createBackgroundSubtractorMOG2(1000, 16, false);
 }
 
 // Process the raw frame coming in
 void PreFilter::rawFrame(cv::Mat frame)
 {
-    cv::Mat filtered = glareReduction(frame, 170);
+    Mat filtered = backgroundSubtraction(frame);
     emit filteredFrame(filtered);
 }
 
 // Reduce glare in the image
-cv::Mat PreFilter::glareReduction(cv::Mat frame, int thresh)
+Mat PreFilter::glareReduction(cv::Mat frame, int thresh)
 {
     Mat imgGray;
     cvtColor(frame, imgGray,CV_BGR2GRAY);
@@ -32,4 +32,19 @@ cv::Mat PreFilter::glareReduction(cv::Mat frame, int thresh)
     cvtColor(imgThresh, imgThresh, CV_GRAY2BGR);
 
     return frame;
+}
+
+// Do background subtraction
+Mat PreFilter::backgroundSubtraction(cv::Mat frame)
+{
+    pMOG2->apply(frame, fgMaskMOG2);
+    return applyMask(frame, fgMaskMOG2);
+}
+
+// Apply the mask to the frame
+Mat PreFilter::applyMask(cv::Mat frame, cv::Mat mask)
+{
+    Mat output = frame.clone().setTo(0);
+    frame.copyTo(output, mask);
+    return output;
 }

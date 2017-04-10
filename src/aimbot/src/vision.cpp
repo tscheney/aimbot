@@ -16,8 +16,6 @@ Vision::Vision(QObject* parent, string initName) : QObject(parent)
 {
     name = initName;
     initPublishers(name);
-    //pMOG2 = new BackgroundSubtractorMOG2();
-    pMOG2 = createBackgroundSubtractorMOG2();
 }
 
 // Initialize the publishers this class publishes
@@ -51,13 +49,6 @@ void Vision::process(cv::Mat frame)
     geometry_msgs::Pose2D pos;
 
     Mat result = frame;
-
-    Mat backSub = backgroundSubtraction(frame);
-
-    if(isUseBackSub)
-    {
-        result = backSub;
-    }
 
     result = applyBlur(result);
 
@@ -107,6 +98,26 @@ void Vision::process(cv::Mat frame)
 
     publish(pos);
     emit processedImage(applyMask(frame, result));
+}
+
+// A new unfiltered frame has arrived
+void Vision::newUnfilteredFrame(Mat frame)
+{
+    unFiltFrame = frame;
+    if(!isUseBackSub)
+    {
+        process(frame);
+    }
+}
+
+// A new prefiltered frame has arrived
+void Vision::newPrefiltFrame(cv::Mat frame)
+{
+    preFiltFrame = frame;
+    if(isUseBackSub)
+    {
+        process(frame);
+    }
 }
 
 // Apply the mask to the frame
@@ -225,13 +236,6 @@ Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
     erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
     dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
     return imgGray;
-}
-
-// Do background subtraction
-Mat Vision::backgroundSubtraction(Mat frame)
-{
-    pMOG2->apply(frame, fgMaskMOG2);
-    return applyMask(frame, fgMaskMOG2);
 }
 
 // Given a thresholded gray image, calculate the moments in the image

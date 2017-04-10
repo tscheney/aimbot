@@ -28,6 +28,7 @@ public:
     //Vision* getVision() ;
     std::map<std::string, QSlider*> getColorSliders();
     std::map<std::string, QSlider*> getShapeSliders();
+    void loadProfile(std::map<std::string, int> profile);
 signals:
     void newColorData(ColorData colorData);
     void newIsUseColor(bool value);
@@ -49,7 +50,6 @@ protected:
     virtual void setUpVision(std::string name) = 0;
     void setUpVideo();
     void setUpVisionOptions();
-    void loadProfile(std::map<std::string, int> profile);
     void setUpColorOptions(QVBoxLayout *visionOptionsLayout);
     virtual void setUpShapeOptions(QVBoxLayout *visionOptionsLayout) = 0;
     void setUpSlider(QSlider *slider, int min, int max, int val);

@@ -18,6 +18,7 @@ public:
     AddNewDialog();
     QString getName();
     QString getProfile();
+    QComboBox *getNamesComboBox();
 
 private slots:
     void namesComboBoxChanged(QString newName);

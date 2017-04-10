@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
     camListener = new CamListener();
     camListener->start(QThread::LowPriority); // starts the thread making run() function run continuousl
 
-    //prefilter = new PreFilter();
-    //connect(camListener, SIGNAL(rawImage(cv::Mat)), prefilter, SLOT(rawFrame(cv::Mat)));
-    //prefilter->moveToThread(&prefilterThread);
-    //prefilterThread.start();
+    prefilter = new PreFilter();
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), prefilter, SLOT(rawFrame(cv::Mat)));
+    prefilter->moveToThread(&prefilterThread);
+    prefilterThread.start();
 
     ui->setupUi(this);
     // Set up tabs
@@ -29,7 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete camListener;
-    delete ui;
+    prefilterThread.quit();
+    prefilterThread.wait();
+    delete prefilter;
+    delete ui;    
     QList<QWidget *> tabsList = tabs->findChildren<QWidget *>();
     for(QWidget *tab : tabsList)
     {
@@ -53,6 +56,12 @@ void MainWindow::setUpMenuBar()
     saveSettings->setVisible(false);
     fileMenu->addAction(saveSettings);
     connect(saveSettings, SIGNAL(triggered()), this, SLOT(saveClicked()));
+
+    QAction *loadSettings = new QAction(tr("&Load Settings"), this);
+    loadSettings->setObjectName("loadSettings");
+    loadSettings->setVisible(false);
+    fileMenu->addAction(loadSettings);
+    connect(loadSettings, SIGNAL(triggered()), this, SLOT(loadClicked()));
 
     fileMenu->addSeparator();
     QAction *exit = new QAction(tr("E&xit"), this);
@@ -86,8 +95,8 @@ void MainWindow::setUpMenuBar()
 // Inserts the given robot vision tab into the tabs
 void MainWindow::insertRobotNewTab(RobotVisionTab *robotVisionTab)
 {
-    connect(camListener, SIGNAL(rawImage(cv::Mat)), robotVisionTab->getVision(), SLOT(process(cv::Mat)));
-    //connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), robotVisionTab->getVision(), SLOT(process(cv::Mat)));
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), robotVisionTab->getVision(), SLOT(newUnfilteredFrame(cv::Mat)));
+    connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), robotVisionTab->getVision(), SLOT(newPrefiltFrame(cv::Mat)));
     tabs->addTab(robotVisionTab, robotVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }
@@ -111,8 +120,8 @@ void MainWindow::insertNewRobotTab(QString name, map<string, int> profile)
 // Inserts the given ball vision tab into the tabs
 void MainWindow::insertNewBallTab(BallVisionTab *ballVisionTab)
 {
-    connect(camListener, SIGNAL(rawImage(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
-    //connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), ballVisionTab->getVision(), SLOT(process(cv::Mat)));
+    connect(camListener, SIGNAL(rawImage(cv::Mat)), ballVisionTab->getVision(), SLOT(newUnfilteredFrame(cv::Mat)));
+    connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), ballVisionTab->getVision(), SLOT(newPrefiltFrame(cv::Mat)));
     tabs->addTab(ballVisionTab, ballVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }
@@ -137,13 +146,16 @@ void MainWindow::insertNewBallTab(QString name, map<string, int> profile)
 void MainWindow::tabChanged(int tabIndex)
 {
     QAction *saveSettings = findChild<QAction *>("saveSettings");
+    QAction *loadSettings = findChild<QAction *>("loadSettings");
     if(tabIndex == 0)
     {
         saveSettings->setVisible(false);
+        loadSettings->setVisible(false);
     }
     else
     {
         saveSettings->setVisible(true);
+        loadSettings->setVisible(true);
     }
 }
 
@@ -215,5 +227,39 @@ void MainWindow::saveClicked()
             settings.writeRobotProfile(dialog.textValue(), params);
         }
 
+    }
+}
+
+// Handle Load settings clicked event
+void MainWindow::loadClicked()
+{
+    VisionTab *visionTab = (VisionTab *) tabs->currentWidget();
+    AddNewDialog dialog;
+
+    dialog.setWindowTitle("Load Settings");
+    dialog.getNamesComboBox()->clear();
+    dialog.getNamesComboBox()->insertItem(0, visionTab->objectName());
+
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        Settings settings;
+        if(dialog.getName() == "ball") //ball
+        {
+            if(dialog.getProfile() != GlobalData::newProfileName) // load profile
+            {
+                map<string, int> profile = settings.getBallProfile(dialog.getProfile());
+                visionTab->loadProfile(profile);
+            }
+        }
+        else // robot
+        {
+            if(dialog.getProfile() != GlobalData::newProfileName) // load profile
+            {
+                map<string, int> profile = settings.getRobotProfile(dialog.getProfile());
+                visionTab->loadProfile(profile);
+            }
+        }
+        visionTab->setObjectName(dialog.getName());
+        tabs->setTabText(tabs->currentIndex(), dialog.getName());
     }
 }

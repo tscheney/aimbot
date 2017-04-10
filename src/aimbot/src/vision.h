@@ -10,7 +10,6 @@
 #include "geometry_msgs/Pose2D.h"
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/ximgproc.hpp>
-#include <opencv2/video/background_segm.hpp>
 #include "global.h"
 
 using namespace std;
@@ -22,6 +21,8 @@ private:
 	static string space;
 private slots:
     void process(cv::Mat frame);
+    void newUnfilteredFrame(cv::Mat frame);
+    void newPrefiltFrame(cv::Mat frame);
     void newColorData(ColorData newColorData);
     void useBackSub(bool value);
     void useColor(bool value);
@@ -42,6 +43,9 @@ public:
 	static float FIELD_X_OFFSET;
     static float FIELD_Y_OFFSET;
 
+    Mat unFiltFrame;
+    Mat preFiltFrame;
+
     // Processing Params
     ColorData colorData;
     //ShapeData shapeData;
@@ -51,9 +55,6 @@ public:
     bool isUseShape = true;
 
     geometry_msgs::Pose2D prevPos;
-
-    Ptr<BackgroundSubtractor> pMOG2;
-    Mat fgMaskMOG2;
 
     string name;
     ros::Publisher pub;
