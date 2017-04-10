@@ -94,6 +94,12 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
     QLabel *vLowLabel = new QLabel(tr("V Low:"));
     QLabel *vHighLabel = new QLabel(tr("V High:"));
 
+    QLabel *useColorLabel = new QLabel(tr("Use Color"));
+    QCheckBox *useColorCheckBox = new QCheckBox();
+    useColorCheckBox->setChecked(true);
+    connect(useColorCheckBox, SIGNAL(toggled(bool)), this, SLOT(useColorChanged(bool)));
+    colorOptionsLayout->addRow(useColorLabel, useColorCheckBox);
+
     // Sliders
     const int min = 0;
     const int hMax = 179;
@@ -320,6 +326,11 @@ void VisionTab::colorSlidersChanged(int val)
     colorData.vHigh = sliderList.at(5)->value();
 
     emit newColorData(colorData);
+}
+
+void VisionTab::useColorChanged(bool value)
+{
+    emit newIsUseColor(value);
 }
 
 //// Send out all values from shape sliders

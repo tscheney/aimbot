@@ -11,6 +11,7 @@
 #include <QString>
 #include <QThread>
 #include <QScrollArea>
+#include <QCheckBox>
 #include <string>
 #include <map>
 #include <opencv2/core/core.hpp>
@@ -29,9 +30,11 @@ public:
     std::map<std::string, QSlider*> getShapeSliders();
 signals:
     void newColorData(ColorData colorData);
+    void newIsUseColor(bool value);
 public slots:
     void updateVideo(cv::Mat frame);
     void colorSlidersChanged(int val);
+    void useColorChanged(bool value);
     virtual void shapeSlidersChanged(int val) = 0;
 protected:
     QThread visionThread;

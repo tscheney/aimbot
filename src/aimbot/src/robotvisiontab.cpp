@@ -26,6 +26,7 @@ void RobotVisionTab::setUpVision(string name)
     vision = new RobotVision(0, name);
     connect(vision, SIGNAL(processedImage(cv::Mat)), this, SLOT(updateVideo(cv::Mat)));
     connect(this, SIGNAL(newColorData(ColorData)), vision, SLOT(newColorData(ColorData)));
+    connect(this, SIGNAL(newIsUseColor(bool)), vision, SLOT(useColor(bool)));
     connect(this, SIGNAL(newShapeData(RobotShapeData)), vision, SLOT(newShapeData(RobotShapeData)));
     vision->moveToThread(&visionThread);
     visionThread.start();
@@ -52,11 +53,10 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     QLabel *backMinSizeLabel = new QLabel(tr("Back Min Size:"));
     QLabel *backMaxSizeLabel = new QLabel(tr("Back Max Size:"));
 
-    QLabel *useShapeLabel = new QLabel(tr("Use Shape"));
-    QCheckBox *useShapeCheckBox = new QCheckBox();
-    useShapeCheckBox->setChecked(true);
-    connect(useShapeCheckBox, SIGNAL(toggled(bool)), vision, SLOT(useShape(bool)));
-    shapeOptionsLayout->addRow(useShapeLabel, useShapeCheckBox);
+    QLabel *useEdgeDetectLabel = new QLabel(tr("Use Edge Detect"));
+    QCheckBox *useEdgeDetectCheckBox = new QCheckBox();
+    useEdgeDetectCheckBox->setChecked(true);
+    connect(useEdgeDetectCheckBox, SIGNAL(toggled(bool)), vision, SLOT(useEdgeDetect(bool)));
 
     // Sliders
     ShapeData shapeData;
@@ -75,6 +75,11 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     QSlider *dilationIterSlider = new QSlider(Qt::Horizontal);
     setUpSlider(dilationIterSlider, 0, GlobalData::dilationIterMax, shapeData.dilationIter);
     shapeSliders.insert(pair<std::string, QSlider *>("dilationIter", dilationIterSlider));
+
+    QLabel *useShapeLabel = new QLabel(tr("Use Shape"));
+    QCheckBox *useShapeCheckBox = new QCheckBox();
+    useShapeCheckBox->setChecked(true);
+    connect(useShapeCheckBox, SIGNAL(toggled(bool)), vision, SLOT(useShape(bool)));
 
     QSlider *polyErrorSlider = new QSlider(Qt::Horizontal);
     int polyErrorSliderMax = int(GlobalData::polyErrorMax * GlobalData::polyErrorSliderDivisor);
@@ -129,10 +134,12 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     connect(backMinSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
     connect(backMaxSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(shapeSlidersChanged(int)));
 
-    // Add rows to form layout
+    // Add rows to form
+    shapeOptionsLayout->addRow(useEdgeDetectLabel, useEdgeDetectCheckBox);
     shapeOptionsLayout->addRow(blurSizeLabel, blurSizeSlider);
     shapeOptionsLayout->addRow(edgeThresh1Label, edgeThresh1Slider);
     shapeOptionsLayout->addRow(edgeThresh2Label, edgeThresh2Slider);
+    shapeOptionsLayout->addRow(useShapeLabel, useShapeCheckBox);
     shapeOptionsLayout->addRow(dilationIterLabel, dilationIterSlider);
     shapeOptionsLayout->addRow(polyErrorLabel, polyErrorSlider);
     shapeOptionsLayout->addRow(frontMinNumVertLabel, frontMinNumVertSlider);

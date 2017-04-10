@@ -52,24 +52,45 @@ void Vision::process(cv::Mat frame)
 
     result = applyBlur(result);
 
-    if(isUseShape)
+
+    if(isUseEdgeDetect)
     {
         result = detectShapeEdges(result);
-        result = applyDilate(result);
-        result = applyMask(frame, result);
     }
 
-    // threshold the image according to given HSV parameters
-    result = detectColors(result);
+    if(isUseEdgeDetect)
+    {
+        result = applyDilate(result);
+    }
 
     // Mask based on shape
     if(isUseShape)
     {
+        if(!isUseEdgeDetect) // && !isUseColor)
+        {
+            cvtColor(frame, result, COLOR_BGR2GRAY);
+        }
         result = detectShapes(result);
     }
 
+    if(isUseColor)
+    {
+        if(isUseEdgeDetect || isUseShape)
+        {
+            // apply mask to restore color
+            result = applyMask(frame, result);
+        }
+        // threshold the image according to given HSV parameters
+        result = detectColors(result);
+    }
+
     // Calculate moments to find position
-    vector<Moments> mm = calcMoments(result);
+    vector<Moments> mm;
+
+    if(isUseColor || isUseEdgeDetect || isUseShape)
+    {
+        mm = calcMoments(result);
+    }
 
     // Get position
     pos = getPos(mm);
@@ -77,6 +98,7 @@ void Vision::process(cv::Mat frame)
 
     publish(pos);
     emit processedImage(applyMask(frame, result));
+    //emit processedImage(result);
 }
 
 // Apply the mask to the frame
@@ -253,6 +275,18 @@ Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 void Vision::publish(geometry_msgs::Pose2D& pos)
 {
     pub.publish(pos);
+}
+
+// Recieve new use color value
+void Vision::useColor(bool value)
+{
+    isUseColor = value;
+}
+
+// Recieve new use edge detect value
+void Vision::useEdgeDetect(bool value)
+{
+    isUseEdgeDetect = value;
 }
 
 // Recieve new use shape value

@@ -22,6 +22,8 @@ private:
 private slots:
     void process(cv::Mat frame);
     void newColorData(ColorData newColorData);
+    void useColor(bool value);
+    void useEdgeDetect(bool value);
     void useShape(bool value);
 signals:
     void processedImage(cv::Mat frame);
@@ -41,6 +43,8 @@ public:
     // Processing Params
     ColorData colorData;
     //ShapeData shapeData;
+    bool isUseColor = true;
+    bool isUseEdgeDetect = true;
     bool isUseShape = true;
 
     geometry_msgs::Pose2D prevPos;
