@@ -4,7 +4,7 @@
 CamListener::CamListener(QObject *parent) //TODO: (string subPath)
  : QThread(parent), it(nh)
 {
-    image_sub = it.subscribe("/usb_cam_away/image_raw", 1, boost::bind(&CamListener::imageCallback, this, _1));
+    image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1), ros::VoidPtr(), image_transport::TransportHints::TransportHints("compressed"));
 }
 
 CamListener::~CamListener()
