@@ -5,6 +5,7 @@ from Position import Position
 from soccerref.msg import GameState
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Int16
+import numpy as np
 
 class Team:
 
@@ -24,7 +25,8 @@ class Team:
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
-        self.debug = True
+        self.debug = False
+        self.change_roles = False
 
     def init_pos(self):
         """Init the position dictionary"""
@@ -116,8 +118,28 @@ class Team:
         if (self.debug == True):
             self.roles['ally1'] = 99
         elif(self.game_state.play):
-            self.roles['ally1'] = 1 # these are just test roles
-            self.roles['ally2'] = 2
+            if (self.roles['ally1'] == 0):
+                print("init roles")
+                self.roles['ally1'] = 1
+                self.roles['ally2'] = 2
+            #if(self.roles['ally2'] == 2):
+
+            #    if(self.switch_Roles(self.roles['ally2'])):
+                    #print("switch places, ally1 role is: ", self.roles['ally1'])
+            #        print("flip")
+            #        self.roles['ally1'] = 2
+            #        self.roles['ally2'] = 1
+            #    else:
+            #        self.roles['ally1'] = self.roles['ally1']
+            #        self.roles['ally2'] = self.roles['ally2']
+            #else:
+            #    if(self.switch_Roles(self.roles['ally1'])):
+            #        print("original")
+            #        self.roles['ally1'] = 1
+            #        self.roles['ally2'] = 2
+            #    else:
+            #        self.roles['ally1'] = self.roles['ally1']
+            #        self.roles['ally2'] = self.roles['ally2']
         #penalty stuff must be here due to the way it is set up the the ref code.
             #if you are not in penalty they send the reset field signal and if this is after the elif for reset field
             #then it takes that branch and just resets the field. So leave this section before the reset field branch.
@@ -132,11 +154,42 @@ class Team:
             self.roles['ally1'] = 3
             self.roles['ally2'] = 4
         else:
-            self.roles['ally1'] = 1  # these are just test roles
-            self.roles['ally2'] = 2
+            self.roles['ally1'] = 0  # these are just test roles
+            self.roles['ally2'] = 0
+
+
 
     def determine_game_state(self):
         """Based on known positions and score, determine which state the game is in"""
+
+    def switch_Roles(self, defender):
+        """If defender is close enough to the ball, become the attacker
+            and have the attacker go to defense"""
+        # Use numpy to create vectors
+        if defender == 2:
+            ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
+            mevec = np.array([[self.positions["ally2"].x], [self.positions["ally2"].y]])
+        else:
+            ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
+            mevec = np.array([[self.positions["ally1"].x], [self.positions["ally1"].y]])
+        field_width = 3.53
+        goalvec = np.array([[field_width / 2], [0]])
+
+        # unit vector from ball to goal
+        uv = goalvec - ballvec
+        uv = uv / np.linalg.norm(uv)
+
+        # compute a position 20cm behind ball, but aligned with goal
+        p = ballvec - 0.1 * uv
+
+        # If I am sufficiently close to the point behind the ball,
+        # or in other words, once I am 21cm behind the ball, just
+        # drive to the goal.
+        if np.linalg.norm(p - mevec) < 0.09:
+            return True
+        else:
+            return False
+
 
 
 

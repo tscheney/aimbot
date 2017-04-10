@@ -37,6 +37,7 @@ class Robot(Moving):
         self.path_planner = PathPlanner()
         self.control_ball = False
         self.des_distance_from_ball = 0.21
+        self.change_roles = False
 
     def my_pos_sub(self):
         """Subscribe to my position"""
@@ -182,7 +183,7 @@ class Robot(Moving):
 
 
         elif self.role == 2:
-            self.follow_ball_on_line(self.ball_pos, -1.25)
+            self.follow_ball_on_line(self.ball_pos)
         elif self.role == 3: #reset field is true
             if (self.withinError(10)):
                 return #dont do anything
@@ -219,11 +220,18 @@ class Robot(Moving):
         self.des_pos.y = des_y
         self.des_pos.theta = des_th
 
-    def follow_ball_on_line(self, ball, x_c):
-        y_c = ball.y
+    def follow_ball_on_line(self, ball):
         theta_c = 0
-        self.set_des_pos(x_c, y_c, theta_c)
-
+        if ball.x <= 0:
+            x_c = -1.25
+            y_c = ball.y
+            self.set_des_pos(x_c, y_c, theta_c)
+        elif ball.x < 1:
+            x_c = -.25
+            y_c = ball.y
+            self.set_des_pos(x_c, y_c, theta_c)
+        else:
+            self.score_a_goal()
     def rush_goal(self):
         # Use numpy to create vectors
         ballvec = np.array([[self.ball_pos.x], [self.ball_pos.y]])
