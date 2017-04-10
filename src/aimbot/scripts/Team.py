@@ -25,7 +25,7 @@ class Team:
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
-        self.debug = False
+        self.debug = True
         self.change_roles = False
 
     def init_pos(self):
