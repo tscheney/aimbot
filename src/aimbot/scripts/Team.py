@@ -116,7 +116,7 @@ class Team:
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
         if (self.debug == True):
-            self.roles['ally1'] = 97
+            self.roles['ally1'] = 1
         elif(self.game_state.play):
             if (self.roles['ally1'] == 0):
                 print("init roles")
