@@ -171,8 +171,8 @@ class Robot(Moving):
         elif self.role == 1:
             #self.go_to(self.pos.x, self.pos.y, 0)
             #if (self.pause == 10):
-            #self.rush_goal()
-            self.score_a_goal()
+            self.rush_goal()
+            #self.score_a_goal()
 
 
 
