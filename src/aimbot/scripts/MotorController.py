@@ -12,7 +12,6 @@ class MotorController:
         self.PIQ = (p, i, qpps)
         self.init_serial()
         self.setPID(0, p, i, self.PULSE_PER_ROTATION)
-        self.setBoost(30,16)
         #self.setPID(2, p, i, qpps)
         #self.setPID(3, p, i, qpps/2)
         self.setSpeed(0,0,0)
@@ -105,12 +104,12 @@ class MotorController:
             self.writeFloat(i)
             self.writeFloat(qpps)
 
-    def setBoost(self, zeroBoost, rolloff):
-        """Sets the values for the low speed boost"""
+    def setBoost(self, zeroBoost, length):
+        """Sets the values for the low speed boost zeroBoost is the multiplication at power = 0, and length is the length of the array"""
         if self.serial_conn:
             self.ser.write('b')
             self.writeFloat(zeroBoost)
-            self.writeFloat(rolloff)
+            self.writeFloat(length)
 
     def setT(self, period_ms, tau_ms):
         """Set tick period (triggers PID control) and velocity filter corner frequency"""
