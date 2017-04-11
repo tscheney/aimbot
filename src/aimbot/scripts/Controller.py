@@ -45,7 +45,7 @@ yP = {
     'type': 'y'
 }
 
-th_scale = 4 #good for simulator
+th_scale = 3 #good for simulator
 #th_scale = 0.01
 thetaP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
