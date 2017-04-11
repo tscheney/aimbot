@@ -10,8 +10,9 @@ PreFilter::PreFilter(QObject *parent) : QObject(parent)
 // Process the raw frame coming in
 void PreFilter::rawFrame(cv::Mat frame)
 {
-    Mat filtered = backgroundSubtraction(frame);
-    emit filteredFrame(filtered);
+    //Mat filtered = backgroundSubtraction(frame);
+    //emit filteredFrame(filtered);
+    filteredFrame(frame);
 }
 
 // Reduce glare in the image
