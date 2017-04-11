@@ -291,7 +291,7 @@ class Robot(Moving):
         #     else:
         #         self.control_ball = False
         self.go_behind_ball_facing_target()
-        if (self.withinError(3)):
+        if (self.withinError(5)):
             self.attack_ball()
 
 
