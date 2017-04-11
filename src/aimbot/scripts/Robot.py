@@ -160,14 +160,11 @@ class Robot(Moving):
             self.score_a_goal()
 
         elif self.role == 2:
-            self.follow_ball_on_line(-3 * constants.field_width / 4)
+            self.defend_goal()
         elif self.role == 3:
             self.go_behind_ball_facing_target(0.5)
         elif self.role == 4:
-            if(self.ball_pos.x >= 0):
-                self.follow_ball_on_line(0)
-            else:
-                self.follow_ball_on_line(-1 * constants.field_width / 4)
+                self.follow_ball_on_line(self.ball_pos.x - 1)
         elif 100 <= self.role < 1000:
             self.set_placement_role()
         elif self.role >= 1000:
@@ -387,6 +384,17 @@ class Robot(Moving):
         #    cmdvec = p
         #self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta
 
+
+    def defend_goal(self):
+        theta_c = 0
+        x_c = (constants.robot_width / 2) - constants.field_width/2
+        y_c = self.ball_pos.y
+        if(y_c > constants.goal_box_width / 2):
+            y_c = constants.goal_box_width / 2
+        elif(y_c < -1* constants.goal_box_width / 2):
+            y_c = -1 * constants.goal_box_width / 2
+
+        self.set_des_pos(x_c, y_c, theta_c)
 
     def get_distance_between_points(self, x1, y1, x2, y2):
         a = x2 - x1

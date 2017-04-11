@@ -163,7 +163,7 @@ class Team:
     def set_roles_offense(self):
         """Use offensive strategy"""
         ally1_to_ball = self.get_distance_between_points(self.positions['ally1'], self.positions['ball'])
-        ally2_to_ball = self.get_distance_between_points(self.positions['ally1'], self.positions['ball'])
+        ally2_to_ball = self.get_distance_between_points(self.positions['ally2'], self.positions['ball'])
         if(ally1_to_ball <= ally2_to_ball): # ally1 is the closets opponent
             self.roles['ally1'] = 1
             self.roles['ally2'] = 3
@@ -173,7 +173,7 @@ class Team:
 
     def set_roles_defense(self):
         """Use defensive stragegy"""
-        self.roles['ally1'] = 3
+        self.roles['ally1'] = 1
         self.roles['ally2'] = 2
 
     def get_distance_between_points(self, pos1, pos2):
@@ -189,7 +189,7 @@ class Team:
         ball_x = self.positions["ball"].x
         if ball_x > constants.field_width / 3:
             self.set_roles_offense()
-        elif ball_x < (-1 * constants.field_width / 3):
+        elif ball_x < (-1 * constants.field_width / 4):
             self.set_roles_defense()
         else:
             self.set_roles_balanced()
