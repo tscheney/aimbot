@@ -1,5 +1,6 @@
 import rospy
 import numpy as np
+import constants
 from Moving import Moving
 from Controller import Controller
 from Position import Position
@@ -36,7 +37,6 @@ class Robot(Moving):
         self.pause = 10
         self.path_planner = PathPlanner()
         self.control_ball = False
-        self.des_distance_from_ball = 0.21
         self.change_roles = False
 
     def my_pos_sub(self):
@@ -154,78 +154,77 @@ class Robot(Moving):
         """Determine the desired position for the robot"""
 
         if self.role == 0: # stay where you are
-            #self.go_to(0.3, -0.3, 0)
-            #self.rotate()
-            #self.move_to_center()
-            # if self.withinError(5):
-            #     if self.state < 3:
-            #         self.state += 1
-            #     else:
-            #         self.state = 0
-            #     print(self.state)
-            #
-            # self.move_square()
-            self.stay_put();
-
+            self.stay_put()
 
         elif self.role == 1:
-            #self.go_to(self.pos.x, self.pos.y, 0)
-            #if (self.pause == 10):
-            self.rush_goal()
-            #self.score_a_goal()
-
-
-
-            #    self.pause = 0
-            #else:
-            #    self.pause = self.pause + 1
-            #self.move_to_center()
-
+            self.score_a_goal()
 
         elif self.role == 2:
-            self.follow_ball_on_line(self.ball_pos)
-        elif self.role == 3: #reset field is true
-            if (self.withinError(10)):
+            self.follow_ball_on_line(-3 * constants.field_width / 4)
+        elif self.role == 3:
+            self.go_behind_ball_facing_target(0.5)
+        elif self.role == 4:
+            if(self.ball_pos.x >= 0):
+                self.follow_ball_on_line(0)
+            else:
+                self.follow_ball_on_line(-1 * constants.field_width / 4)
+        elif 100 <= self.role < 1000:
+            self.set_placement_role()
+        elif self.role >= 1000:
+            self.debug_role()
+        else:
+            print("not a valid role")
+
+    def set_placement_role(self):
+        """Determine desired position for set placement"""
+        if self.role == 103: #reset field is true
+            if (self.within_error(10)):
                 return #dont do anything
             self.go_to(-.5,0, 0)
-        elif self.role == 4: #reset field is true
-            if (self.withinError(10)):
+        elif self.role == 104: #reset field is true
+            if (self.within_error(10)):
                 return
             self.go_to(-1.2, 0, 0)
 
-        elif self.role == 5:  # penalty and home ally1
+        elif self.role == 105:  # penalty and home ally1
             self.go_to(-.06, 1.7, 0)
-        elif self.role == 6:  # penalty and home ally2
+        elif self.role == 106:  # penalty and home ally2
             self.go_to(-.06, -1.7, 0)
 
-        elif self.role == 7:  # penalty and away ally1
+        elif self.role == 107:  # penalty and away ally1
             self.go_to(-.06, 1.7, 0)
-        elif self.role == 8:  # penalty and away ally2
+        elif self.role == 108:  # penalty and away ally2
             self.go_to(-.06, -1.7, 0)
-        elif self.role == 97:
-            if (self.withinError(1)):
+        else:
+            print("not a valid role")
+
+
+    def debug_role(self):
+        """determine desired position with debug role"""
+        if self.role == 1097:
+            if (self.within_error(1)):
                 if self.state < 1:
                     self.state += 1
                 else:
                     self.state = 0
                 print(self.state)
             if (self.state == 0):
-                self.go_to(0, 0, 90);
+                self.go_to(0, 0, 90)
             else:
-                self.go_to(0, 0, -90);
-        elif self.role == 98: # debug role
-            if(self.withinError(1)):
+                self.go_to(0, 0, -90)
+        elif self.role == 1098: # debug role
+            if(self.within_error(1)):
                 if self.state < 1:
                     self.state += 1
                 else:
                     self.state = 0
                 print(self.state)
             if(self.state == 0):
-                self.go_to(0,0,0);
+                self.go_to(0,0,0)
             else:
-                self.go_to(1,0,0);
-        elif self.role == 99: # debug role
-            if self.withinError(10):
+                self.go_to(1,0,0)
+        elif self.role == 1099: # debug role
+            if self.within_error(10):
                 if self.state < 3:
                     self.state += 1
                 else:
@@ -242,18 +241,11 @@ class Robot(Moving):
         self.des_pos.y = des_y
         self.des_pos.theta = des_th
 
-    def follow_ball_on_line(self, ball):
+    def follow_ball_on_line(self, line):
         theta_c = 0
-        if ball.x <= 0:
-            x_c = -1.25
-            y_c = ball.y
-            self.set_des_pos(x_c, y_c, theta_c)
-        elif ball.x < 1:
-            x_c = -.25
-            y_c = ball.y
-            self.set_des_pos(x_c, y_c, theta_c)
-        else:
-            self.score_a_goal()
+        x_c = line
+        y_c = self.ball_pos.y
+        self.set_des_pos(x_c, y_c, theta_c)
 
     def rush_goal(self):
         # Use numpy to create vectors
@@ -281,35 +273,19 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        # if(not self.control_ball):
-        #     self.go_behind_ball_facing_target()
-        #     if (self.withinError(3)):
-        #         self.control_ball = True
-        # else:
-        #     self.control_ball_facing_target()
-        #     if (self.withinError(10)):
-        #         self.attack_ball()
-        #     else:
-        #         self.control_ball = False
-        self.go_behind_ball_facing_target()
-        if (self.withinError(3)):
+        self.go_behind_ball_facing_target(0)
+        goal_pos = Position()
+        goal_pos.x = constants.field_width/2
+        goal_pos.y = 0
+        tol = 0.1
+        in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
+        if (self.theta_within_error(3) and in_tol):
             self.attack_ball()
 
-
-    def go_behind_ball_facing_target(self):
+    def go_behind_ball_facing_target(self, des_distance_from_ball):
         """Get behind the ball facing the goal"""
-        field_width = 3.53
-        theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, field_width/2, 0)
-        robot_half_width = 0.08573
-        if (self.withinError(3)):
-            self.des_distance_from_ball -= 0.03
-        elif(self.des_distance_from_ball <= 0):
-            self.des_distance_from_ball = 0
-        elif(not self.withinError(3)):
-            #if(self.des_distance_from_ball < 0.21):
-                #self.des_distance_from_ball += 0.01
-            self.des_distance_from_ball = 0.21
-        hypotenuse = robot_half_width + self.des_distance_from_ball
+        theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, constants.field_width/2, 0)
+        hypotenuse = (constants.robot_width / 2)+ des_distance_from_ball
         x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
         y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
         theta = np.rad2deg(theta)
@@ -424,6 +400,11 @@ class Robot(Moving):
         theta = np.arctan2(b, a)
         return theta
 
+    def dis_from_point_to_line(self, point_pos, pos1, pos2):
+        """Gets the distance from (x0, y0) to the line that goes through (x1,y1) and (x2,y2)"""
+        #return abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) / np.sqrt((y2 - y1) ^ 2 + (x2 - x1) ^ 2)
+        return abs((pos2.y - pos1.y)*point_pos.x - (pos2.x - pos1.x)*point_pos.y + pos2.x*pos1.y - pos2.y*pos1.x) / np.sqrt(np.power(pos2.y-pos1.y, 2) + np.power(pos2.x - pos1.x, 2))
+
     def go_to(self, x, y, theta):
         """Go to the x, y and theta position given as parameters"""
         self.set_des_pos(x, y, theta)
@@ -457,32 +438,25 @@ class Robot(Moving):
         # else:
         # return pos <= (desired - error) and pos >= (desired + error)
 
-    def withinError(self, errorPercent):
+    def within_error(self, errorPercent):
         """Returns if the robot is at it's desired position within the error percentage"""
         field_width = 3.53 #in meters
         xy_offset = field_width * errorPercent / 100
-        th_offset = 360 * errorPercent / 100
         x_good = abs(self.pos.x - self.des_pos.x) < xy_offset
         y_good = abs(self.pos.y - self.des_pos.y) < xy_offset
+
+        return x_good and y_good and self.theta_within_error(errorPercent)
+
+    def theta_within_error(self, errorPercent):
+        """Returns if the robots theta is within the error percentage"""
+        th_offset = 360 * errorPercent / 100
         effective_th = self.pos.theta
-
-        #if(self.pos.theta < th_offset and self.des_pos > (360 - th_offset)):
-        #    effective_th = self.pos.theta + 360
-        #elif(self.pos.theta > (360 - th_offset) and self.des_pos < th_offset):
-        #    effective_th = self.pos.theta - 360
-
         if (self.pos.theta - self.des_pos.theta > 360):
             effective_th = self.pos.theta - 360
         elif (self.des_pos.theta - self.pos.theta > 360):
             effective_th = self.pos.theta + 360
         th_good = abs(effective_th - self.des_pos.theta) < th_offset
-        return x_good and y_good and th_good
-
-
-
-
-
-        return
+        return th_good
 
     def rotate(self):
         """Rotate the robot"""

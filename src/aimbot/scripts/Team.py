@@ -6,6 +6,7 @@ from soccerref.msg import GameState
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Int16
 import numpy as np
+import constants
 
 class Team:
 
@@ -25,7 +26,7 @@ class Team:
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
-        self.debug = True
+        self.debug = False
         self.change_roles = False
 
     def init_pos(self):
@@ -116,12 +117,9 @@ class Team:
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
         if (self.debug == True):
-            self.roles['ally1'] = 1
+            self.roles['ally1'] = 1099
         elif(self.game_state.play):
-            if (self.roles['ally1'] == 0):
-                print("init roles")
-                self.roles['ally1'] = 1
-                self.roles['ally2'] = 2
+            self.determine_game_state()
             #if(self.roles['ally2'] == 2):
 
             #    if(self.switch_Roles(self.roles['ally2'])):
@@ -144,23 +142,57 @@ class Team:
             #if you are not in penalty they send the reset field signal and if this is after the elif for reset field
             #then it takes that branch and just resets the field. So leave this section before the reset field branch.
         elif (self.game_state.home_penalty and self.team_side == 'home'):
-            self.roles['ally1'] = 5
-            self.roles['ally2'] = 6
+            self.roles['ally1'] = 105
+            self.roles['ally2'] = 106
         elif (self.game_state.away_penalty and self.team_side == 'away'):
-            self.roles['ally1'] = 7
-            self.roles['ally2'] = 8
+            self.roles['ally1'] = 107
+            self.roles['ally2'] = 108
         #reset field branch here
         elif(self.game_state.reset_field):
-            self.roles['ally1'] = 3
-            self.roles['ally2'] = 4
+            self.roles['ally1'] = 103
+            self.roles['ally2'] = 104
         else:
             self.roles['ally1'] = 0  # these are just test roles
             self.roles['ally2'] = 0
 
+    def set_roles_balanced(self):
+        """Use balanced strategy"""
+        self.roles['ally1'] = 1
+        self.roles['ally2'] = 4
 
+    def set_roles_offense(self):
+        """Use offensive strategy"""
+        ally1_to_ball = self.get_distance_between_points(self.positions['ally1'], self.positions['ball'])
+        ally2_to_ball = self.get_distance_between_points(self.positions['ally1'], self.positions['ball'])
+        if(ally1_to_ball <= ally2_to_ball): # ally1 is the closets opponent
+            self.roles['ally1'] = 1
+            self.roles['ally2'] = 3
+        else:
+            self.roles['ally1'] = 3
+            self.roles['ally2'] = 1
+
+    def set_roles_defense(self):
+        """Use defensive stragegy"""
+        self.roles['ally1'] = 3
+        self.roles['ally2'] = 2
+
+    def get_distance_between_points(self, pos1, pos2):
+        """Gets the distance between two points"""
+        a = pos2.x - pos1.x
+        b = pos2.y - pos1.y
+        c = np.sqrt(a ** 2 + b ** 2)
+        return c
 
     def determine_game_state(self):
-        """Based on known positions and score, determine which state the game is in"""
+        """Based on known positions and score, determine which state the game is in
+        Determines the roles that should be used during game play"""
+        ball_x = self.positions["ball"].x
+        if ball_x > constants.field_width / 3:
+            self.set_roles_offense()
+        elif ball_x < (-1 * constants.field_width / 3):
+            self.set_roles_defense()
+        else:
+            self.set_roles_balanced()
 
     def switch_Roles(self, defender):
         """If defender is close enough to the ball, become the attacker
