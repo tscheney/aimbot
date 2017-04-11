@@ -1,3 +1,4 @@
+import roles
 
 NAMESPACE = '/aimbot/'
 field_width = 3.53

@@ -1,6 +1,7 @@
 import rospy
 import numpy as np
 import constants
+import roles
 from Moving import Moving
 from Controller import Controller
 from Position import Position
@@ -153,24 +154,36 @@ class Robot(Moving):
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
 
-        if self.role == 0: # stay where you are
-            self.stay_put()
+        if self.role <= roles.GAMEPLAY_CUTOFF:
+            self.gameplay_roles()
 
-        elif self.role == 1:
-            self.score_a_goal()
-
-        elif self.role == 2:
-            self.defend_goal()
-        elif self.role == 3:
-            self.go_behind_ball_facing_target(0.5)
-        elif self.role == 4:
-                self.follow_ball_on_line(self.ball_pos.x - 1)
-        elif 100 <= self.role < 1000:
+        elif roles.GAMEPLAY_CUTOFF < self.role < roles.SET_CUTOFF:
             self.set_placement_role()
-        elif self.role >= 1000:
+
+        elif self.role >= roles.SET_CUTOFF:
             self.debug_role()
+
         else:
             print("not a valid role")
+
+
+    def gameplay_roles(self):
+        """Determine desired poositon for gameplay"""
+        if self.role == roles.STAY_PUT: # stay where you are
+            self.stay_put()
+
+        elif self.role == roles.SCORE:
+            self.score_a_goal()
+
+        elif self.role == roles.DEFEND_GOAL:
+            self.defend_goal()
+
+        elif self.role == roles.BACKUP_OFFENSE:
+            self.go_behind_ball_facing_target(0.5)
+
+        elif self.role == roles.FOLLOW_BALL:
+            self.follow_ball_on_line(self.ball_pos.x - 1)
+
 
     def set_placement_role(self):
         """Determine desired position for set placement"""

@@ -7,6 +7,7 @@ from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Int16
 import numpy as np
 import constants
+import roles
 
 class Team:
 
@@ -152,29 +153,29 @@ class Team:
             self.roles['ally1'] = 103
             self.roles['ally2'] = 104
         else:
-            self.roles['ally1'] = 0  # these are just test roles
-            self.roles['ally2'] = 0
+            self.roles['ally1'] = roles.STAY_PUT  # these are just test roles
+            self.roles['ally2'] = roles.STAY_PUT
 
     def set_roles_balanced(self):
         """Use balanced strategy"""
-        self.roles['ally1'] = 1
-        self.roles['ally2'] = 4
+        self.roles['ally1'] = roles.SCORE
+        self.roles['ally2'] = roles.FOLLOW_BALL
 
     def set_roles_offense(self):
         """Use offensive strategy"""
         ally1_to_ball = self.get_distance_between_points(self.positions['ally1'], self.positions['ball'])
         ally2_to_ball = self.get_distance_between_points(self.positions['ally2'], self.positions['ball'])
         if(ally1_to_ball <= ally2_to_ball): # ally1 is the closets opponent
-            self.roles['ally1'] = 1
-            self.roles['ally2'] = 3
+            self.roles['ally1'] = roles.SCORE
+            self.roles['ally2'] = roles.BACKUP_OFFENSE
         else:
-            self.roles['ally1'] = 3
-            self.roles['ally2'] = 1
+            self.roles['ally1'] = roles.BACKUP_OFFENSE
+            self.roles['ally2'] = roles.SCORE
 
     def set_roles_defense(self):
         """Use defensive stragegy"""
-        self.roles['ally1'] = 1
-        self.roles['ally2'] = 2
+        self.roles['ally1'] = roles.SCORE
+        self.roles['ally2'] = roles.DEFEND_GOAL
 
     def get_distance_between_points(self, pos1, pos2):
         """Gets the distance between two points"""
