@@ -302,12 +302,12 @@ class Robot(Moving):
         robot_width = 0.175  # (7.0 in)
         robot_half_width = robot_width / 2
         if (self.withinError(3)):
-            self.des_distance_from_ball -= 0.07
+            self.des_distance_from_ball -= 0.04
         elif(self.des_distance_from_ball <= 0):
             self.des_distance_from_ball = 0
         elif(not self.withinError(3)):
             if(self.des_distance_from_ball < 0.21):
-                self.des_distance_from_ball += 0.07
+                self.des_distance_from_ball += 0.01
         hypotenuse = robot_half_width + self.des_distance_from_ball
         x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
         y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
