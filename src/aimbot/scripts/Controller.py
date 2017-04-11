@@ -6,8 +6,11 @@ from Position import Position
 #xy_scale = 2
 #xy_max_step = 0.22
 
-xy_scale = 2
-xy_max_step = 0.11
+#xy_scale = 2
+#xy_max_step = 0.11
+
+xy_scale = 1
+xy_max_step = 0.22
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
