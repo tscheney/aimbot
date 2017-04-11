@@ -303,7 +303,7 @@ class Robot(Moving):
         robot_width = 0.175  # (7.0 in)
         robot_half_width = robot_width / 2
         if (self.withinError(3)):
-            self.des_distance_from_ball -= 0.04
+            self.des_distance_from_ball -= 0.001
         elif(self.des_distance_from_ball <= 0):
             self.des_distance_from_ball = 0
         elif(not self.withinError(3)):
