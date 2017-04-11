@@ -1,5 +1,5 @@
-
 from soccerref.msg import GameState
+
 
 class GameStateObj():
     """Handles game state messages"""
@@ -24,7 +24,7 @@ class GameStateObj():
         self.home_bot_count = msg.home_bot_count
         self.away_bot_count = msg.away_bot_count
         self.remaining_seconds = msg.remaining_seconds
-        #TODO penalty stuff isnt quite working, i fixed the error it was giving
+        # TODO penalty stuff isnt quite working, i fixed the error it was giving
         self.home_penalty = msg.home_penalty
         self.away_penalty = msg.away_penalty
         self.play = msg.play
@@ -44,7 +44,7 @@ class GameStateObj():
         msg.play = self.play
         msg.reset_field = self.reset_field
         msg.second_half = self.second_half
-        msg.home_penalty = self.home_penalty #TODO
+        msg.home_penalty = self.home_penalty  ###TODO
         msg.away_penalty = self.away_penalty
 
         return msg
