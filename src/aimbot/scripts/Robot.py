@@ -300,12 +300,11 @@ class Robot(Moving):
         """Get behind the ball facing the goal"""
         field_width = 3.53
         theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, field_width/2, 0)
-        robot_width = 0.175  # (7.0 in)
-        robot_half_width = robot_width / 2
+        robot_half_width = 0.08573
         if (self.withinError(3)):
-            self.des_distance_from_ball -= 0.01
-        elif(self.des_distance_from_ball <= 0.08573):
-            self.des_distance_from_ball = 0.08573
+            self.des_distance_from_ball -= 0.03
+        elif(self.des_distance_from_ball <= 0):
+            self.des_distance_from_ball = 0
         elif(not self.withinError(3)):
             #if(self.des_distance_from_ball < 0.21):
                 #self.des_distance_from_ball += 0.01
