@@ -3,7 +3,8 @@ from Observer import Observer
 from MotorController import MotorController
 from Position import Position
 
-xy_scale = 3
+xy_scale = 2
+xy_max_step = 1/4
 xP = {
     'A': np.matrix([[0, 1], [0, -0.0006]]),  # A matrix for observer
     'B': np.matrix([[0], [0.5]]),  # B matrix for observer
@@ -19,7 +20,7 @@ xP = {
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
     'F_max': 60,  # Maximum force applied to the system
-    'max_step': 0.125,  # Max step size
+    'max_step': xy_max_step,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'x'
 }
@@ -39,7 +40,7 @@ yP = {
     # 'L': np.matrix([[137.9],[2030]]),
     # 'Ld': 3000,
     'F_max': 60,  # Maximum force applied to the system
-    'max_step': 0.125,  # Max step size
+    'max_step': xy_max_step,  # Max step size
     'x_e': np.matrix([[0], [0]]),  # Equilibrium States
     'type': 'y'
 }
