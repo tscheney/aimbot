@@ -254,6 +254,7 @@ class Robot(Moving):
             self.set_des_pos(x_c, y_c, theta_c)
         else:
             self.score_a_goal()
+
     def rush_goal(self):
         # Use numpy to create vectors
         ballvec = np.array([[self.ball_pos.x], [self.ball_pos.y]])
@@ -292,7 +293,8 @@ class Robot(Moving):
         #         self.control_ball = False
         self.go_behind_ball_facing_target()
         if (self.withinError(5)):
-            self.attack_ball()
+            #self.attack_ball()
+            self.rush_goal()
 
 
     def go_behind_ball_facing_target(self):
