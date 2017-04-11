@@ -202,6 +202,8 @@ class Robot(Moving):
             self.go_to(-.06, 1.7, 0)
         elif self.role == 8:  # penalty and away ally2
             self.go_to(-.06, -1.7, 0)
+        elif self.role == 98: # debug role
+            self.go_to(0,0,0);
         elif self.role == 99: # debug role
             if self.withinError(10):
                 if self.state < 3:
