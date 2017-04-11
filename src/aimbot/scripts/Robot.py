@@ -334,7 +334,7 @@ class Robot(Moving):
         Simply pushes the ball along the "vector" from robot to ball
         """
         theta = self.get_angle_between_points(self.pos.x, self.pos.y, self.ball_pos.x, self.ball_pos.y)
-        kick_dist = 0 #0.1524  # (6.0in)
+        kick_dist = 0.175 / 2 #0.1524  # (6.0in)
         x_c = self.ball_pos.x + kick_dist * np.cos(theta)
         y_c = self.ball_pos.y + kick_dist * np.sin(theta)
         theta_c = np.rad2deg(theta)
