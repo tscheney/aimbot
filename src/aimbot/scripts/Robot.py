@@ -307,8 +307,9 @@ class Robot(Moving):
         elif(self.des_distance_from_ball <= 0):
             self.des_distance_from_ball = 0
         elif(not self.withinError(3)):
-            if(self.des_distance_from_ball < 0.21):
-                self.des_distance_from_ball += 0.01
+            #if(self.des_distance_from_ball < 0.21):
+                #self.des_distance_from_ball += 0.01
+            self.des_distance_from_ball = 0.21
         hypotenuse = robot_half_width + self.des_distance_from_ball
         x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
         y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
