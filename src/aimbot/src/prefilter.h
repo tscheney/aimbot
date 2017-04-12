@@ -31,7 +31,7 @@ private:
     Ptr<BackgroundSubtractor> pMOG2;
     Mat fgMaskMOG2;
 
-    bool isCalcBackSub = true;
+    bool isCalcBackSub = false;
 };
 
 #endif // PREFILTER_H

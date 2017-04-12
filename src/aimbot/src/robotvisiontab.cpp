@@ -57,7 +57,7 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 
     QLabel *useEdgeDetectLabel = new QLabel(tr("Use Edge Detect"));
     QCheckBox *useEdgeDetectCheckBox = new QCheckBox();
-    useEdgeDetectCheckBox->setChecked(true);
+    useEdgeDetectCheckBox->setChecked(false);
     connect(useEdgeDetectCheckBox, SIGNAL(toggled(bool)), vision, SLOT(useEdgeDetect(bool)));
 
     // Sliders
@@ -80,7 +80,7 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
 
     QLabel *useShapeLabel = new QLabel(tr("Use Shape"));
     QCheckBox *useShapeCheckBox = new QCheckBox();
-    useShapeCheckBox->setChecked(true);
+    useShapeCheckBox->setChecked(false);
     connect(useShapeCheckBox, SIGNAL(toggled(bool)), vision, SLOT(useShape(bool)));
 
     QSlider *polyErrorSlider = new QSlider(Qt::Horizontal);

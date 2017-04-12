@@ -56,7 +56,7 @@ void VisionTab::setUpVisionOptions()
 
     QLabel *useBackSubLabel = new QLabel(tr("Use Background Subtraction"));
     QCheckBox *useBackSubCheckBox = new QCheckBox();
-    useBackSubCheckBox->setChecked(true);
+    useBackSubCheckBox->setChecked(false);
     connect(useBackSubCheckBox, SIGNAL(toggled(bool)), this, SLOT(useBackSubChanged(bool)));
     visionOptionsLayout->addWidget(useBackSubLabel);
     visionOptionsLayout->addWidget(useBackSubCheckBox);

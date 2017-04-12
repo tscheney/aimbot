@@ -27,10 +27,10 @@ private:
     // Processing Params
     ColorData colorData;
     //ShapeData shapeData;
-    bool isUseBackSub = true;
+    bool isUseBackSub = false;
     bool isUseColor = true;
-    bool isUseEdgeDetect = true;
-    bool isUseShape = true;
+    bool isUseEdgeDetect = false;
+    bool isUseShape = false;
     bool isUseGray = false;
 
     ros::Publisher pub;

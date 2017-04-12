@@ -47,7 +47,7 @@ void MainTab::setUpPreFilter()
     QHBoxLayout *prefilterLayout = new QHBoxLayout(this);
 
     backSubCheckBox = new QCheckBox(tr("Use Background Substraction"), this);
-    backSubCheckBox->setChecked(true);
+    backSubCheckBox->setChecked(false);
 
     prefilterLayout->addWidget(backSubCheckBox);
     prefilterGroupBox->setLayout(prefilterLayout);
