@@ -51,9 +51,36 @@ Mat PreFilter::backgroundSubtraction(cv::Mat frame)
     }
     else
     {
+        //Mat invert;
+        //bitwise_not(frame, invert);
+//        Mat imgHSV;
+//        cvtColor(frame, imgHSV, COLOR_BGR2HSV);
+
+//        std::vector<Mat> splitHSV(3);
+//        split(imgHSV, splitHSV);
+//        Mat hue = splitHSV.at(0);
+//        Mat sat = splitHSV.at(1);
+//        Mat val = splitHSV.at(2);
+//        hue = Scalar::all(128);
+//        //sat = Scalar::all(255);
+//        //val = Scalar::all(255);
+//        std::vector<Mat> newHSV;
+//        newHSV.push_back(hue);
+//        newHSV.push_back(sat);
+//        newHSV.push_back(val);
+//        Mat newFrame;
+//        merge(newHSV, newFrame);
+//        Mat bgrFrame;
+//        cvtColor(newFrame, bgrFrame, COLOR_HSV2BGR);
+
+        //Mat imgGray;
+        //Mat imgBGRGray;
+        //cvtColor(frame, imgGray, COLOR_BGR2GRAY);
+        //cvtColor(imgGray, imgBGRGray, COLOR_GRAY2BGR);
+
+
         return frame;
     }
-
 }
 
 // Apply the mask to the frame

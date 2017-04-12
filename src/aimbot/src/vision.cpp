@@ -27,7 +27,6 @@ void Vision::initPublishers()
         teamSide = "away";
     }
     string space = GlobalData::spacePrefix + teamSide + "/raw_vision/";
-    cout << "space: " + space + "\n";
     pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
 }
 
@@ -49,6 +48,16 @@ void Vision::process(cv::Mat frame)
     geometry_msgs::Pose2D pos;
 
     Mat result = frame;
+
+    if(isUseGray)
+    {
+        Mat imgGray;
+        Mat imgResult;
+        cvtColor(frame, imgGray, COLOR_BGR2GRAY);
+        cvtColor(imgGray, imgResult, COLOR_GRAY2BGR);
+        result = imgResult;
+        frame = imgResult;
+    }
 
     result = applyBlur(result);
 
@@ -349,6 +358,12 @@ void Vision::useShape(bool value)
 void Vision::newTeamSide(bool inIsHome)
 {
     isHome = inIsHome;
+}
+
+// Handle use gray
+void Vision::useGray(bool isGray)
+{
+    isUseGray = isGray;
 }
 
 bool Vision::ok()

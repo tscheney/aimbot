@@ -31,6 +31,7 @@ private:
     bool isUseColor = true;
     bool isUseEdgeDetect = true;
     bool isUseShape = true;
+    bool isUseGray = false;
 
     ros::Publisher pub;
     ros::NodeHandle nh;
@@ -46,6 +47,7 @@ public slots:
     void useShape(bool value);
     void initPublishers();
     void newTeamSide(bool inIsHome);
+    void useGray(bool isGray);
 signals:
     void processedImage(cv::Mat frame);
 public:

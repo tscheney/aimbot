@@ -27,6 +27,7 @@ void BallVisionTab::setUpVision(string name, bool isHome)
     connect(vision, SIGNAL(processedImage(cv::Mat)), this, SLOT(updateVideo(cv::Mat)));
     connect(this, SIGNAL(newColorData(ColorData)), vision, SLOT(newColorData(ColorData)));
     connect(this, SIGNAL(newIsUseBackSub(bool)), vision, SLOT(useBackSub(bool)));
+    connect(this, SIGNAL(newIsUseGray(bool)), vision, SLOT(useGray(bool)));
     connect(this, SIGNAL(newIsUseColor(bool)), vision, SLOT(useColor(bool)));
     connect(this, SIGNAL(newShapeData(BallShapeData)), vision, SLOT(newShapeData(BallShapeData)));
     vision->moveToThread(&visionThread);

@@ -61,6 +61,13 @@ void VisionTab::setUpVisionOptions()
     visionOptionsLayout->addWidget(useBackSubLabel);
     visionOptionsLayout->addWidget(useBackSubCheckBox);
 
+    QLabel *grayLabel = new QLabel(tr("Grayscale"));
+    QCheckBox *grayCheckBox = new QCheckBox();
+    grayCheckBox->setChecked(false);
+    connect(grayCheckBox, SIGNAL(toggled(bool)), this, SLOT(useGrayChanged(bool)));
+    visionOptionsLayout->addWidget(grayLabel);
+    visionOptionsLayout->addWidget(grayCheckBox);
+
     setUpColorOptions(visionOptionsLayout);
     setUpShapeOptions(visionOptionsLayout);
 
@@ -370,6 +377,12 @@ void VisionTab::useBackSubChanged(bool value)
 void VisionTab::useColorChanged(bool value)
 {
     emit newIsUseColor(value);
+}
+
+// Handle use of gray
+void VisionTab::useGrayChanged(bool value)
+{
+    emit newIsUseGray(value);
 }
 
 // Retrieve the list of color slider pointers

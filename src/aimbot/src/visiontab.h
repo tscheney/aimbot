@@ -33,11 +33,13 @@ signals:
     void newColorData(ColorData colorData);
     void newIsUseColor(bool value);
     void newIsUseBackSub(bool value);
+    void newIsUseGray(bool value);
 public slots:
     void updateVideo(cv::Mat frame);
     void colorSlidersChanged(int val);
     void useBackSubChanged(bool value);
     void useColorChanged(bool value);
+    void useGrayChanged(bool value);
     virtual void shapeSlidersChanged(int val) = 0;
 protected:
     QThread visionThread;

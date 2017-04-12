@@ -2,6 +2,7 @@
 #define PREFILTER_H
 
 #include <QObject>
+#include <vector>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "global.h"
 #include <opencv2/photo/photo.hpp>
