@@ -18,30 +18,8 @@ using namespace cv;
 class Vision : public QObject
 {   Q_OBJECT
 private:
-	static string space;
-private slots:
-    void process(cv::Mat frame);
-    void newUnfilteredFrame(cv::Mat frame);
-    void newPrefiltFrame(cv::Mat frame);
-    void newColorData(ColorData newColorData);
-    void useBackSub(bool value);
-    void useColor(bool value);
-    void useEdgeDetect(bool value);
-    void useShape(bool value);
-signals:
-    void processedImage(cv::Mat frame);
-public:
-    Vision(QObject *parent = 0, string initName = "default");
-	// constants
-	static float FIELD_WIDTH;  // in meters
-	static float FIELD_HEIGHT; 
-	static float ROBOT_RADIUS;
-	static float FIELD_WIDTH_PIXELS; // measured from threshold of goal to goal
-	static float FIELD_HEIGHT_PIXELS; // measured from inside of wall to wall
-	static float CAMERA_WIDTH;
-	static float CAMERA_HEIGHT;
-	static float FIELD_X_OFFSET;
-    static float FIELD_Y_OFFSET;
+    string name;
+    bool isHome = true;
 
     Mat unFiltFrame;
     Mat preFiltFrame;
@@ -54,15 +32,39 @@ public:
     bool isUseEdgeDetect = true;
     bool isUseShape = true;
 
-    geometry_msgs::Pose2D prevPos;
-
-    string name;
     ros::Publisher pub;
     ros::NodeHandle nh;
 
+public slots:
+    void process(cv::Mat frame);
+    void newUnfilteredFrame(cv::Mat frame);
+    void newPrefiltFrame(cv::Mat frame);
+    void newColorData(ColorData newColorData);
+    void useBackSub(bool value);
+    void useColor(bool value);
+    void useEdgeDetect(bool value);
+    void useShape(bool value);
+    void initPublishers();
+    void newTeamSide(bool inIsHome);
+signals:
+    void processedImage(cv::Mat frame);
+public:
+    Vision(QObject *parent = 0, string initName = "default", bool inIsHome = true);
+	// constants
+	static float FIELD_WIDTH;  // in meters
+	static float FIELD_HEIGHT; 
+	static float ROBOT_RADIUS;
+	static float FIELD_WIDTH_PIXELS; // measured from threshold of goal to goal
+	static float FIELD_HEIGHT_PIXELS; // measured from inside of wall to wall
+	static float CAMERA_WIDTH;
+	static float CAMERA_HEIGHT;
+	static float FIELD_X_OFFSET;
+    static float FIELD_Y_OFFSET;
+
+    geometry_msgs::Pose2D prevPos;
+
     // methods
     void initSliders();
-    void initPublishers(string name);
     Mat applyMask(Mat frame, Mat mask);
     Mat thresholdImage(Mat& imgHSV, Scalar color[]);
     virtual Mat applyBlur(Mat frame) = 0;

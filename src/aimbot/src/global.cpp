@@ -8,14 +8,20 @@ namespace GlobalData
     const QString profilesFile = "profiles.xml";
     const QString robotGroupName = "robots";
     const QString ballGroupName = "balls";
-    extern const QString newProfileName = "New";
+    const QString newProfileName = "New";
+    const std::string spacePrefix = "/aimbot_";
+
 
     const int blurSizeMin = 0;
     const int blurSizeMax = 20;
     const int blurSizeDefault = 3;
     const int edgeThreshMax = 255;
-    const int dilationIterDefault = 3;
+    const int erosionIterDefault = 2;
+    const int erosionIterMax = 20;
+    const int dilationIterDefault = 2;
     const int dilationIterMax = 20;
+    const int erosDilaSizeDefault = 3;
+    const int erosDilaSizeMax = 30;
     const int glareThreshMax = 255;
     const double polyErrorMax = 0.2;
     const double polyErrorDefault = 0.03;
@@ -28,7 +34,7 @@ namespace GlobalData
     const int shapeMaxNumVertDefault = 50;
 }
 
-ColorData::ColorData(int inhLow, int inhHigh, int insLow, int insHigh, int invLow, int invHigh)
+ColorData::ColorData(int inhLow, int inhHigh, int insLow, int insHigh, int invLow, int invHigh, int inErosionIter, int inDilationIter, int inErosDilaSize)
 {
     hLow = inhLow;
     hHigh = inhHigh;
@@ -36,6 +42,9 @@ ColorData::ColorData(int inhLow, int inhHigh, int insLow, int insHigh, int invLo
     sHigh = insHigh;
     vLow = invLow;
     vHigh = invHigh;
+    erosionIter = inErosionIter;
+    dilationIter = inDilationIter;
+    erosDilaSize = inErosDilaSize;
 }
 
 ShapeData::ShapeData(int inBlurSize, int inEdgeThresh1, int inEdgeThresh2, int inDilationIter, double inPolyError)

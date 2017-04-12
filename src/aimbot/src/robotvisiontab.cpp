@@ -1,18 +1,18 @@
 #include "robotvisiontab.h"
 #include "moc_robotvisiontab.cpp"
 
-RobotVisionTab::RobotVisionTab(QWidget *parent, QString name) // : VisionTab(parent, name)
+RobotVisionTab::RobotVisionTab(QWidget *parent, QString name, bool isHome) // : VisionTab(parent, name)
 {
-    setUpVision(name.toStdString());
+    setUpVision(name.toStdString(), isHome);
     layout = new QVBoxLayout();
     setUpVideo();
     setUpVisionOptions();
     setLayout(layout);
 }
 
-RobotVisionTab::RobotVisionTab(QWidget *parent, QString name, map<string, int> profile) // : VisionTab(parent, name, profile)
+RobotVisionTab::RobotVisionTab(QWidget *parent, QString name, map<string, int> profile, bool isHome) // : VisionTab(parent, name, profile)
 {
-    setUpVision(name.toStdString());
+    setUpVision(name.toStdString(), isHome);
     layout = new QVBoxLayout();
     setUpVideo();
     setUpVisionOptions();
@@ -21,9 +21,9 @@ RobotVisionTab::RobotVisionTab(QWidget *parent, QString name, map<string, int> p
 }
 
 // Set up the vision processing
-void RobotVisionTab::setUpVision(string name)
+void RobotVisionTab::setUpVision(string name, bool isHome)
 {
-    vision = new RobotVision(0, name);
+    vision = new RobotVision(0, name, isHome);
     connect(vision, SIGNAL(processedImage(cv::Mat)), this, SLOT(updateVideo(cv::Mat)));
     connect(this, SIGNAL(newColorData(ColorData)), vision, SLOT(newColorData(ColorData)));
     connect(this, SIGNAL(newIsUseBackSub(bool)), vision, SLOT(useBackSub(bool)));
@@ -140,8 +140,8 @@ void RobotVisionTab::setUpShapeOptions(QVBoxLayout *visionOptionsLayout)
     shapeOptionsLayout->addRow(blurSizeLabel, blurSizeSlider);
     shapeOptionsLayout->addRow(edgeThresh1Label, edgeThresh1Slider);
     shapeOptionsLayout->addRow(edgeThresh2Label, edgeThresh2Slider);
-    shapeOptionsLayout->addRow(useShapeLabel, useShapeCheckBox);
     shapeOptionsLayout->addRow(dilationIterLabel, dilationIterSlider);
+    shapeOptionsLayout->addRow(useShapeLabel, useShapeCheckBox);    
     shapeOptionsLayout->addRow(polyErrorLabel, polyErrorSlider);
     shapeOptionsLayout->addRow(frontMinNumVertLabel, frontMinNumVertSlider);
     shapeOptionsLayout->addRow(frontMaxNumVertLabel, frontMaxNumVertSlider);

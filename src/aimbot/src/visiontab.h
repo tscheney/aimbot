@@ -47,7 +47,7 @@ protected:
     std::map<std::string, QSlider*> colorSliders;
     std::map<std::string, QSlider*> shapeSliders;
 
-    virtual void setUpVision(std::string name) = 0;
+    virtual void setUpVision(std::string name, bool isHome) = 0;
     void setUpVideo();
     void setUpVisionOptions();
     void setUpColorOptions(QVBoxLayout *visionOptionsLayout);

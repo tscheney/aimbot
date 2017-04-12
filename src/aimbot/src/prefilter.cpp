@@ -15,6 +15,12 @@ void PreFilter::rawFrame(cv::Mat frame)
     //filteredFrame(frame);
 }
 
+// Handle recieved calc back sub event
+void PreFilter::calcBackSub(bool isCalc)
+{
+    isCalcBackSub = isCalc;
+}
+
 // Reduce glare in the image
 Mat PreFilter::glareReduction(cv::Mat frame, int thresh)
 {
@@ -38,8 +44,16 @@ Mat PreFilter::glareReduction(cv::Mat frame, int thresh)
 // Do background subtraction
 Mat PreFilter::backgroundSubtraction(cv::Mat frame)
 {
-    pMOG2->apply(frame, fgMaskMOG2);
-    return applyMask(frame, fgMaskMOG2);
+    if(isCalcBackSub)
+    {
+        pMOG2->apply(frame, fgMaskMOG2);
+        return applyMask(frame, fgMaskMOG2);
+    }
+    else
+    {
+        return frame;
+    }
+
 }
 
 // Apply the mask to the frame

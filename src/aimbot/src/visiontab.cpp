@@ -100,7 +100,10 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
     QLabel *sLowLabel = new QLabel(tr("S Low:"));
     QLabel *sHighLabel = new QLabel(tr("S High:"));
     QLabel *vLowLabel = new QLabel(tr("V Low:"));
-    QLabel *vHighLabel = new QLabel(tr("V High:"));
+    QLabel *vHighLabel = new QLabel(tr("V High:"));\
+    QLabel *erosionIterLabel = new QLabel(tr("Erosion Iterations:"));
+    QLabel *dilationIterLabel = new QLabel(tr("Dilate Iterations:"));
+    QLabel *erosDilaSizeLabel = new QLabel(tr("Erosion/Dilation Size:"));
 
     QLabel *useColorLabel = new QLabel(tr("Use Color"));
     QCheckBox *useColorCheckBox = new QCheckBox();
@@ -142,6 +145,18 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
     //vHighSlider->setObjectName("vHighSlider");
     colorSliders.insert(std::pair<std::string, QSlider*>("vHigh", vHighSlider));
 
+    QSlider *erosionIterSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(erosionIterSlider, 0, GlobalData::erosionIterMax, GlobalData::erosionIterDefault);
+    colorSliders.insert(std::pair<std::string, QSlider *>("erosionIter", erosionIterSlider));
+
+    QSlider *dilationIterSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(dilationIterSlider, 0, GlobalData::dilationIterMax, GlobalData::dilationIterDefault);
+    colorSliders.insert(std::pair<std::string, QSlider *>("dilationIter", dilationIterSlider));
+
+    QSlider *erosDilaSizeSlider = new QSlider(Qt::Horizontal);
+    setUpSlider(erosDilaSizeSlider, 1, GlobalData::erosDilaSizeMax, GlobalData::erosDilaSizeDefault);
+    colorSliders.insert(std::pair<std::string, QSlider *>("erosDilaSize", erosDilaSizeSlider));
+
     // Connect Sliders
     connect(hLowSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
     connect(hHighSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
@@ -149,6 +164,9 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
     connect(sHighSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
     connect(vLowSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
     connect(vHighSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
+    connect(erosionIterSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
+    connect(dilationIterSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
+    connect(erosDilaSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(colorSlidersChanged(int)));
 
     // Add rows to Form Layout
     colorOptionsLayout->addRow(hLowLabel, hLowSlider);
@@ -157,6 +175,9 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
     colorOptionsLayout->addRow(sHighLabel, sHighSlider);
     colorOptionsLayout->addRow(vLowLabel, vLowSlider);
     colorOptionsLayout->addRow(vHighLabel, vHighSlider);
+    colorOptionsLayout->addRow(erosionIterLabel, erosionIterSlider);
+    colorOptionsLayout->addRow(dilationIterLabel, dilationIterSlider);
+    colorOptionsLayout->addRow(erosDilaSizeLabel, erosDilaSizeSlider);
 
     colorOptionsGroupBox->setLayout(colorOptionsLayout);
 
@@ -332,6 +353,9 @@ void VisionTab::colorSlidersChanged(int val)
     colorData.sHigh = sliderList.at(3)->value();
     colorData.vLow = sliderList.at(4)->value();
     colorData.vHigh = sliderList.at(5)->value();
+    colorData.erosionIter = sliderList.at(6)->value();
+    colorData.dilationIter = sliderList.at(7)->value();
+    colorData.erosDilaSize = sliderList.at(8)->value();
 
     emit newColorData(colorData);
 }

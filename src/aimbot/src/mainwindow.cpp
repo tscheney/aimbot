@@ -8,10 +8,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setAttribute(Qt::WA_DeleteOnClose, true);
     // Connect vision threads
     camListener = new CamListener();
-    camListener->start(QThread::LowPriority); // starts the thread making run() function run continuousl
 
     prefilter = new PreFilter();
     connect(camListener, SIGNAL(rawImage(cv::Mat)), prefilter, SLOT(rawFrame(cv::Mat)));
+    connect(this, SIGNAL(runListener(bool)), camListener, SLOT(runListener(bool)));
+    connect(this, SIGNAL(newUseBackSub(bool)), prefilter, SLOT(calcBackSub(bool)));
     prefilter->moveToThread(&prefilterThread);
     prefilterThread.start();
 
@@ -97,6 +98,8 @@ void MainWindow::insertRobotNewTab(RobotVisionTab *robotVisionTab)
 {
     connect(camListener, SIGNAL(rawImage(cv::Mat)), robotVisionTab->getVision(), SLOT(newUnfilteredFrame(cv::Mat)));
     connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), robotVisionTab->getVision(), SLOT(newPrefiltFrame(cv::Mat)));
+    connect(this, SIGNAL(newTeamSide(bool)), robotVisionTab->getVision(), SLOT(newTeamSide(bool)));
+    connect(this, SIGNAL(reinitPublishers()), robotVisionTab->getVision(), SLOT(initPublishers()));
     tabs->addTab(robotVisionTab, robotVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }
@@ -104,7 +107,7 @@ void MainWindow::insertRobotNewTab(RobotVisionTab *robotVisionTab)
 // Inserts a new robot tab into the tabs container
 void MainWindow::insertNewRobotTab(QString name)
 {
-    RobotVisionTab *robotVisionTab = new RobotVisionTab(this, name);
+    RobotVisionTab *robotVisionTab = new RobotVisionTab(this, name, isHome);
     robotVisionTab->setObjectName(name);
     insertRobotNewTab(robotVisionTab);
 }
@@ -112,7 +115,7 @@ void MainWindow::insertNewRobotTab(QString name)
 // Inserts a new robot tab into the tabs container with the given profile
 void MainWindow::insertNewRobotTab(QString name, map<string, int> profile)
 {
-    RobotVisionTab *robotVisionTab = new RobotVisionTab(this, name, profile);
+    RobotVisionTab *robotVisionTab = new RobotVisionTab(this, name, profile, isHome);
     robotVisionTab->setObjectName(name);
     insertRobotNewTab(robotVisionTab);
 }
@@ -122,6 +125,8 @@ void MainWindow::insertNewBallTab(BallVisionTab *ballVisionTab)
 {
     connect(camListener, SIGNAL(rawImage(cv::Mat)), ballVisionTab->getVision(), SLOT(newUnfilteredFrame(cv::Mat)));
     connect(prefilter, SIGNAL(filteredFrame(cv::Mat)), ballVisionTab->getVision(), SLOT(newPrefiltFrame(cv::Mat)));
+    connect(this, SIGNAL(newTeamSide(bool)), ballVisionTab->getVision(), SLOT(newTeamSide(bool)));
+    connect(this, SIGNAL(reinitPublishers()), ballVisionTab->getVision(), SLOT(initPublishers()));
     tabs->addTab(ballVisionTab, ballVisionTab->objectName());
     tabs->setCurrentIndex(tabs->count() - 1);
 }
@@ -129,7 +134,7 @@ void MainWindow::insertNewBallTab(BallVisionTab *ballVisionTab)
 // Inserts a new ball tab into the tabs container
 void MainWindow::insertNewBallTab(QString name)
 {
-    BallVisionTab *ballVisionTab = new BallVisionTab(this, name);
+    BallVisionTab *ballVisionTab = new BallVisionTab(this, name, isHome);
     ballVisionTab->setObjectName(name);
     insertNewBallTab(ballVisionTab);
 }
@@ -137,7 +142,7 @@ void MainWindow::insertNewBallTab(QString name)
 // Inserts a new tab ball into the tabs container with the given profile
 void MainWindow::insertNewBallTab(QString name, map<string, int> profile)
 {
-    BallVisionTab *ballVisionTab = new BallVisionTab(this, name, profile);
+    BallVisionTab *ballVisionTab = new BallVisionTab(this, name, profile, isHome);
     ballVisionTab->setObjectName(name);
     insertNewBallTab(ballVisionTab);
 }
@@ -252,7 +257,7 @@ void MainWindow::loadClicked()
             }
         }
         else // robot
-        {
+        {prefilterThread.start();
             if(dialog.getProfile() != GlobalData::newProfileName) // load profile
             {
                 map<string, int> profile = settings.getRobotProfile(dialog.getProfile());
@@ -262,4 +267,33 @@ void MainWindow::loadClicked()
         visionTab->setObjectName(dialog.getName());
         tabs->setTabText(tabs->currentIndex(), dialog.getName());
     }
+}
+
+// Handle run vision
+void MainWindow::runVision(bool isRun)
+{
+    if(isRun)
+    {
+        emit runListener(true);
+        emit reinitPublishers();
+        camListener->start(QThread::LowPriority); // starts the thread making run() function run continuousl
+    }
+    else
+    {
+        emit runListener(false);
+        camListener->wait();
+    }
+}
+
+// Handle team side changed event
+void MainWindow::teamSideChanged(bool inIsHome)
+{
+    isHome = inIsHome;
+    emit newTeamSide(inIsHome);
+}
+
+// Handle use background subtraction changed
+void MainWindow::useBackSub(bool isCalc)
+{
+    emit newUseBackSub(isCalc);
 }

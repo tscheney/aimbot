@@ -9,8 +9,8 @@ class RobotVisionTab : public VisionTab
 {
     Q_OBJECT
 public:
-    RobotVisionTab(QWidget *parent, QString name);
-    RobotVisionTab(QWidget *parent, QString name, map<string, int> profile);
+    RobotVisionTab(QWidget *parent, QString name, bool isHome);
+    RobotVisionTab(QWidget *parent, QString name, map<string, int> profile, bool isHome);
     RobotVision *getVision();
 signals:
     void newShapeData(RobotShapeData shapeData);
@@ -19,7 +19,7 @@ public slots:
 private:
     RobotVision *vision;
 
-    void setUpVision(string name);
+    void setUpVision(string name, bool isHome);
     void setUpShapeOptions(QVBoxLayout *visionOptionsLayout);
 };
 

@@ -20,6 +20,7 @@ signals:
 
 public slots:
     void rawFrame(cv::Mat frame);
+    void calcBackSub(bool isCalc);
 
 private:
     Mat glareReduction(cv::Mat frame, int thresh);
@@ -28,6 +29,8 @@ private:
 
     Ptr<BackgroundSubtractor> pMOG2;
     Mat fgMaskMOG2;
+
+    bool isCalcBackSub = true;
 };
 
 #endif // PREFILTER_H

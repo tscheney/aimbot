@@ -13,13 +13,18 @@ extern const QString profilesFile;
 extern const QString robotGroupName;
 extern const QString ballGroupName;
 extern const QString newProfileName;
+extern const std::string spacePrefix;
 
 extern const int blurSizeMin;
 extern const int blurSizeMax;
 extern const int blurSizeDefault;
 extern const int edgeThreshMax;
+extern const int erosionIterDefault;
+extern const int erosionIterMax;
 extern const int dilationIterDefault;
 extern const int dilationIterMax;
+extern const int erosDilaSizeDefault;
+extern const int erosDilaSizeMax;
 extern const int glareThreshMax;
 extern const double polyErrorMax;
 extern const double polyErrorDefault;
@@ -41,8 +46,13 @@ public:
     int sHigh;
     int vLow;
     int vHigh;
+    int erosionIter;
+    int dilationIter;
+    int erosDilaSize;
 
-    ColorData(int inhLow = 0, int inhHigh = 179, int insLow = 0, int insHigh = 255, int invLow = 0, int invHigh = 255);
+    ColorData(int inhLow = 0, int inhHigh = 179, int insLow = 0, int insHigh = 255, int invLow = 0, int invHigh = 255,
+              int inErosionIter = GlobalData::erosionIterDefault, int inDilationIter = GlobalData::dilationIterDefault,
+              int inErosDilaSize = GlobalData::erosDilaSizeDefault);
 };
 
 class ShapeData

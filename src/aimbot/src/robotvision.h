@@ -7,7 +7,7 @@ class RobotVision : public Vision
 {
     Q_OBJECT
 public:
-    RobotVision(QObject* parent, string initName);
+    RobotVision(QObject* parent, string initName, bool inIsHome);
 public slots:
     void newShapeData(RobotShapeData newShapeData);
 private:

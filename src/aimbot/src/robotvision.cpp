@@ -1,7 +1,7 @@
 #include "robotvision.h"
 #include "moc_robotvision.cpp"
 
-RobotVision::RobotVision(QObject* parent, string initName) : Vision(parent, initName)
+RobotVision::RobotVision(QObject* parent, string initName, bool inIsHome) : Vision(parent, initName, inIsHome)
 {
 }
 

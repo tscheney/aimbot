@@ -18,10 +18,11 @@ private:
     ros::NodeHandle nh;
     image_transport::ImageTransport it;
     image_transport::Subscriber image_sub;
+    bool isRunning;
 
     void imageCallback(const sensor_msgs::ImageConstPtr &msg);
-
-
+public slots:
+     void runListener(bool isRun);
 signals:
     // Broadcasts the subsribed frame
     void rawImage(const cv::Mat &frame);

@@ -4,9 +4,10 @@
 CamListener::CamListener(QObject *parent) //TODO: (string subPath)
  : QThread(parent), it(nh)
 {
-    //image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1));
+    image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1));
     //image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1), ros::VoidPtr(), image_transport::TransportHints("compressed"));
-    image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1), ros::VoidPtr(), image_transport::TransportHints("theora"));
+    //image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1), ros::VoidPtr(), image_transport::TransportHints("theora"));
+    isRunning = false;
 }
 
 CamListener::~CamListener()
@@ -21,7 +22,7 @@ CamListener::~CamListener()
 void CamListener::run()
 {
     ros::Rate rate(30.0);
-    while(nh.ok())
+    while(nh.ok() && isRunning)
     {
         ros::spinOnce();
         rate.sleep();
@@ -40,4 +41,10 @@ void CamListener::imageCallback(const sensor_msgs::ImageConstPtr &msg)
     {
         ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
     }
+}
+
+// Start stop lisenter
+void CamListener::runListener(bool isRun)
+{
+    isRunning = isRun;
 }

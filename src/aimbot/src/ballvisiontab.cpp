@@ -1,18 +1,18 @@
 #include "ballvisiontab.h"
 #include "moc_ballvisiontab.cpp"
 
-BallVisionTab::BallVisionTab(QWidget *parent, QString name) // : VisionTab(parent, name)
+BallVisionTab::BallVisionTab(QWidget *parent, QString name, bool isHome) // : VisionTab(parent, name)
 {
-    setUpVision(name.toStdString());
+    setUpVision(name.toStdString(), isHome);
     layout = new QVBoxLayout();
     setUpVideo();
     setUpVisionOptions();
     setLayout(layout);
 }
 
-BallVisionTab::BallVisionTab(QWidget *parent, QString name, map<string, int> profile) // : VisionTab(parent, name, profile)
+BallVisionTab::BallVisionTab(QWidget *parent, QString name, map<string, int> profile, bool isHome) // : VisionTab(parent, name, profile)
 {
-    setUpVision(name.toStdString());
+    setUpVision(name.toStdString(), isHome);
     layout = new QVBoxLayout();
     setUpVideo();
     setUpVisionOptions();
@@ -21,9 +21,9 @@ BallVisionTab::BallVisionTab(QWidget *parent, QString name, map<string, int> pro
 }
 
 // Set up the vision processing
-void BallVisionTab::setUpVision(string name)
+void BallVisionTab::setUpVision(string name, bool isHome)
 {
-    vision = new BallVision(0, name);
+    vision = new BallVision(0, name, isHome);
     connect(vision, SIGNAL(processedImage(cv::Mat)), this, SLOT(updateVideo(cv::Mat)));
     connect(this, SIGNAL(newColorData(ColorData)), vision, SLOT(newColorData(ColorData)));
     connect(this, SIGNAL(newIsUseBackSub(bool)), vision, SLOT(useBackSub(bool)));

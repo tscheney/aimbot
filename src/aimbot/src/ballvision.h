@@ -7,7 +7,7 @@ class BallVision : public Vision
 {
     Q_OBJECT
 public:
-    BallVision(QObject* parent, string initName);
+    BallVision(QObject* parent, string initName, bool inIsHome);
 public slots:
     void newShapeData(BallShapeData newShapeData);
 private:

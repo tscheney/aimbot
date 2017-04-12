@@ -1,7 +1,6 @@
 #include "vision.h"
 #include "moc_vision.cpp"
 
-string Vision::space = "/aimbot_home/raw_vision/";
 float Vision::FIELD_WIDTH = 3.53;  // in meters
 float Vision::FIELD_HEIGHT = 2.39; 
 float Vision::ROBOT_RADIUS = 0.10;
@@ -12,22 +11,23 @@ float Vision::FIELD_Y_OFFSET = 17;
 float Vision::CAMERA_WIDTH = 864.0; //Todo check this it is likely that it is 848
 float Vision::CAMERA_HEIGHT = 480.0;
 
-Vision::Vision(QObject* parent, string initName) : QObject(parent)
+Vision::Vision(QObject* parent, string initName, bool inIsHome) : QObject(parent)
 {
     name = initName;
-    initPublishers(name);
+    isHome = inIsHome;
+    initPublishers();
 }
 
 // Initialize the publishers this class publishes
-void Vision::initPublishers(string name)
+void Vision::initPublishers()
 {
-    std::string key;
-    if (nh.searchParam("team_side", key))
+    string teamSide = "home";
+    if(!isHome)
     {
-        std::string val;
-        nh.getParam(key, val);
-        space = "/aimbot_" + val + "/raw_vision/";
+        teamSide = "away";
     }
+    string space = GlobalData::spacePrefix + teamSide + "/raw_vision/";
+    cout << "space: " + space + "\n";
     pub = nh.advertise<geometry_msgs::Pose2D>(space + name, 5);
 }
 
@@ -233,8 +233,8 @@ Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
 {
     Mat imgGray;
     inRange(imgHSV, color[0], color[1], imgGray);
-    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
-    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1), colorData.erosionIter);
+    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1),colorData.dilationIter);
     return imgGray;
 }
 
@@ -318,6 +318,12 @@ void Vision::useEdgeDetect(bool value)
 void Vision::useShape(bool value)
 {
     isUseShape = value;
+}
+
+// Handle new team side
+void Vision::newTeamSide(bool inIsHome)
+{
+    isHome = inIsHome;
 }
 
 bool Vision::ok()

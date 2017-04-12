@@ -34,17 +34,23 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+public slots:
     //Display video frame in player UI
     //void updatePlayerUI(cv::Mat frame);
     void tabChanged(int tabIndex);
     void addNewClicked();
     void saveClicked();
     void loadClicked();
+    void runVision(bool isRun);
+    void teamSideChanged(bool inIsHome);
+    void useBackSub(bool isCalc);
 
 signals:
     void sliderChanged(QVector<int> hsv);
-
+    void runListener(bool isRun);
+    void newTeamSide(bool outIsHome);
+    void reinitPublishers();
+    void newUseBackSub(bool isCalc);
 private:
     Ui::MainWindow *ui;
     QMenu *fileMenu;
@@ -52,6 +58,7 @@ private:
     QTabWidget *tabs;
     PreFilter *prefilter;
     QThread prefilterThread;
+    bool isHome = true;
 
     void setUpMenuBar();
     void insertRobotNewTab(RobotVisionTab *robotVisionTab);

@@ -18,7 +18,7 @@
             <arg name="team_side" value="$(arg team_side)" />
         </include>
 
-        <include file="$(find aimbot)/launch/vision.launch" />
+        <!-- include file="$(find aimbot)/launch/vision.launch" / -->
     </group>
 
 </launch>

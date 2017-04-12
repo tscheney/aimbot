@@ -1,7 +1,7 @@
 #include "ballvision.h"
 #include "moc_ballvision.cpp"
 
-BallVision::BallVision(QObject* parent, string initName) : Vision(parent, initName)
+BallVision::BallVision(QObject* parent, string initName, bool inIsHome) : Vision(parent, initName, inIsHome)
 {
 }
 
