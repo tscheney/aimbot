@@ -27,7 +27,7 @@ class Team:
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
-        self.debug = False
+        self.debug = True
         self.change_roles = False
 
     def init_pos(self):
@@ -118,7 +118,7 @@ class Team:
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
         if (self.debug == True):
-            self.roles['ally1'] = 1099
+            self.roles['ally1'] = 1
         elif(self.game_state.play):
             self.determine_game_state()
             #if(self.roles['ally2'] == 2):

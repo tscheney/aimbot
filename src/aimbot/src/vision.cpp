@@ -248,17 +248,19 @@ Mat Vision::colorThresholdWrap(Mat &imgHSV)
                 Scalar(colorData.hHigh, colorData.sHigh, colorData.vHigh),mask1);
     inRange(imgHSV, Scalar(colorData.hLow, colorData.sLow, colorData.vLow),
                 Scalar(GlobalData::colorHMax, colorData.sHigh, colorData.vHigh),mask2);
-
-     return mask1 | mask2;
+    Mat1b mask = mask1 | mask2;
+    mask = erodeDilate(mask);
+    return mask;
 }
 
 // Erodes and dilates the image
 Mat Vision::erodeDilate(Mat& frame)
 {
-    Mat imgGray;
-    erode(frame, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1), colorData.erosionIter);
-    dilate(frame, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1),colorData.dilationIter);
-    return imgGray;
+    Mat eroded;
+    erode(frame, eroded, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1), colorData.erosionIter);
+    Mat dilated;
+    dilate(eroded, dilated, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1),colorData.dilationIter);
+    return dilated;
 }
 
 // Given a thresholded gray image, calculate the moments in the image
