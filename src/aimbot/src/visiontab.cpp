@@ -113,8 +113,8 @@ void VisionTab::setUpColorOptions(QVBoxLayout *visionOptionsLayout)
 
     // Sliders
     const int min = 0;
-    const int hMax = 179;
-    const int svMax = 255;
+    const int hMax = GlobalData::colorHMax;
+    const int svMax = GlobalData::colorSVMax;
     QSlider *hLowSlider = new QSlider(Qt::Horizontal);
     setUpSlider(hLowSlider, min, hMax, min);
     //hLowSlider->setObjectName("hLowSlider");

@@ -11,6 +11,8 @@ namespace GlobalData
     const QString newProfileName = "New";
     const std::string spacePrefix = "/aimbot_";
 
+    const int colorHMax = 179;
+    const int colorSVMax = 255;
 
     const int blurSizeMin = 0;
     const int blurSizeMax = 20;

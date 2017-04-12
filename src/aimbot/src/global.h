@@ -15,6 +15,9 @@ extern const QString ballGroupName;
 extern const QString newProfileName;
 extern const std::string spacePrefix;
 
+extern const int colorHMax;
+extern const int colorSVMax;
+
 extern const int blurSizeMin;
 extern const int blurSizeMax;
 extern const int blurSizeDefault;

@@ -214,27 +214,50 @@ Mat Vision::detectColors(Mat frame)
 {
     Mat imgHSV;
 
-    Scalar scalarlh[2];
-    Scalar scalelow = Scalar(colorData.hLow, colorData.sLow, colorData.vLow);
-    Scalar scalehigh = Scalar(colorData.hHigh, colorData.sHigh, colorData.vHigh);
-
-    scalarlh[0] = scalelow;
-    scalarlh[1] = scalehigh;
-
     cvtColor(frame, imgHSV, COLOR_BGR2HSV);
 
-    Mat imgGray = thresholdImage(imgHSV, scalarlh);
+    Mat imgGray;
+
+    if(colorData.hLow <= colorData.hHigh)
+    {
+        imgGray = colorThreshold(imgHSV);
+    }
+    else // low h value is greater than high, use wrap around
+    {
+        imgGray = colorThresholdWrap(imgHSV);
+    }
 
     return imgGray;
 }
 
 // Thesholds the image to isolate the given colors
-Mat Vision::thresholdImage(Mat& imgHSV, Scalar color[])
+Mat Vision::colorThreshold(Mat& imgHSV)
 {
     Mat imgGray;
-    inRange(imgHSV, color[0], color[1], imgGray);
-    erode(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1), colorData.erosionIter);
-    dilate(imgGray, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1),colorData.dilationIter);
+    inRange(imgHSV, Scalar(colorData.hLow, colorData.sLow, colorData.vLow),
+            Scalar(colorData.hHigh, colorData.sHigh, colorData.vHigh), imgGray);
+    imgGray = erodeDilate(imgGray);
+    return imgGray;
+}
+
+// Thresholds the image using iterations to cover a wrap around h
+Mat Vision::colorThresholdWrap(Mat &imgHSV)
+{
+    Mat1b mask1, mask2;
+    inRange(imgHSV, Scalar(0, colorData.sLow, colorData.vLow),
+                Scalar(colorData.hHigh, colorData.sHigh, colorData.vHigh),mask1);
+    inRange(imgHSV, Scalar(colorData.hLow, colorData.sLow, colorData.vLow),
+                Scalar(GlobalData::colorHMax, colorData.sHigh, colorData.vHigh),mask2);
+
+     return mask1 | mask2;
+}
+
+// Erodes and dilates the image
+Mat Vision::erodeDilate(Mat& frame)
+{
+    Mat imgGray;
+    erode(frame, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1), colorData.erosionIter);
+    dilate(frame, imgGray, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1),colorData.dilationIter);
     return imgGray;
 }
 

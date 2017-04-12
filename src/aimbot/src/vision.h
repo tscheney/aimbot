@@ -66,7 +66,6 @@ public:
     // methods
     void initSliders();
     Mat applyMask(Mat frame, Mat mask);
-    Mat thresholdImage(Mat& imgHSV, Scalar color[]);
     virtual Mat applyBlur(Mat frame) = 0;
     Mat applyBlurBase(Mat frame, int blurSize);
     virtual Mat detectShapes(Mat frame) = 0;
@@ -80,6 +79,9 @@ public:
     Mat getShapeMask(Mat frame, vector<vector<Point>> sizeResults, vector<vector<Point>> shapeResults);
     virtual bool isShapeLargeEnough(vector<vector<Point>> shapeResults) = 0;
     Mat detectColors(Mat frame);
+    Mat colorThreshold(Mat& imgHSV);
+    Mat colorThresholdWrap(Mat &imgHSV);
+    Mat erodeDilate(Mat& frame);
     Mat backgroundSubtraction(Mat frame);
     vector<Moments> calcMoments(Mat imgGray);
 	Point2d getCenterOfMass(Moments moment);
