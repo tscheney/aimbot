@@ -6,7 +6,7 @@ from Position import Position
 import math as math
 import dubins
 
-class PathPlanner:
+#class PathPlanner:
     """This class uses the position of the robot and of the all the objects necessary to avoid and
     calculates a new intermediate point as part of an overall path that will guide the robot
     to its desired position without running into anything"""
