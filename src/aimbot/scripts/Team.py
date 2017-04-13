@@ -64,23 +64,23 @@ class Team:
         # the issue is when the self.positions[x] have the same variable x
         name = "ally1"
         rospy.Subscriber(namespace + name, Pose2D,
-                         lambda msg: self.positions["ally1"].import_msg_raw(msg, self.team_side, self.game_state))
+                         lambda msg: self.positions["ally1"].import_msg(msg))
 
         name = "ally2"
         rospy.Subscriber(namespace + name, Pose2D,
-                         lambda msg: self.positions["ally2"].import_msg_raw(msg, self.team_side, self.game_state))
+                         lambda msg: self.positions["ally2"].import_msg(msg))
 
         name = "opp1"
         rospy.Subscriber(namespace + name, Pose2D,
-                         lambda msg: self.positions["opp1"].import_msg_raw(msg, self.team_side, self.game_state))
+                         lambda msg: self.positions["opp1"].import_msg(msg))
 
         name = "opp2"
         rospy.Subscriber(namespace + name, Pose2D,
-                         lambda msg: self.positions["opp2"].import_msg_raw(msg, self.team_side, self.game_state))
+                         lambda msg: self.positions["opp2"].import_msg(msg))
 
         name = "ball"
         rospy.Subscriber(namespace + name, Pose2D,
-                         lambda msg: self.positions["ball"].import_msg_raw(msg, self.team_side, self.game_state))
+                         lambda msg: self.positions["ball"].import_msg(msg))
 
     def init_roles_pub(self):
         """Inits publishers for team member roles"""
@@ -189,6 +189,7 @@ class Team:
         """Based on known positions and score, determine which state the game is in
         Determines the roles that should be used during game play"""
         ball_x = self.positions["ball"].x
+        print(ball_x)
         if ball_x > constants.field_width / 3:
             self.set_roles_offense()
         elif ball_x < (-1 * constants.field_width / 4):
