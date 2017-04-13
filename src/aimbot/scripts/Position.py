@@ -2,6 +2,7 @@
 
 from geometry_msgs.msg import Pose2D
 from soccerref.msg import GameState
+import shapely.geometry as geo
 
 class Position:
     def __init__(self):
@@ -50,3 +51,8 @@ class Position:
         msg.y = self.y
         msg.theta = self.theta
         return msg
+
+    def intersect(self, poly):
+        """Returns true if the given polygon contains this point"""
+        return poly.contains(geo.Point(self.x, self.y))
+

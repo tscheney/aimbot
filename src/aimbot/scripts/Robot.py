@@ -182,7 +182,7 @@ class Robot(Moving):
             self.go_behind_ball_facing_target(0.5)
 
         elif self.role == roles.FOLLOW_BALL:
-            self.follow_ball_on_line(self.ball_pos.x - 1)
+            self.follow_ball_on_line(self.ball_pos.x - constants.follow_distance)
 
 
     def set_placement_role(self):

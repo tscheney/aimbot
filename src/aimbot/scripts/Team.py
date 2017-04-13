@@ -8,6 +8,7 @@ from std_msgs.msg import Int16
 import numpy as np
 import constants
 import roles
+import shapely.geometry as geo
 
 class Team:
 
@@ -24,9 +25,11 @@ class Team:
         self.team_side = team_side
         self.positions = dict() #ally1=Position(), ally2=Position, opp1=Position(), opp2=Position(), ball=Position())
         self.publishers = dict()
+        self.state = dict()
         self.roles = dict()
         self.init_pos()
         self.init_publsihers()
+        self.init_state()
         self.debug = False
         self.change_roles = False
         self.play_without_soccerref = True
@@ -46,6 +49,11 @@ class Team:
         # Add ball position to dictionary
         name = 'ball'
         self.positions[name] = Position()
+
+    def init_state(self):
+        """Init the state dicationary"""
+        self.state["attacker"] = "ally1"
+        self.state["defender"] = "ally2"
 
     def game_state_sub(self):
         """Sets up the subscription to the game state"""
@@ -154,30 +162,38 @@ class Team:
         elif(self.game_state.reset_field):
             self.roles['ally1'] = 103
             self.roles['ally2'] = 104
+            self.init_state()
         else:
             self.roles['ally1'] = roles.STAY_PUT  # these are just test roles
             self.roles['ally2'] = roles.STAY_PUT
 
     def set_roles_balanced(self):
         """Use balanced strategy"""
-        self.roles['ally1'] = roles.SCORE
-        self.roles['ally2'] = roles.FOLLOW_BALL
+        self.switch_on_balanced()
+        self.roles[self.state["attacker"]] = roles.SCORE
+        if(not self.ball_behind_robot("defender")): # if the ball is not behind the defender
+            self.roles[self.state["defender"]] = roles.FOLLOW_BALL
+        else: # ball is behind defender
+            self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
+
 
     def set_roles_offense(self):
         """Use offensive strategy"""
-        ally1_to_ball = self.get_distance_between_points(self.positions['ally1'], self.positions['ball'])
-        ally2_to_ball = self.get_distance_between_points(self.positions['ally2'], self.positions['ball'])
-        if(ally1_to_ball <= ally2_to_ball): # ally1 is the closets opponent
-            self.roles['ally1'] = roles.SCORE
-            self.roles['ally2'] = roles.BACKUP_OFFENSE
-        else:
-            self.roles['ally1'] = roles.BACKUP_OFFENSE
-            self.roles['ally2'] = roles.SCORE
+        self.switch_on_offense()
+        self.roles[self.state["attacker"]] = roles.SCORE
+        if (not self.ball_behind_robot("defender")):  # if the ball is not behind the defender
+            self.roles[self.state["defender"]] = roles.BACKUP_OFFENSE
+        else: # ball is behind defender
+            self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
 
     def set_roles_defense(self):
         """Use defensive stragegy"""
-        self.roles['ally1'] = roles.SCORE
-        self.roles['ally2'] = roles.DEFEND_GOAL
+        self.switch_on_defense()
+        self.roles[self.state["attacker"]] = roles.SCORE
+        if (not self.ball_behind_robot("defender")):  # if the ball is not behind the defender
+            self.roles[self.state["defender"]] = roles.DEFEND_GOAL
+        else: # ball is behind defender
+            self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
 
     def get_distance_between_points(self, pos1, pos2):
         """Gets the distance between two points"""
@@ -193,38 +209,74 @@ class Team:
         print(ball_x)
         if ball_x > constants.field_width / 3:
             self.set_roles_offense()
-        elif ball_x < (-1 * constants.field_width / 4):
+        # if the ball is futher down the field than the follow distance plus half the width of the robot
+        elif ball_x < (-1 * ((constants.field_width / 2) - (constants.follow_distance + (constants.robot_width / 2)))):
             self.set_roles_defense()
         else:
             self.set_roles_balanced()
 
-    def switch_Roles(self, defender):
-        """If defender is close enough to the ball, become the attacker
-            and have the attacker go to defense"""
-        # Use numpy to create vectors
-        if defender == 2:
-            ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
-            mevec = np.array([[self.positions["ally2"].x], [self.positions["ally2"].y]])
+    # def switch_Roles(self, defender):
+    #     """If defender is close enough to the ball, become the attacker
+    #         and have the attacker go to defense"""
+    #     # Use numpy to create vectors
+    #     if defender == 2:
+    #         ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
+    #         mevec = np.array([[self.positions["ally2"].x], [self.positions["ally2"].y]])
+    #     else:
+    #         ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
+    #         mevec = np.array([[self.positions["ally1"].x], [self.positions["ally1"].y]])
+    #     field_width = 3.53
+    #     goalvec = np.array([[field_width / 2], [0]])
+    #
+    #     # unit vector from ball to goal
+    #     uv = goalvec - ballvec
+    #     uv = uv / np.linalg.norm(uv)
+    #
+    #     # compute a position 20cm behind ball, but aligned with goal
+    #     p = ballvec - 0.1 * uv
+    #
+    #     # If I am sufficiently close to the point behind the ball,
+    #     # or in other words, once I am 21cm behind the ball, just
+    #     # drive to the goal.
+    #     if np.linalg.norm(p - mevec) < 0.09:
+    #         return True
+    #     else:
+    #         return False
+
+    def switch_roles(self):
+        """Switches the attacker to the defender and the defender to the attacker"""
+        if(self.state["attacker"] == "ally1"):
+            self.state["attacker"] = "ally2"
+            self.state["defender"] = "ally1"
         else:
-            ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
-            mevec = np.array([[self.positions["ally1"].x], [self.positions["ally1"].y]])
-        field_width = 3.53
-        goalvec = np.array([[field_width / 2], [0]])
+            self.state["attacker"] = "ally1"
+            self.state["defender"] = "ally2"
 
-        # unit vector from ball to goal
-        uv = goalvec - ballvec
-        uv = uv / np.linalg.norm(uv)
+    def switch_on_offense(self):
+        """Determine whether we should switch on offense"""
+        attacker_to_ball = self.get_distance_between_points(self.positions[self.state["attacker"]], self.positions['ball'])
+        defender_to_ball = self.get_distance_between_points(self.positions[self.state["defender"]], self.positions['ball'])
+        if((attacker_to_ball > defender_to_ball) or self.ball_behind_robot("attacker")): # defender is the closest opponent, or ball is behind attacker
+            self.switch_roles()
 
-        # compute a position 20cm behind ball, but aligned with goal
-        p = ballvec - 0.1 * uv
+    def switch_on_balanced(self):
+        """Determine whether we should switch while balanced"""
+        if(self.ball_behind_robot("attacker")):
+            self.switch_roles()
 
-        # If I am sufficiently close to the point behind the ball,
-        # or in other words, once I am 21cm behind the ball, just
-        # drive to the goal.
-        if np.linalg.norm(p - mevec) < 0.09:
-            return True
-        else:
-            return False
+    def switch_on_defense(self):
+        """Determine whether we should switch on defense"""
+        #if in goalies wheels house
+
+    def ball_in_robot_wheelhouse(self, robot):
+        """returns true of the ball is in the robot wheel house"""
+
+    def ball_behind_robot(self, robot):
+        """Return true if ball is far enough behind the attacker/defender"""
+        attacker_x = self.positions[self.state[robot]].x
+        ball_x = self.positions["ball"]
+        return (attacker_x - constants.ball_behind_thresh) > ball_x
+
 
 
 
