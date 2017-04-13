@@ -29,6 +29,7 @@ class Team:
         self.init_publsihers()
         self.debug = False
         self.change_roles = False
+        self.play_without_soccerref = True
 
     def init_pos(self):
         """Init the position dictionary"""
@@ -120,7 +121,7 @@ class Team:
         if (self.debug == True):
             self.roles['ally1'] = roles.SCORE
             self.roles['ally2'] = roles.DEFEND_GOAL
-        elif(self.game_state.play):
+        elif(self.game_state.play or self.play_without_soccerref):
             self.determine_game_state()
             #if(self.roles['ally2'] == 2):
 

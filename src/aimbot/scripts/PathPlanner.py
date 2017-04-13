@@ -94,10 +94,11 @@ class PathPlanner:
             else:
                 print("distance is: ", dist)
                 #update our new points to check
+                # making it so it doenst move 1 meter down the line multiply by radius of robot
                 x_next = x_next + (robot_radius / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2)))*robot_radius
                 y_next = y_next + ((robot_radius * m) / (math.sqrt(robot_radius ** 2 + (robot_radius * m) ** 2)))*robot_radius
 
-                #making it so it doenst move 1 meter down the line multiply by radius of robot
+
                 print("x:", x_next)
                 print("y:", y_next)
         return False #no collision
