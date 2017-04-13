@@ -8,7 +8,7 @@ from Position import Position
 from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
-from PathPlanner import PathPlanner
+#from PathPlanner import PathPlanner
 
 
 class Robot(Moving):
@@ -36,7 +36,7 @@ class Robot(Moving):
         self.first = True
         self.state = 0
         self.pause = 10
-        self.path_planner = PathPlanner()
+        #self.path_planner = PathPlanner()
         self.control_ball = False
         self.change_roles = False
 
