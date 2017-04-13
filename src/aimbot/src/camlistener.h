@@ -18,7 +18,9 @@ private:
     ros::NodeHandle nh;
     image_transport::ImageTransport it;
     image_transport::Subscriber image_sub;
+    ros::Rate rate;
     bool isRunning;
+    bool firstFrame = true;
 
     void imageCallback(const sensor_msgs::ImageConstPtr &msg);
 public slots:

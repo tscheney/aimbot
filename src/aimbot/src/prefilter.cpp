@@ -12,7 +12,6 @@ void PreFilter::rawFrame(cv::Mat frame)
 {
     Mat filtered = backgroundSubtraction(frame);
     emit filteredFrame(filtered);
-    //filteredFrame(frame);
 }
 
 // Handle recieved calc back sub event

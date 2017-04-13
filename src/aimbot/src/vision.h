@@ -32,7 +32,6 @@ private:
     bool isUseEdgeDetect = false;
     bool isUseShape = false;
     bool isUseGray = false;
-
     ros::Publisher pub;
     ros::NodeHandle nh;
 

@@ -61,7 +61,6 @@ void Vision::process(cv::Mat frame)
 
     result = applyBlur(result);
 
-
     if(isUseEdgeDetect)
     {
         result = detectShapeEdges(result);

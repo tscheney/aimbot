@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     prefilterThread.start();
 
     ui->setupUi(this);
+    setWindowTitle("Vision");
     // Set up tabs
     tabs = new QTabWidget(this);
     MainTab *mainTab = new MainTab(this);

@@ -4,6 +4,7 @@ from numpy import ones,vstack
 from numpy.linalg import lstsq
 from Position import Position
 import math as math
+import dubins
 
 class PathPlanner:
     """This class uses the position of the robot and of the all the objects necessary to avoid and
@@ -153,3 +154,8 @@ class PathPlanner:
 #       go to score
 #   Effectivly this would be a smarter version of rush goal, it will try to
 #   get behind the ball then push to the goal.
+
+
+
+
+

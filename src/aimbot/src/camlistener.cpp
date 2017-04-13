@@ -2,7 +2,7 @@
 #include "moc_camlistener.cpp"
 
 CamListener::CamListener(QObject *parent) //TODO: (string subPath)
- : QThread(parent), it(nh)
+ : QThread(parent), it(nh), rate(30.0)
 {
     //image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1));
     image_sub = it.subscribe("/usb_cam_away/image_raw/", 1, boost::bind(&CamListener::imageCallback, this, _1), ros::VoidPtr(), image_transport::TransportHints("compressed"));
@@ -21,7 +21,6 @@ CamListener::~CamListener()
 // Threads main function to run a process
 void CamListener::run()
 {
-    ros::Rate rate(30.0);
     while(nh.ok() && isRunning)
     {
         ros::spinOnce();
@@ -34,8 +33,16 @@ void CamListener::imageCallback(const sensor_msgs::ImageConstPtr &msg)
 {
     try
     {
-        cv::Mat frame = cv_bridge::toCvShare(msg, "bgr8")->image;
-        emit rawImage(frame);
+        if(!firstFrame)
+        {
+            cv::Mat frame = cv_bridge::toCvShare(msg, "bgr8")->image;
+            emit rawImage(frame);
+        }
+        else
+        {
+            firstFrame = false;
+        }
+
     }
     catch (cv_bridge::Exception& e)
     {
