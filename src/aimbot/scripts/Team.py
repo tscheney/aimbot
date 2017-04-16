@@ -125,6 +125,9 @@ class Team:
         #print("penalty for home is", self.game_state.home_penalty)
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
+        if(self.pos_in_robot_wheelhouse("attacker", self.positions[self.state["defender"]])): #defender is right in front of attacker
+            self.switch_roles()
+
         if (self.debug == True):
             self.roles['ally1'] = roles.SCORE
             self.roles['ally2'] = roles.DEFEND_GOAL
@@ -135,11 +138,11 @@ class Team:
             #if you are not in penalty they send the reset field signal and if this is after the elif for reset field
             #then it takes that branch and just resets the field. So leave this section before the reset field branch.
         elif (self.game_state.home_penalty and self.team_side == 'home'):
-            self.roles['ally1'] = 105
-            self.roles['ally2'] = 106
+            self.roles[self.state["attacker"]] = 105
+            self.roles[self.state["defender"]] = 106
         elif (self.game_state.away_penalty and self.team_side == 'away'):
-            self.roles['ally1'] = 107
-            self.roles['ally2'] = 108
+            self.roles[self.state["attacker"]] = 107
+            self.roles[self.state["defender"]] = 108
         #reset field branch here
         elif(self.game_state.reset_field):
             self.roles[self.state["attacker"]] = 103
@@ -255,17 +258,22 @@ class Team:
             print("Ball in def wheel")
             self.switch_roles()
 
-    def ball_in_robot_wheelhouse(self, robot):
-        """Returns true of the ball is in the robot wheel house"""
+
+
+    def pos_in_robot_wheelhouse(self, robot, target_pos):
+        """Returns true if the position is in the robot's wheelhouse"""
         pos = self.positions[self.state[robot]]
-        ball_pos = self.positions["ball"]
-        ball_pos_Point = geo.Point(ball_pos.x, ball_pos.y)
-        y_low = pos.y - constants.goalie_wheelhouse_width / 2 #left side of the wheelhouse if standing behind robot
+        target_pos_Point = geo.Point(target_pos.x, target_pos.y)
+        y_low = pos.y - constants.goalie_wheelhouse_width / 2  # left side of the wheelhouse if standing behind robot
         y_high = pos.y + constants.goalie_wheelhouse_width / 2
         x_high = (pos.x + constants.goalie_wheelhouse_length)
         x_low = pos.x
         wheelhouse = geo.Polygon([(x_low, y_low), (x_high, y_low), (x_high, y_high), (x_low, y_high)])
-        return ball_pos_Point.within(wheelhouse)
+        return target_pos_Point.within(wheelhouse)
+
+    def ball_in_robot_wheelhouse(self, robot):
+        """Returns true of the ball is in the robot wheel house"""
+        return self.pos_in_robot_wheelhouse(robot, self.positions["ball"])
 
     def ball_behind_robot(self, robot, thresh):
         """Return true if ball is far enough behind the attacker/defender"""

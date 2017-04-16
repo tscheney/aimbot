@@ -9,6 +9,7 @@ from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 import shapely.geometry as geo
+import random
 #from PathPlanner import PathPlanner
 
 
@@ -26,6 +27,7 @@ class Robot(Moving):
         self.pos = Position()
         self.des_pos = Position()  # place where we want to go
         self.ball_pos = Position()
+        self.ally_pos = Position()
         self.role = 0
         self.count = 0 #TODO remove
         self.team_side = team_side
@@ -35,11 +37,12 @@ class Robot(Moving):
         self.init_publsihers()
         self.hertz_20 = 1
         self.first = True
-        self.state = 0
+        self.state = dict()
         self.pause = 10
         #self.path_planner = PathPlanner()
         self.control_ball = False
         self.change_roles = False
+        self.init_state()
 
     def my_pos_sub(self):
         """Subscribe to my position"""
@@ -50,6 +53,14 @@ class Robot(Moving):
         """Subscribe to other vision nodes"""
         namespace = "/aimbot_" + self.team_side + "/game/vision/"
         rospy.Subscriber(namespace + 'ball', Pose2D, lambda msg: self.ball_pos.import_msg(msg))
+        print("num:", self.num)
+        if(self.num == "1"):
+            ally_num = 2
+        else:
+            ally_num = 1
+        rospy.Subscriber(namespace + 'ally' + str(ally_num), Pose2D, lambda msg: self.ally_pos.import_msg(msg))
+
+        print("ally num:", ally_num)
 
     def my_role_sub(self):
         """Subscribe to my role"""
@@ -129,6 +140,12 @@ class Robot(Moving):
         self.vel_pub()
         self.debug_pub()
 
+    def init_state(self):
+        """Inits the state"""
+        self.state["backup_top"] = False
+        self.state["backup_bot"] = False
+        self.state["num"] = 0
+
     def update(self):
         #need to wait until we have a des pos and a cur pos from publishers before running controller
         if(self.pos.init):
@@ -148,6 +165,8 @@ class Robot(Moving):
     def determine_des_pos(self):
         """Determine the desired position for the robot"""
 
+        self.reset_state()
+
         if self.role <= roles.GAMEPLAY_CUTOFF:
             self.gameplay_roles()
 
@@ -163,6 +182,7 @@ class Robot(Moving):
 
     def gameplay_roles(self):
         """Determine desired poositon for gameplay"""
+
         if self.role == roles.STAY_PUT: # stay where you are
             self.stay_put()
 
@@ -173,17 +193,23 @@ class Robot(Moving):
             self.defend_goal()
 
         elif self.role == roles.BACKUP_OFFENSE:
-            self.go_behind_ball_facing_target(0.5)
+            #self.go_behind_ball_facing_goal(0.5)
+            self.backup_offense()
 
         elif self.role == roles.FOLLOW_BALL:
             self.follow_ball_on_line(self.ball_pos.x - constants.follow_distance)
 
         elif self.role == roles.GET_BEHIND_BALL:
-            self.avoid_then_get_behind_ball()
-
-        elif self.role == roles.BOTH_GET_BEHIND_BALL:
             self.get_behind_ball()
 
+        elif self.role == roles.BOTH_GET_BEHIND_BALL:
+            self.both_get_behind_ball()
+
+    def reset_state(self):
+        """Resets the states in certain conditions"""
+        if(self.role != roles.BACKUP_OFFENSE):
+            self.state["backup_top"] = False
+            self.state["backup_bot"] = False
 
     def set_placement_role(self):
         """Determine desired position for set placement"""
@@ -212,33 +238,33 @@ class Robot(Moving):
         """determine desired position with debug role"""
         if self.role == 1097:
             if (self.within_error(1)):
-                if self.state < 1:
-                    self.state += 1
+                if self.state["num"] < 1:
+                    self.state["num"] += 1
                 else:
-                    self.state = 0
-                print(self.state)
-            if (self.state == 0):
+                    self.state["num"]= 0
+                print(self.state["num"])
+            if (self.state["num"] == 0):
                 self.go_to(0, 0, 90)
             else:
                 self.go_to(0, 0, -90)
         elif self.role == 1098: # debug role
             if(self.within_error(1)):
-                if self.state < 1:
-                    self.state += 1
+                if self.state["num"] < 1:
+                    self.state["num"] += 1
                 else:
-                    self.state = 0
-                print(self.state)
-            if(self.state == 0):
+                    self.state["num"] = 0
+                print(self.state["num"])
+            if(self.state["num"] == 0):
                 self.go_to(0,0,0)
             else:
                 self.go_to(1,0,0)
         elif self.role == 1099: # debug role
             if self.within_error(10):
-                if self.state < 3:
-                    self.state += 1
+                if self.state["num"] < 3:
+                    self.state["num"] += 1
                 else:
-                    self.state = 0
-                print(self.state)
+                    self.state["num"] = 0
+                print(self.state["num"])
 
             self.move_square()
         else:
@@ -280,9 +306,9 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        self.go_behind_ball_facing_target(0)
+        self.go_behind_ball_facing_goal(0)
 
-        intersect = self.get_intersect()
+        intersect = self.get_intersect_robot_ball_with_goal()
         if(not intersect.is_empty): # if there is an intersection
             goal_pos = Position()
             goal_pos.update(intersect.x, intersect.y, 0)
@@ -292,7 +318,53 @@ class Robot(Moving):
             #if (self.theta_within_error(3)):
                 self.attack_ball()
 
-    def go_behind_ball_facing_target(self, des_distance_from_ball):
+    def backup_offense(self):
+        """Play a backup role on offense"""
+        print("ally pos y: ", self.ally_pos.y)
+        if(self.ally_pos.y > constants.backup_off_switch_thresh):
+            print("switch to backup bot")
+            self.state["backup_top"] = False
+            self.state["backup_bot"] = True
+
+        if(self.ally_pos.y < -1 * constants.backup_off_switch_thresh):
+            print("switch to backup top")
+            self.state["backup_top"] = True
+            self.state["backup_bot"] = False
+
+        if(self.state["backup_top"]): # backup on the +y side
+            des_y = constants.field_height / 2 + self.ally_pos.y
+        elif(self.state["backup_bot"]):
+            des_y = -1 * constants.field_height / 2 + self.ally_pos.y
+        elif(self.ally_pos.y >= 0):
+            print("b top", self.state["backup_top"])
+            print("b bot", self.state["backup_bot"])
+            self.state["backup_top"] = False
+            self.state["backup_bot"] = True
+            des_y = -1 * constants.field_height / 2 + self.ally_pos.y
+        else:
+            print("b top", self.state["backup_top"])
+            print("b bot", self.state["backup_bot"])
+            self.state["backup_top"] = True
+            self.state["backup_bot"] = False
+            des_y = constants.field_height / 2 + self.ally_pos.y
+
+        goal_pos = Position()
+        goal_pos.x = constants.field_width / 2
+        goal_pos.y = 0
+
+        self.face_target(des_y, goal_pos, constants.follow_distance)
+
+    def face_target(self, des_y, target, des_distance_from_target):
+        """face the target at the given y value"""
+        if(des_distance_from_target > np.sqrt(2) * abs(des_y) ):
+            des_x = np.sqrt(np.power(des_distance_from_target, 2) - np.power(des_y, 2))
+        else:
+            des_x = des_distance_from_target / np.sqrt(2)
+            des_y = des_x * np.sign(des_y)
+        des_theta = self.get_angle_between_points(des_x, des_y, target.x, target.y)
+        self.set_des_pos(des_x, des_y, np.rad2deg(des_theta))
+
+    def go_behind_ball_facing_goal(self, des_distance_from_ball):
         """Get behind the ball facing the goal"""
         # score_y = self.ball_pos.y
         # if (score_y >= constants.goal_y_thresh):
@@ -307,7 +379,7 @@ class Robot(Moving):
         #
         # self.set_des_pos(x_c, y_c, theta)
         theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, constants.field_width / 2, 0)
-        intersect = self.get_intersect()
+        intersect = self.get_intersect_robot_ball_with_goal()
         if (not intersect.is_empty):  # if there is an intersection
             theta = self.get_angle_between_points(self.pos.x, self.pos.y, self.ball_pos.x, self.ball_pos.y)
         hypotenuse = (constants.robot_width / 2) + des_distance_from_ball
@@ -317,7 +389,7 @@ class Robot(Moving):
 
         self.set_des_pos(x_c, y_c, theta)
 
-    def get_intersect(self):
+    def get_intersect_robot_ball_with_goal(self):
         """Gets the intersect between the line from robot to ball and the goal"""
         ball_line = self.get_extrapoled_line(self.pos.to_Point(), self.ball_pos.to_Point())
 
@@ -327,8 +399,8 @@ class Robot(Moving):
         intersect = ball_line.intersection(goal_line)
         return intersect
 
-    def get_behind_ball(self):
-        """Get behind the ball when the ball is behind you"""
+    def both_get_behind_ball(self):
+        """Both robots get behind the ball"""
         des_y = 0
         if(self.ball_pos.y >= 0):
             des_y = self.ball_pos.y - constants.get_behind_ball_space
@@ -337,42 +409,12 @@ class Robot(Moving):
         self.set_des_pos(-1 * constants.field_width / 2, des_y, 0)
 
 
-
-    def avoid_then_get_behind_ball(self):
-        """Avoid the ball and then get behind it"""
-        ball_y = self.ball_pos.y
-        new_des_pos = Position()
-        new_des_pos.theta = 0
-
-        if self.ball_is_further_in():
-            if (ball_y >= 0):
-                if (constants.field_height / 2 - constants.robot_width > ball_y): #room to get through
-                    #print("room to get through")
-                    new_des_pos.x = -1 * constants.field_width / 2
-                    new_des_pos.y = ball_y + constants.get_behind_ball_space
-                    #print("ball y: ", ball_y)
-                    #print("des y:", new_des_pos.y)
-                else: # no room to get through, get out of the way
-                    new_des_pos.x = self.pos.x
-                    new_des_pos.y = -1 * constants.field_height / 2
-            else: # ball on lower half
-                if (-1 * constants.field_height / 2 + constants.robot_width < ball_y): #room to get through
-                    #print("room to get through")
-                    new_des_pos.x = -1 * constants.field_width / 2
-                    new_des_pos.y = ball_y - constants.get_behind_ball_space
-                else: # no room to get through, get out of the way
-                    new_des_pos.x = self.pos.x
-                    new_des_pos.y = constants.field_height / 2
-            pos = new_des_pos #self.thresh_by_field_size(new_des_pos)
-            self.set_des_pos(pos.x, pos.y, pos.theta)
-        #else:
-        #self.get_behind_ball()
-
+    def get_behind_ball(self):
+        """Single robot avoid the ball and then get behind it"""
         pos = Position()
-        # des_y = 0
         pos.x = -1 * constants.field_width / 2
-        pos.theta = 0
         pos.y = self.pos.y
+        pos.theta = 0
         if(abs(pos.y - self.ball_pos.y) < constants.get_behind_ball_space):
             if (self.ball_pos.y >= self.pos.y):
                 pos.y = self.ball_pos.y - constants.get_behind_ball_space
