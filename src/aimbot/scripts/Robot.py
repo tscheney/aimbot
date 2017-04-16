@@ -8,6 +8,7 @@ from Position import Position
 from geometry_msgs.msg import Twist, Pose2D
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
+import shapely.geometry as geo
 #from PathPlanner import PathPlanner
 
 
@@ -129,7 +130,6 @@ class Robot(Moving):
         self.debug_pub()
 
     def update(self):
-
         #need to wait until we have a des pos and a cur pos from publishers before running controller
         if(self.pos.init):
             """Updates the robots controller and sets velocities"""
@@ -137,16 +137,10 @@ class Robot(Moving):
 
             self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
             # TODO figure out how smooth vision values
-            #if (self.hertz_20 == 5 or self.first):
-            #print("degrees", self.pos.theta)
-            #print("radians", np.deg2rad(self.pos.theta))
+
+            #print("Robot:update pre update_cur_pos")
             self.controller.update_cur_pos(self.pos.x, self.pos.y, np.deg2rad(self.pos.theta))
-            #    self.hertz_20 = 0
-            #    self.first = False
-            #self.hertz_20 = self.hertz_20 + 1
-
-
-            #print(self.vel)
+            #print("Robot:update update_cur_pos")
             self.controller.update()
             self.vel = [self.controller.vel[0], self.controller.vel[1], np.rad2deg(self.controller.vel[2])]
             self.wheel_vel = self.controller.wheel_vel
@@ -184,18 +178,23 @@ class Robot(Moving):
         elif self.role == roles.FOLLOW_BALL:
             self.follow_ball_on_line(self.ball_pos.x - constants.follow_distance)
 
+        elif self.role == roles.GET_BEHIND_BALL:
+            self.avoid_then_get_behind_ball()
+
+        elif self.role == roles.BOTH_GET_BEHIND_BALL:
+            self.get_behind_ball()
+
 
     def set_placement_role(self):
         """Determine desired position for set placement"""
         if self.role == 103: #reset field is true
-            if (self.within_error(10)):
-                return #dont do anything
-            self.go_to(-.5,0, 0)
+            self.go_to(-.5, 0, 0)
+            if (self.within_error(5)):
+                self.stay_put()
         elif self.role == 104: #reset field is true
-            if (self.within_error(10)):
-                return
             self.go_to(-1.2, 0, 0)
-
+            if (self.within_error(5)):
+                self.stay_put()
         elif self.role == 105:  # penalty and home ally1
             self.go_to(-.06, 1.7, 0)
         elif self.role == 106:  # penalty and home ally2
@@ -247,9 +246,7 @@ class Robot(Moving):
 
     def set_des_pos(self, des_x, des_y, des_th):
         """Sets the desired position"""
-        self.des_pos.x = des_x
-        self.des_pos.y = des_y
-        self.des_pos.theta = des_th
+        self.des_pos.update(des_x, des_y, des_th)
 
     def follow_ball_on_line(self, line):
         theta_c = 0
@@ -284,23 +281,111 @@ class Robot(Moving):
     def score_a_goal(self):
         """Attempt to score a goal"""
         self.go_behind_ball_facing_target(0)
-        goal_pos = Position()
-        goal_pos.x = constants.field_width/2
-        goal_pos.y = 0
-        tol = 0.1
-        in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
-        if (self.theta_within_error(3) and in_tol):
-            self.attack_ball()
+
+        intersect = self.get_intersect()
+        if(not intersect.is_empty): # if there is an intersection
+            goal_pos = Position()
+            goal_pos.update(intersect.x, intersect.y, 0)
+            tol = 0.1
+            in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
+            if (self.theta_within_error(3) and in_tol):
+            #if (self.theta_within_error(3)):
+                self.attack_ball()
 
     def go_behind_ball_facing_target(self, des_distance_from_ball):
         """Get behind the ball facing the goal"""
-        theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, constants.field_width/2, 0)
-        hypotenuse = (constants.robot_width / 2)+ des_distance_from_ball
+        # score_y = self.ball_pos.y
+        # if (score_y >= constants.goal_y_thresh):
+        #     score_y = constants.goal_y_thresh
+        # elif (score_y <= -1 * constants.goal_y_thresh):
+        #     score_y = -1 * constants.goal_y_thresh
+        # theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, constants.field_width/2, score_y)
+        # hypotenuse = (constants.robot_width / 2)+ des_distance_from_ball
+        # x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
+        # y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
+        # theta = np.rad2deg(theta)
+        #
+        # self.set_des_pos(x_c, y_c, theta)
+        theta = self.get_angle_between_points(self.ball_pos.x, self.ball_pos.y, constants.field_width / 2, 0)
+        intersect = self.get_intersect()
+        if (not intersect.is_empty):  # if there is an intersection
+            theta = self.get_angle_between_points(self.pos.x, self.pos.y, self.ball_pos.x, self.ball_pos.y)
+        hypotenuse = (constants.robot_width / 2) + des_distance_from_ball
         x_c = self.ball_pos.x - hypotenuse * np.cos(theta)
         y_c = self.ball_pos.y - hypotenuse * np.sin(theta)
         theta = np.rad2deg(theta)
 
         self.set_des_pos(x_c, y_c, theta)
+
+    def get_intersect(self):
+        """Gets the intersect between the line from robot to ball and the goal"""
+        ball_line = self.get_extrapoled_line(self.pos.to_Point(), self.ball_pos.to_Point())
+
+        goal_x = constants.field_width / 2
+        goal_y = constants.goal_y_thresh
+        goal_line = geo.LineString([(goal_x, goal_y), (goal_x, -1 * goal_y)])
+        intersect = ball_line.intersection(goal_line)
+        return intersect
+
+    def get_behind_ball(self):
+        """Get behind the ball when the ball is behind you"""
+        des_y = 0
+        if(self.ball_pos.y >= 0):
+            des_y = self.ball_pos.y - constants.get_behind_ball_space
+        else:
+            des_y = self.ball_pos.y + constants.get_behind_ball_space
+        self.set_des_pos(-1 * constants.field_width / 2, des_y, 0)
+
+
+
+    def avoid_then_get_behind_ball(self):
+        """Avoid the ball and then get behind it"""
+        ball_y = self.ball_pos.y
+        new_des_pos = Position()
+        new_des_pos.theta = 0
+
+        if self.ball_is_further_in():
+            if (ball_y >= 0):
+                if (constants.field_height / 2 - constants.robot_width > ball_y): #room to get through
+                    #print("room to get through")
+                    new_des_pos.x = -1 * constants.field_width / 2
+                    new_des_pos.y = ball_y + constants.get_behind_ball_space
+                    #print("ball y: ", ball_y)
+                    #print("des y:", new_des_pos.y)
+                else: # no room to get through, get out of the way
+                    new_des_pos.x = self.pos.x
+                    new_des_pos.y = -1 * constants.field_height / 2
+            else: # ball on lower half
+                if (-1 * constants.field_height / 2 + constants.robot_width < ball_y): #room to get through
+                    #print("room to get through")
+                    new_des_pos.x = -1 * constants.field_width / 2
+                    new_des_pos.y = ball_y - constants.get_behind_ball_space
+                else: # no room to get through, get out of the way
+                    new_des_pos.x = self.pos.x
+                    new_des_pos.y = constants.field_height / 2
+            pos = new_des_pos #self.thresh_by_field_size(new_des_pos)
+            self.set_des_pos(pos.x, pos.y, pos.theta)
+        #else:
+        #self.get_behind_ball()
+
+        pos = Position()
+        # des_y = 0
+        pos.x = -1 * constants.field_width / 2
+        pos.theta = 0
+        pos.y = self.pos.y
+        if(abs(pos.y - self.ball_pos.y) < constants.get_behind_ball_space):
+            if (self.ball_pos.y >= self.pos.y):
+                pos.y = self.ball_pos.y - constants.get_behind_ball_space
+            else:
+                pos.y = self.ball_pos.y + constants.get_behind_ball_space
+            pos = self.thresh_by_field_size(pos)
+        self.set_des_pos(pos.x, pos.y, pos.theta)
+
+    def ball_is_further_in(self):
+        """Return whether the ball is further in"""
+        return ((self.ball_pos.y >= 0) and (self.pos.y > self.ball_pos.y)
+            or (self.ball_pos.y < 0 and self.pos.y < self.ball_pos.y))
+
 
     def control_ball_facing_target(self):
         """Get behind the ball facing the goal"""
@@ -326,77 +411,6 @@ class Robot(Moving):
         theta_c = np.rad2deg(theta)
 
         self.set_des_pos(x_c, y_c, theta_c)
-
-        #calculate theta based on the balls position relative to the goal
-        # idealy it will face the front of the bot on a straight line path to the
-        # goal. then rush the goal and score.
-        # it seems to be a bit buggy when the ball is really close to the goal
-        # but to some y above or below it.
-        # if (ball.x >= 0):
-        #     adj_length = 1.595 - ball.x
-        #     opp_length = ball.y
-        # else:
-        #     adj_length = 1.595 + ball.x
-        #     opp_length = ball.y
-        # if (ball.y >= 0):
-        #     theta = np.tan(opp_length / adj_length)
-        #     if theta > 0:
-        #         theta = -np.rad2deg(theta)
-        #     else:
-        #         theta = np.rad2deg(theta)
-        # else:
-        #     theta = np.tan(opp_length/adj_length)
-        #     if theta > 0:
-        #         theta = np.rad2deg(theta)
-        #     else:
-        #         theta = -np.rad2deg(theta)
-        #
-        # while (theta > 90):
-        #     theta = theta - 90
-        # while (theta < -90):
-        #     theta = theta + 90
-        # print("theta is", theta)
-        #
-        # if ball.x < me.x:
-        #     print("get behind ball")
-        #     if ball.y < 0:
-        #         if ball.x -.5 > -1.595:
-        #             x = ball.x-.5
-        #             y = ball.y+.3
-        #             cmdvec = np.array([[x], [y]])
-        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-        #             #return
-        #         else:
-        #             x = ball.x + .05
-        #             y = ball.y+.3
-        #             cmdvec = np.array([[x], [y]])
-        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-        #             #return
-        #     else:
-        #         if ball.x -.5 > -1.595:
-        #             x = ball.x -.5
-        #             y = ball.y -.3
-        #             cmdvec = np.array([[x], [y]])
-        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-        #             #return
-        #         else:
-        #             x = ball.x + .05
-        #             y = ball.y -.3
-        #             cmdvec = np.array([[x], [y]])
-        #             self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta)
-        #             #return
-        # # If I am sufficiently close to the point behind the ball,
-        # # or in other words, once I am 21cm behind the ball, just
-        # # drive to the goal.
-        #elif np.linalg.norm(p - mevec) < 0.15:
-        #    cmdvec = goalvec
-        #     print("rush goal")
-        # else:
-        #     print("get in line")
-        #    cmdvec = p
-        #    cmdvec = p
-        #self.set_des_pos(cmdvec.flatten()[0], cmdvec.flatten()[1], theta
-
 
     def defend_goal(self):
         theta_c = 0
@@ -478,6 +492,28 @@ class Robot(Moving):
             effective_th = self.pos.theta + 360
         th_good = abs(effective_th - self.des_pos.theta) < th_offset
         return th_good
+
+    def get_extrapoled_line(self, p1, p2):
+        """Creates a line extrapoled in p1->p2 direction"""
+        dist = p1.distance(p2)
+        EXTRAPOL_RATIO = constants.field_width * 2 / dist
+        a = p1
+        b = geo.Point(p1.x + EXTRAPOL_RATIO * (p2.x - p1.x), p1.y + EXTRAPOL_RATIO * (p2.y - p1.y))
+        return geo.LineString([a, b])
+
+
+    def thresh_by_field_size(self, pos):
+        """Threshold the given position by the field size"""
+        if (pos.x > constants.field_width / 2):
+            pos.x = constants.field_width / 2 - constants.robot_width / 2
+        elif (pos.x < -1 * constants.field_width / 2):
+            pos.x = -1 * constants.field_width / 2 + constants.robot_width / 2
+
+        if(pos.y > constants.field_height / 2):
+            pos.y = constants.field_height / 2 - constants.robot_width / 2
+        elif(pos.y < -1 * constants.field_height / 2):
+            pos.y = -1 * constants.field_height / 2 + constants.robot_width / 2
+        return pos
 
     def rotate(self):
         """Rotate the robot"""

@@ -31,8 +31,7 @@ class Team:
         self.init_publsihers()
         self.init_state()
         self.debug = False
-        self.change_roles = False
-        self.play_without_soccerref = True
+        self.play_without_soccerref = False
 
     def init_pos(self):
         """Init the position dictionary"""
@@ -131,24 +130,7 @@ class Team:
             self.roles['ally2'] = roles.DEFEND_GOAL
         elif(self.game_state.play or self.play_without_soccerref):
             self.determine_game_state()
-            #if(self.roles['ally2'] == 2):
 
-            #    if(self.switch_Roles(self.roles['ally2'])):
-                    #print("switch places, ally1 role is: ", self.roles['ally1'])
-            #        print("flip")
-            #        self.roles['ally1'] = 2
-            #        self.roles['ally2'] = 1
-            #    else:
-            #        self.roles['ally1'] = self.roles['ally1']
-            #        self.roles['ally2'] = self.roles['ally2']
-            #else:
-            #    if(self.switch_Roles(self.roles['ally1'])):
-            #        print("original")
-            #        self.roles['ally1'] = 1
-            #        self.roles['ally2'] = 2
-            #    else:
-            #        self.roles['ally1'] = self.roles['ally1']
-            #        self.roles['ally2'] = self.roles['ally2']
         #penalty stuff must be here due to the way it is set up the the ref code.
             #if you are not in penalty they send the reset field signal and if this is after the elif for reset field
             #then it takes that branch and just resets the field. So leave this section before the reset field branch.
@@ -160,9 +142,8 @@ class Team:
             self.roles['ally2'] = 108
         #reset field branch here
         elif(self.game_state.reset_field):
-            self.roles['ally1'] = 103
-            self.roles['ally2'] = 104
-            self.init_state()
+            self.roles[self.state["attacker"]] = 103
+            self.roles[self.state["defender"]] = 104
         else:
             self.roles['ally1'] = roles.STAY_PUT  # these are just test roles
             self.roles['ally2'] = roles.STAY_PUT
@@ -171,28 +152,24 @@ class Team:
         """Use balanced strategy"""
         self.switch_on_balanced()
         self.roles[self.state["attacker"]] = roles.SCORE
-        if(not self.ball_behind_robot("defender")): # if the ball is not behind the defender
-            self.roles[self.state["defender"]] = roles.FOLLOW_BALL
-        else: # ball is behind defender
+        self.roles[self.state["defender"]] = roles.FOLLOW_BALL
+        if (not self.robot_clear_of_ball("defender")):  # if the ball is not behind the defender
             self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
-
 
     def set_roles_offense(self):
         """Use offensive strategy"""
         self.switch_on_offense()
         self.roles[self.state["attacker"]] = roles.SCORE
-        if (not self.ball_behind_robot("defender")):  # if the ball is not behind the defender
-            self.roles[self.state["defender"]] = roles.BACKUP_OFFENSE
-        else: # ball is behind defender
+        self.roles[self.state["defender"]] = roles.BACKUP_OFFENSE
+        if (not self.robot_clear_of_ball("defender")):  # if the ball is not behind the defender
             self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
 
     def set_roles_defense(self):
         """Use defensive stragegy"""
         self.switch_on_defense()
         self.roles[self.state["attacker"]] = roles.SCORE
-        if (not self.ball_behind_robot("defender")):  # if the ball is not behind the defender
-            self.roles[self.state["defender"]] = roles.DEFEND_GOAL
-        else: # ball is behind defender
+        self.roles[self.state["defender"]] = roles.DEFEND_GOAL
+        if (self.ball_behind_robot("defender", constants.ball_behind_thresh)):  # if the ball is not behind the defender
             self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
 
     def get_distance_between_points(self, pos1, pos2):
@@ -205,15 +182,22 @@ class Team:
     def determine_game_state(self):
         """Based on known positions and score, determine which state the game is in
         Determines the roles that should be used during game play"""
-        ball_x = self.positions["ball"].x
-        print(ball_x)
-        if ball_x > constants.field_width / 3:
-            self.set_roles_offense()
-        # if the ball is futher down the field than the follow distance plus half the width of the robot
-        elif ball_x < (-1 * ((constants.field_width / 2) - (constants.follow_distance + (constants.robot_width / 2)))):
-            self.set_roles_defense()
+        if(self.ball_behind_robot("attacker", constants.ball_behind_thresh) and self.ball_behind_robot("defender", constants.ball_behind_thresh)): # ball is behind both robots
+            if(self.positions[self.state["attacker"]].x >= self.positions[self.state["defender"]].x):
+                self.switch_roles()
+            self.roles[self.state["attacker"]] = roles.BOTH_GET_BEHIND_BALL
+            self.roles[self.state["defender"]] = roles.BOTH_GET_BEHIND_BALL
         else:
-            self.set_roles_balanced()
+            ball_x = self.positions["ball"].x
+            if ball_x > constants.field_width / 3:
+                self.set_roles_offense()
+            # if the ball is futher down the field than the follow distance plus half the width of the robot
+            elif ball_x < (-1 * ((constants.field_width / 2) - (constants.follow_distance + (constants.robot_width / 2)))):
+                self.set_roles_defense()
+            else:
+                self.set_roles_balanced()
+
+
 
     # def switch_Roles(self, defender):
     #     """If defender is close enough to the ball, become the attacker
@@ -256,26 +240,44 @@ class Team:
         """Determine whether we should switch on offense"""
         attacker_to_ball = self.get_distance_between_points(self.positions[self.state["attacker"]], self.positions['ball'])
         defender_to_ball = self.get_distance_between_points(self.positions[self.state["defender"]], self.positions['ball'])
-        if((attacker_to_ball > defender_to_ball) or self.ball_behind_robot("attacker")): # defender is the closest opponent, or ball is behind attacker
+        if((attacker_to_ball > defender_to_ball) or self.ball_behind_robot("attacker", constants.ball_behind_thresh)): # defender is the closest opponent, or ball is behind attacker
             self.switch_roles()
 
     def switch_on_balanced(self):
         """Determine whether we should switch while balanced"""
-        if(self.ball_behind_robot("attacker")):
+        if(self.ball_behind_robot("attacker", constants.ball_behind_thresh)):
             self.switch_roles()
 
     def switch_on_defense(self):
         """Determine whether we should switch on defense"""
         #if in goalies wheels house
+        if(self.ball_in_robot_wheelhouse("defender")):
+            print("Ball in def wheel")
+            self.switch_roles()
 
     def ball_in_robot_wheelhouse(self, robot):
-        """returns true of the ball is in the robot wheel house"""
+        """Returns true of the ball is in the robot wheel house"""
+        pos = self.positions[self.state[robot]]
+        ball_pos = self.positions["ball"]
+        ball_pos_Point = geo.Point(ball_pos.x, ball_pos.y)
+        y_low = pos.y - constants.goalie_wheelhouse_width / 2 #left side of the wheelhouse if standing behind robot
+        y_high = pos.y + constants.goalie_wheelhouse_width / 2
+        x_high = (pos.x + constants.goalie_wheelhouse_length)
+        x_low = pos.x
+        wheelhouse = geo.Polygon([(x_low, y_low), (x_high, y_low), (x_high, y_high), (x_low, y_high)])
+        return ball_pos_Point.within(wheelhouse)
 
-    def ball_behind_robot(self, robot):
+    def ball_behind_robot(self, robot, thresh):
         """Return true if ball is far enough behind the attacker/defender"""
-        attacker_x = self.positions[self.state[robot]].x
-        ball_x = self.positions["ball"]
-        return (attacker_x - constants.ball_behind_thresh) > ball_x
+        robot_x = self.positions[self.state[robot]].x
+        ball_x = self.positions["ball"].x
+        return (robot_x - thresh) > ball_x
+
+    def robot_clear_of_ball(self, robot):
+        """Return true if the robot is clear of the ball"""
+        robot_x = self.positions[self.state[robot]].x
+        ball_x = self.positions["ball"].x
+        return (robot_x + constants.robot_clear_thresh) < ball_x
 
 
 
