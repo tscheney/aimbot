@@ -22,13 +22,13 @@ robotopp1.y = -0.5
 opp2.x = 0
 opp2.y = 1.2
 
-thing.x = 0
-thing.y = -.9 - 0.2132
-#objects.append(robotopp1)
-#objects.append(opp2)
+thing.x = 1
+thing.y = -1.3
+objects.append(robotopp1)
+objects.append(opp2)
 objects.append(thing)
 
-#path_plan.obj_to_avoid.append(robotopp1)
+#path_plan.obj_to_avoid.append(thing)
 
 #where we want to go
 des_pos = Position()
@@ -49,7 +49,9 @@ pos.y = -0.5
 #ball.y = 0.1
 #path_plan.ball = ball
 
-path_plan.calc_waypoints(pos, des_pos, objects)
-waypoints = path_plan.waypoints
+pos = path_plan.calc_waypoints(pos, des_pos, objects)
+print ("pos is: ", pos.x, pos.y)
 
-path_plan.print_waypoints(waypoints)
+print("run code again")
+pos = path_plan.calc_waypoints(pos, des_pos, objects)
+print ("pos is: ", pos.x, pos.y)
