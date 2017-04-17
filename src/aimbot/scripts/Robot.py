@@ -10,7 +10,7 @@ from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 import shapely.geometry as geo
 import random
-#from PathPlanner import PathPlanner
+from PathPlanner import PathPlanner
 
 
 class Robot(Moving):
@@ -28,6 +28,8 @@ class Robot(Moving):
         self.des_pos = Position()  # place where we want to go
         self.ball_pos = Position()
         self.ally_pos = Position()
+        self.opp1_pos = Position()
+        self.opp2_pos = Position()
         self.role = 0
         self.count = 0 #TODO remove
         self.team_side = team_side
@@ -39,7 +41,7 @@ class Robot(Moving):
         self.first = True
         self.state = dict()
         self.pause = 10
-        #self.path_planner = PathPlanner()
+        self.path_planner = PathPlanner()
         self.control_ball = False
         self.change_roles = False
         self.init_state()
@@ -53,14 +55,15 @@ class Robot(Moving):
         """Subscribe to other vision nodes"""
         namespace = "/aimbot_" + self.team_side + "/game/vision/"
         rospy.Subscriber(namespace + 'ball', Pose2D, lambda msg: self.ball_pos.import_msg(msg))
-        print("num:", self.num)
         if(self.num == "1"):
             ally_num = 2
         else:
             ally_num = 1
         rospy.Subscriber(namespace + 'ally' + str(ally_num), Pose2D, lambda msg: self.ally_pos.import_msg(msg))
 
-        print("ally num:", ally_num)
+        rospy.Subscriber(namespace + 'opp1', Pose2D, lambda msg: self.opp1_pos.import_msg(msg))
+
+        rospy.Subscriber(namespace + 'opp2', Pose2D, lambda msg: self.opp2_pos.import_msg(msg))
 
     def my_role_sub(self):
         """Subscribe to my role"""
@@ -151,6 +154,9 @@ class Robot(Moving):
         if(self.pos.init):
             """Updates the robots controller and sets velocities"""
             self.determine_des_pos()
+
+
+            self.set_des_pos(self.path_planner.calc_waypoints(self.pos, self.des_pos))
 
             self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
             # TODO figure out how smooth vision values
