@@ -4,6 +4,23 @@
 
 namespace GlobalData
 {
+    // Field Points
+    const cv::Point fieldUpperLeft = cv::Point(102, 26);
+    const cv::Point leftGoalUpperRight = cv::Point(105, 187);
+    const cv::Point leftGoalUpperLeft = cv::Point(84, 185);
+    const cv::Point leftGoalLowerLeft = cv::Point(83, 301);
+    const cv::Point leftGoalLowerRight = cv::Point(106, 304);
+    const cv::Point fieldLowerLeft = cv::Point(107, 455);
+    const cv::Point fieldLowerRight = cv::Point(707, 462);
+    const cv::Point rightGoalLowerLeft = cv::Point(710, 311);
+    const cv::Point rightGoalLowerRight = cv::Point(736, 309);
+    const cv::Point rightGoalUpperRight = cv::Point(738, 195);
+    const cv::Point rightGoalUpperLeft = cv::Point(715, 192);
+    const cv::Point fieldUpperRight = cv::Point(722, 36);
+    const std::vector<cv::Point> fieldPoints = {fieldUpperLeft, leftGoalUpperRight, leftGoalUpperLeft, leftGoalLowerLeft,
+                                                leftGoalLowerRight, fieldLowerLeft, fieldLowerRight, rightGoalLowerLeft,
+                                                rightGoalLowerRight, rightGoalUpperRight, rightGoalUpperLeft, fieldUpperRight};
+
     const QString settingsPath = QDesktopServices::storageLocation(QDesktopServices::HomeLocation) + "/.config/aimbot/";
     const QString profilesFile = "profiles.xml";
     const QString robotGroupName = "robots";

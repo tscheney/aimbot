@@ -69,6 +69,7 @@ public:
     Mat applyMask(Mat frame, Mat mask);
     virtual Mat applyBlur(Mat frame) = 0;
     Mat applyBlurBase(Mat frame, int blurSize);
+    Mat maskField(Mat& frame);
     virtual Mat detectShapes(Mat frame) = 0;
     Mat detectShapesBase(Mat frame, int blurSize, int edgeThresh1, int edgeThresh2, double polyError);
     virtual Mat detectShapeEdges(Mat frame) = 0;

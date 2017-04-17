@@ -47,6 +47,8 @@ void Vision::process(cv::Mat frame)
 {
     geometry_msgs::Pose2D pos;
 
+    frame = maskField(frame);
+
     Mat result = frame;
 
     if(isUseGray)
@@ -269,6 +271,14 @@ Mat Vision::erodeDilate(Mat& frame)
     Mat dilated;
     dilate(eroded, dilated, getStructuringElement(MORPH_ELLIPSE, Size(colorData.erosDilaSize, colorData.erosDilaSize)), Point(-1,-1),colorData.dilationIter);
     return dilated;
+}
+
+// Mask so that only the field is visible
+Mat Vision::maskField(Mat& frame)
+{
+    Mat mask(frame.size(), frame.type());
+    fillConvexPoly(mask, GlobalData::fieldPoints, Scalar(255,255,255));
+    return applyMask(frame, mask);
 }
 
 // Given a thresholded gray image, calculate the moments in the image

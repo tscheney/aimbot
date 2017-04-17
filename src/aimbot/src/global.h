@@ -4,10 +4,27 @@
 #include <QString>
 #include <QDesktopServices>
 #include <string>
+#include <vector>
+#include <opencv2/core.hpp>
 
 
 namespace GlobalData
 {
+// Field Points
+extern const cv::Point fieldUpperLeft;
+extern const cv::Point leftGoalUpperRight;
+extern const cv::Point leftGoalUpperLeft;
+extern const cv::Point leftGoalLowerLeft;
+extern const cv::Point leftGoalLowerRight;
+extern const cv::Point fieldLowerLeft;
+extern const cv::Point fieldLowerRight;
+extern const cv::Point rightGoalLowerLeft;
+extern const cv::Point rightGoalLowerRight;
+extern const cv::Point rightGoalUpperRight;
+extern const cv::Point rightGoalUpperLeft;
+extern const cv::Point fieldUpperRight;
+extern const std::vector<cv::Point> fieldPoints;
+
 extern const QString settingsPath;
 extern const QString profilesFile;
 extern const QString robotGroupName;
