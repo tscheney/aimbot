@@ -149,14 +149,23 @@ class Robot(Moving):
         self.state["backup_bot"] = False
         self.state["num"] = 0
 
+    def update_things_to_avoid(self):
+        """Here we grab where everything is to avoid from the vision and store in a list"""
+        list = [] #make our list
+        list.append(self.ally_pos)
+        list.append(self.opp1_pos)
+        list.append(self.opp2_pos)
+        #return the list
+        return list
+
     def update(self):
         #need to wait until we have a des pos and a cur pos from publishers before running controller
         if(self.pos.init):
             """Updates the robots controller and sets velocities"""
             self.determine_des_pos()
-
-
-            self.set_des_pos(self.path_planner.calc_waypoints(self.pos, self.des_pos))
+            things_to_avoid = self.update_things_to_avoid()
+            new_pos = self.path_planner.calc_waypoints(self.pos, self.des_pos, things_to_avoid)
+            self.set_des_pos(new_pos.x, new_pos.y, self.des_pos.theta)
 
             self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
             # TODO figure out how smooth vision values

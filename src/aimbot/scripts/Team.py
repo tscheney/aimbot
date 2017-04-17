@@ -9,6 +9,7 @@ import numpy as np
 import constants
 import roles
 import shapely.geometry as geo
+from PathPlanner import PathPlanner
 
 class Team:
 
@@ -30,6 +31,7 @@ class Team:
         self.init_pos()
         self.init_publsihers()
         self.init_state()
+        self.path_planner = PathPlanner()
         self.debug = False
         self.play_without_soccerref = False
 
@@ -125,6 +127,10 @@ class Team:
         #print("penalty for home is", self.game_state.home_penalty)
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
+        #update the pathplanner so it knows to use it
+        self.path_planner.use_path_planning(self.game_state.play)
+
+
         if(self.pos_in_robot_wheelhouse("attacker", self.positions[self.state["defender"]])): #defender is right in front of attacker
             self.switch_roles()
 

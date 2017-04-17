@@ -4,7 +4,8 @@ from numpy import ones,vstack
 from numpy.linalg import lstsq
 from Position import Position
 import math as math
-#import dubins
+from GameStateObj import GameStateObj
+
 
 
 class PathPlanner:
@@ -25,6 +26,8 @@ class PathPlanner:
         self.first_pass = False #True when we dont go into while loop of the check line function.
         self.checkpos1 = Position() #move up and check over and over to find safe path
         self.checkpos2 = Position() #move down and check over and over to find safe path
+        self.game_state = GameStateObj()
+        self.play_with_PathPlanning = False
 
 
     def update_pos(self, pos):
@@ -40,9 +43,9 @@ class PathPlanner:
         i = 0
         del self.obj_to_avoid[:] # clears the old positions from the list before adding the new ones
         for obj in obj_to_avoid:
-            print("AVOID THIS STUFF: ",obj.x, obj.y)
+            #print("AVOID THIS STUFF: ",obj.x, obj.y)
             dist = math.hypot(self.pos.x - obj.x, self.pos.y - obj.y)
-            print(dist)
+            #print(dist)
             self.obj_to_avoid.append([obj, dist])  # add all the new positions
 
         if (len(self.obj_to_avoid) > 1):
@@ -50,8 +53,14 @@ class PathPlanner:
             self.obj_to_avoid = sorted(self.obj_to_avoid, key = lambda x: x[1]) #sort the list by the distance values
             #print(self.obj_to_avoid)
             for obj in self.obj_to_avoid:
-                print("(ordered by distance) x: y: dist: : ", obj[0].x, obj[0].y, obj[1])
+                #print("(ordered by distance) x: y: dist: : ", obj[0].x, obj[0].y, obj[1])
                 i = i + 1
+
+    def use_path_planning(self, value):
+        #take a boolean value to assign
+        self.play_with_PathPlanning = value
+        return self.play_with_PathPlanning
+
     def calc_waypoints(self, curr_position, des_position, obj_to_avoid):
         """Calculates intermediate position to head to"""
         #need to calculate where to go next one point at a time, pass this back and go there then call this again
@@ -63,68 +72,80 @@ class PathPlanner:
         self.update_des_pos(des_position)
         #update things to avoid
         self.update_obj_avoid(obj_to_avoid)
-
+        #self.game_state_sub()
+        print("boolean is: ", self.play_with_PathPlanning)
+        if (self.play_with_PathPlanning):
         #check to see if there is anything in our way on our way to our desired position
-        for avoid in self.obj_to_avoid:
-            print("avoid this spot: ", avoid[0].x, avoid[0].y)
-            if (self.check_line(avoid[0].x, avoid[0].y, self.pos)): #pass in x,y values of thing to avoid
-                #make new path
-                #idea from other team, they say it works.
-                #move the line that we are trying to go down to one side or the other
-                # then check it and move down it till you can go downt the original line that you wanted.
-                if (self.first_pass):
-                    #we are very close to an object to avoid so we need to move the movement vector
-                    print("very close to object")
-                    #field width
-                    field_width = 2.24 #in meters #todo may be wrong, mchthuggets uses 3.53
-                    #pick a new des_position
-                    #go up 2 inches from thing to avoid
-                    #TODO NEED to make this smarter, for now it just moves up in the y direction regardless of walls or if it is a shorter distance than moving down in the y
-                    robot_radius = 0.1016
-                    self.checkpos1.x = self.pos.x
-                    self.checkpos2.x = self.pos.x
-                    print("checkpos1.x is:", self.checkpos1.x)
-                    self.checkpos1.y = avoid[0].y + robot_radius/2
+            for avoid in self.obj_to_avoid:
+                #print("avoid this spot: ", avoid[0].x, avoid[0].y)
 
-                    #loop through continusoulsy adding about 2 inches to the y until we have a safe path
-                    while (self.check_line(avoid[0].x, avoid[0].y, self.checkpos1)):
-                        if self.checkpos1.y > field_width/2 - robot_radius: #find closest point we can go to with out hitting the side wall
-                            print("stop else you will hit the wall")
-                            break
-                        self.checkpos1.y = self.checkpos1.y + robot_radius / 4
+                print("here")
+                if (self.check_line(avoid[0].x, avoid[0].y, self.pos)): #pass in x,y values of thing to avoid
+                    print("avoid")
+                    #make new path
+                    #idea from other team, they say it works.
+                    #move the line that we are trying to go down to one side or the other
+                    # then check it and move down it till you can go downt the original line that you wanted.
+                    if (self.first_pass):
+                        #we are very close to an object to avoid so we need to move the movement vector
+                        #print("very close to object")
+                        #field width
+                        field_width = 2.24 #in meters #todo may be wrong, mchthuggets uses 3.53
+                        #pick a new des_position
+                        #go up 2 inches from thing to avoid
+                        #TODO NEED to make this smarter, for now it just moves up in the y direction regardless of walls or if it is a shorter distance than moving down in the y
+                        robot_radius = 0.1016
+                        self.checkpos1.x = self.pos.x
+                        self.checkpos2.x = self.pos.x
+                        #print("checkpos1.x is:", self.checkpos1.x)
+                        self.checkpos1.y = avoid[0].y + robot_radius/2
 
-                    #grab how far the new point is that is safe to get to from where we originally wanted to go
-                    dist1 = math.hypot(self.checkpos1.x - avoid[0].x, self.checkpos1.y - avoid[0].y)
+                        #loop through continusoulsy adding about 2 inches to the y until we have a safe path
+                        while (self.check_line(avoid[0].x, avoid[0].y, self.checkpos1)):
+                            if self.checkpos1.y > field_width/2 - robot_radius: #find closest point we can go to with out hitting the side wall
+                                #print("stop else you will hit the wall")
+                                break
+                            self.checkpos1.y = self.checkpos1.y + robot_radius / 4
 
-                    print("checkpos2.x is:", self.checkpos2.x)
-                    self.checkpos2.y = avoid[0].y - robot_radius/2
+                        #grab how far the new point is that is safe to get to from where we originally wanted to go
+                        dist1 = math.hypot(self.checkpos1.x - avoid[0].x, self.checkpos1.y - avoid[0].y)
 
-                    # loop through continusoulsy subtracting about 2 inches to the y until we have a safe path
-                    while (self.check_line(avoid[0].x, avoid[0].y, self.checkpos2)):
-                        if self.checkpos2.y < -field_width/2 + robot_radius: #find closest point we can go to with out hitting the side wall
-                            print("stop else you will hit the wall")
-                            break
-                        self.checkpos2.y = self.checkpos2.y - robot_radius / 4
-                    # grab how far the new point is that is safe to get to from where we originally wanted to go
-                    dist2 = math.hypot(self.checkpos2.x - des_position.x, self.checkpos2.y - des_position.y)
+                        #print("checkpos2.x is:", self.checkpos2.x)
+                        self.checkpos2.y = avoid[0].y - robot_radius/2
 
-                    #check which path is the shortest to take
-                    if dist1 <= dist2:
-                        print("take positive path dist1 and dist 2 are: ", dist1, dist2)
-                        #assign the point to be returned
-                        self.point = self.checkpos1
+                        # loop through continusoulsy subtracting about 2 inches to the y until we have a safe path
+                        while (self.check_line(avoid[0].x, avoid[0].y, self.checkpos2)):
+                            if self.checkpos2.y < -field_width/2 + robot_radius: #find closest point we can go to with out hitting the side wall
+                                #print("stop else you will hit the wall")
+                                break
+                            self.checkpos2.y = self.checkpos2.y - robot_radius / 4
+                        # grab how far the new point is that is safe to get to from where we originally wanted to go
+                        dist2 = math.hypot(self.checkpos2.x - des_position.x, self.checkpos2.y - des_position.y)
+
+                        #check which path is the shortest to take
+                        if dist1 <= dist2:
+                            #print("take positive path dist1 and dist 2 are: ", dist1, dist2)
+                            #assign the point to be returned
+                            self.point = self.checkpos1
+                        else:
+                            print(self.pos.x, self.pos.y)
+                            #print("take negative path dist1 and dist 2 are: ", dist1, dist2)
+                            self.point = self.checkpos2
+                            print(self.point.x, self.point.y)
+                        return self.point
                     else:
-                        print(self.pos.x, self.pos.y)
-                        print("take negative path dist1 and dist 2 are: ", dist1, dist2)
-                        self.point = self.checkpos2
-                    return self.point
+                        #print("not too close, get closer ;)")
+                        self.point = self.previous
+                        print(self.point.x, self.point.y)
+                        return self.point
                 else:
-                    print("not too close, get closer ;)")
-                    self.point = self.previous
-                    return self.point
-            else:
-                print("no collision, continue on")
-                self.point = des_position
+                    #print("no collision, continue on")
+                    self.point = des_position
+        else:
+            #print("wait to play")
+            self.point = self.des_pos #gamestate not set to play dont move
+        #print("bottom of function", self.point.x, self.point.y)
+        #print("play?: ", self.play_with_PathPlanning)
         return self.point
 
     def check_line(self, avoid_x, avoid_y, pos):
@@ -138,7 +159,7 @@ class PathPlanner:
         x_coords, y_coords = zip(*points)
         A = vstack([x_coords, ones(len(x_coords))]).T
         m, b = lstsq(A, y_coords)[0]
-        print "Line Solution is y = {m}x + {b}".format(m=m, b=b)
+        #print "Line Solution is y = {m}x + {b}".format(m=m, b=b)
 
         #radius of robots assuming they are as wide as the rules allow
         robot_radius = 0.1016
@@ -146,8 +167,8 @@ class PathPlanner:
         #calculate x and y to plug into our line equation to move down it 1 radius of length
         x_next = pos.x + (robot_radius/(math.sqrt(robot_radius**2 + (robot_radius*m)**2)))*(robot_radius)
         y_next = pos.y + ((robot_radius*m)/(math.sqrt(robot_radius**2 + (robot_radius*m)**2)))*(robot_radius)
-        print("x:", x_next)
-        print("y:", y_next)
+        #print("x:", x_next)
+        #print("y:", y_next)
         #store previous values so that if we need to we can use them as a way of generating a new path
         self.previous.x = pos.x
         self.previous.y = pos.y
@@ -155,7 +176,7 @@ class PathPlanner:
             #grab distance between x and y next values and the thing to avoid.
             dist = math.hypot(x_next - avoid_x, y_next - avoid_y)
             if dist < 2*robot_radius:
-                print("distance is: ", dist)
+                #print("distance is: ", dist)
                 return True
             else:
                 #print("distance is fine: ", dist)
@@ -197,7 +218,7 @@ class PathPlanner:
     def print_waypoints(self, waypoints):
         """prints out the waypoints for debugging purposes"""
         i = 0
-        print("list starts here, this only prints the last item the number of items in the list times.")
+        #print("list starts here, this only prints the last item the number of items in the list times.")
         for point in waypoints:
             print(point.x, point.y, point.theta, "index ->", i)
             i = i +1
