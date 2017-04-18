@@ -5,7 +5,7 @@ field_width = 3.53
 field_height = 2.39
 robot_width = 0.08573 * 2
 goal_box_width = 0.7
-dis_from_ball = .21
+dis_from_ball = .03
 
 #
 goal_y_thresh = goal_box_width / 2 - 0.25
