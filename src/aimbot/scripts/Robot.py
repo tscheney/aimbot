@@ -321,21 +321,21 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        self.go_behind_ball_facing_goal(constants.dis_from_ball)
+        self.go_behind_ball_facing_goal(constants.dis_from_ball) #Todo this was changed
 
         intersect = self.get_intersect_robot_ball_with_goal()
         if(not intersect.is_empty): # if there is an intersection
             goal_pos = Position()
             goal_pos.update(intersect.x, intersect.y, 0)
-            tol = 0.05
+            tol = 0.1 #Todo this was changed
             in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
-            #if (self.theta_within_error(10) and in_tol):
+            #if (self.theta_within_error(3) and in_tol):
             if(in_tol):
             #if (self.theta_within_error(3)):
                 self.attack_ball()
-            else:
-                print("theta", self.theta_within_error(3))
-                print("tol", in_tol)
+            #else:
+                #print("theta", self.theta_within_error(3))
+                #print("tol", in_tol)
 
     def backup_offense(self):
         """Play a backup role on offense"""
