@@ -321,7 +321,7 @@ class Robot(Moving):
 
     def score_a_goal(self):
         """Attempt to score a goal"""
-        self.go_behind_ball_facing_goal(0)
+        self.go_behind_ball_facing_goal(constants.dis_from_ball)
 
         intersect = self.get_intersect_robot_ball_with_goal()
         if(not intersect.is_empty): # if there is an intersection
@@ -495,7 +495,7 @@ class Robot(Moving):
 
     def stay_put(self):
         """Stay in the spot the robot is current int"""
-        self.go_to(self.pos.x,self.pos.y, self.pos.theta);
+        self.go_to(self.pos.x,self.pos.y, self.pos.theta)
 
     def move_to_center(self):
         return self.go_to(0, 0, 0)

@@ -334,7 +334,19 @@ bool Vision::compareMomentAreas(Moments moment1, Moments moment2)
 // Converts image pixels to world coordinates in meters
 Point2d Vision::imageToWorldCoordinates(Point2d point_i)
 {
-    Point2d centerOfField(FIELD_X_OFFSET + FIELD_WIDTH_PIXELS/2, FIELD_Y_OFFSET + FIELD_HEIGHT_PIXELS/2);
+    float field_x_offset = (GlobalData::fieldLowerLeft.x + GlobalData::fieldUpperLeft.x) / 2;
+    //printf("field_x_offset: %f\n\r", field_x_offset);
+    float field_y_offset = (GlobalData::fieldUpperLeft.y + GlobalData::fieldUpperRight.y) / 2;
+    //printf("field_y_offset: %f\n\r", field_y_offset);
+    float field_x_right = (GlobalData::fieldLowerRight.x + GlobalData::fieldUpperRight.x) / 2;
+    //printf("field_x_right: %f\n\r", field_x_right);
+    float field_y_bottom = (GlobalData::fieldLowerLeft.y + GlobalData::fieldLowerRight.y) / 2;
+    //printf("field_y_bottom: %f\n\r", field_y_bottom);
+    float field_width = field_x_right - field_x_offset;
+    //printf("field_width: %f\n\r", field_width);
+    float field_height = field_y_bottom - field_y_offset;
+    //printf("field_height: %f\n\r", field_height);
+    Point2d centerOfField(field_x_offset + field_width/2, field_y_offset + field_height/2);
     Point2d center_w = (point_i - centerOfField);
 
     // You have to split up the pixel to meter conversion

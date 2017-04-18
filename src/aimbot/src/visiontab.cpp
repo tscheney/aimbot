@@ -68,7 +68,7 @@ void VisionTab::setUpVisionOptions()
     visionOptionsLayout->addWidget(grayLabel);
     visionOptionsLayout->addWidget(grayCheckBox);
 
-    QLabel *fieldMaskLabel = new QLabel(tr("fieldMaskscale"));
+    QLabel *fieldMaskLabel = new QLabel(tr("Field Mask"));
     QCheckBox *fieldMaskCheckBox = new QCheckBox();
     fieldMaskCheckBox->setChecked(false);
     connect(fieldMaskCheckBox, SIGNAL(toggled(bool)), this, SLOT(useFieldMaskChanged(bool)));

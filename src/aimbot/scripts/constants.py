@@ -4,7 +4,8 @@ NAMESPACE = '/aimbot/'
 field_width = 3.53
 field_height = 2.39
 robot_width = 0.08573 * 2
-goal_box_width = 0.5
+goal_box_width = 0.8
+dis_from_ball = 0.12
 
 
 #
