@@ -9,7 +9,7 @@ dis_from_ball = 0
 
 
 #
-goal_y_thresh = goal_box_width / 2 - 0.1
+goal_y_thresh = goal_box_width / 2 - 0.2
 follow_distance = 1
 goalie_wheelhouse_width = robot_width / 2
 goalie_wheelhouse_length = 3* robot_width / 2
