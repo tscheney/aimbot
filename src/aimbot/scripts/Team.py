@@ -241,9 +241,6 @@ class Team:
         defender_in_pos = abs(self.positions[self.state["defender"]].y) <= constants.goal_y_thresh
         attacker_not_in_pos = abs(self.positions[self.state["attacker"]].y) >= constants.goal_y_thresh
         ball_in_pos = abs(self.positions["ball"].y) <= constants.goal_y_thresh
-        print("def", abs(self.positions[self.state["defender"]].y))
-        print("att", abs(self.positions[self.state["attacker"]].y))
-        print("ball", ball_in_pos)
 
         return defender_in_pos and attacker_not_in_pos and ball_in_pos
         #return False
