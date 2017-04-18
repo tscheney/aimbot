@@ -327,7 +327,7 @@ class Robot(Moving):
         if(not intersect.is_empty): # if there is an intersection
             goal_pos = Position()
             goal_pos.update(intersect.x, intersect.y, 0)
-            tol = 0.01
+            tol = 0.02
             in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
             #if (self.theta_within_error(10) and in_tol):
             if(in_tol):
