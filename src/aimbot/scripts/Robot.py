@@ -332,10 +332,6 @@ class Robot(Moving):
             if (self.theta_within_error(10) and in_tol):
             #if (self.theta_within_error(3)):
                 self.attack_ball()
-            else:
-                print("not attacking")
-                print("in tol", in_tol)
-                print("within error", self.theta_within_error(3))
 
     def backup_offense(self):
         """Play a backup role on offense"""
