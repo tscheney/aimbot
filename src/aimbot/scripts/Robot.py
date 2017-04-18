@@ -163,9 +163,9 @@ class Robot(Moving):
         if(self.pos.init):
             """Updates the robots controller and sets velocities"""
             self.determine_des_pos()
-            things_to_avoid = self.update_things_to_avoid()
-            new_pos = self.path_planner.calc_waypoints(self.pos, self.des_pos, things_to_avoid)
-            self.set_des_pos(new_pos.x, new_pos.y, self.des_pos.theta)
+            #things_to_avoid = self.update_things_to_avoid()
+            #new_pos = self.path_planner.calc_waypoints(self.pos, self.des_pos, things_to_avoid)
+            #self.set_des_pos(new_pos.x, new_pos.y, self.des_pos.theta)
 
             self.controller.update_des_pos(self.des_pos.x, self.des_pos.y, np.deg2rad(self.des_pos.theta))
             # TODO figure out how smooth vision values
@@ -335,14 +335,11 @@ class Robot(Moving):
 
     def backup_offense(self):
         """Play a backup role on offense"""
-        print("ally pos y: ", self.ally_pos.y)
         if(self.ally_pos.y > constants.backup_off_switch_thresh):
-            print("switch to backup bot")
             self.state["backup_top"] = False
             self.state["backup_bot"] = True
 
         if(self.ally_pos.y < -1 * constants.backup_off_switch_thresh):
-            print("switch to backup top")
             self.state["backup_top"] = True
             self.state["backup_bot"] = False
 
@@ -351,14 +348,10 @@ class Robot(Moving):
         elif(self.state["backup_bot"]):
             des_y = -1 * constants.field_height / 2 + self.ally_pos.y
         elif(self.ally_pos.y >= 0):
-            print("b top", self.state["backup_top"])
-            print("b bot", self.state["backup_bot"])
             self.state["backup_top"] = False
             self.state["backup_bot"] = True
             des_y = -1 * constants.field_height / 2 + self.ally_pos.y
         else:
-            print("b top", self.state["backup_top"])
-            print("b bot", self.state["backup_bot"])
             self.state["backup_top"] = True
             self.state["backup_bot"] = False
             des_y = constants.field_height / 2 + self.ally_pos.y
@@ -442,7 +435,6 @@ class Robot(Moving):
         """Return whether the ball is further in"""
         return ((self.ball_pos.y >= 0) and (self.pos.y > self.ball_pos.y)
             or (self.ball_pos.y < 0 and self.pos.y < self.ball_pos.y))
-
 
     def control_ball_facing_target(self):
         """Get behind the ball facing the goal"""

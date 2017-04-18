@@ -27,7 +27,7 @@ vector<Mat> loadImages()
 // This is a debugging tool that publishes the webcam feed to the same node as used in the robot soccer lab
 int main(int argc, char** argv)
 {
-    bool webCam = false;
+    bool webCam = true;
     Mat frame;
 
     VideoCapture capture(CV_CAP_ANY);

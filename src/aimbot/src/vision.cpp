@@ -47,12 +47,22 @@ void Vision::process(cv::Mat frame)
 {
     geometry_msgs::Pose2D pos;
 
-    frame = maskField(frame);
+    Mat result;
 
-    Mat result = frame;
+    //
+    if(isUseFieldMask)
+    {
+        Mat mask = maskField(frame);
+        result = applyMask(frame.clone(), mask);
+    }
+    else
+    {
+        result = frame.clone();
+    }
 
     if(isUseGray)
     {
+        cout << "isUseGray\n\r";
         Mat imgGray;
         Mat imgResult;
         cvtColor(frame, imgGray, COLOR_BGR2GRAY);
@@ -65,6 +75,7 @@ void Vision::process(cv::Mat frame)
 
     if(isUseEdgeDetect)
     {
+        cout << "isUseEdgeDetect\n\r";
         result = detectShapeEdges(result);
     }
 
@@ -76,6 +87,7 @@ void Vision::process(cv::Mat frame)
     // Mask based on shape
     if(isUseShape)
     {
+        cout << "isUseShape\n\r";
         if(!isUseEdgeDetect) // && !isUseColor)
         {
             cvtColor(frame, result, COLOR_BGR2GRAY);
@@ -88,7 +100,7 @@ void Vision::process(cv::Mat frame)
         if(isUseEdgeDetect || isUseShape)
         {
             // apply mask to restore color
-            result = applyMask(frame, result);
+            result = applyMask(frame.clone(), result.clone());
         }
         // threshold the image according to given HSV parameters
         result = detectColors(result);
@@ -108,12 +120,12 @@ void Vision::process(cv::Mat frame)
 
     publish(pos);
     emit processedImage(applyMask(frame, result));
+    //emit processedImage(result);
 }
 
 // A new unfiltered frame has arrived
 void Vision::newUnfilteredFrame(Mat frame)
 {
-    unFiltFrame = frame;
     if(!isUseBackSub)
     {
         process(frame);
@@ -123,7 +135,6 @@ void Vision::newUnfilteredFrame(Mat frame)
 // A new prefiltered frame has arrived
 void Vision::newPrefiltFrame(cv::Mat frame)
 {
-    preFiltFrame = frame;
     if(isUseBackSub)
     {
         process(frame);
@@ -141,9 +152,11 @@ Mat Vision::applyMask(Mat frame, Mat mask)
 // Apply a Gaussian blur of size blursize
 Mat Vision::applyBlurBase(Mat frame, int blurSize)
 {
-    Mat result;
+    Mat result(frame.size(), frame.type());
     GaussianBlur(frame, result, Size(blurSize, blurSize), 0, 0);
+    //blur(result, result, Size(blurSize, blurSize));
     return result;
+    //return frame;
 }
 
 // Detect shapes based on the current shape data params
@@ -274,11 +287,13 @@ Mat Vision::erodeDilate(Mat& frame)
 }
 
 // Mask so that only the field is visible
-Mat Vision::maskField(Mat& frame)
+Mat Vision::maskField(Mat frame)
 {
-    Mat mask(frame.size(), frame.type());
-    fillConvexPoly(mask, GlobalData::fieldPoints, Scalar(255,255,255));
-    return applyMask(frame, mask);
+    //Mat mask(frame.size(), frame.type());
+    Mat mask = Mat::zeros(frame.rows, frame.cols, CV_8U);
+    fillConvexPoly(mask, GlobalData::fieldPoints, Scalar(1));
+    return(mask);
+    //return applyMask(frame, mask);
 }
 
 // Given a thresholded gray image, calculate the moments in the image
@@ -343,6 +358,12 @@ void Vision::publish(geometry_msgs::Pose2D& pos)
 void Vision::useBackSub(bool value)
 {
     isUseBackSub = value;
+}
+
+// Use the field mask
+void Vision::newFieldMask(bool value)
+{
+    isUseFieldMask = value;
 }
 
 // Recieve new use color value

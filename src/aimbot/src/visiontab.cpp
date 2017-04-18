@@ -68,6 +68,13 @@ void VisionTab::setUpVisionOptions()
     visionOptionsLayout->addWidget(grayLabel);
     visionOptionsLayout->addWidget(grayCheckBox);
 
+    QLabel *fieldMaskLabel = new QLabel(tr("fieldMaskscale"));
+    QCheckBox *fieldMaskCheckBox = new QCheckBox();
+    fieldMaskCheckBox->setChecked(false);
+    connect(fieldMaskCheckBox, SIGNAL(toggled(bool)), this, SLOT(useFieldMaskChanged(bool)));
+    visionOptionsLayout->addWidget(fieldMaskLabel);
+    visionOptionsLayout->addWidget(fieldMaskCheckBox);
+
     setUpColorOptions(visionOptionsLayout);
     setUpShapeOptions(visionOptionsLayout);
 
@@ -383,6 +390,12 @@ void VisionTab::useColorChanged(bool value)
 void VisionTab::useGrayChanged(bool value)
 {
     emit newIsUseGray(value);
+}
+
+// Handle use of filed mask
+void VisionTab::useFieldMaskChanged(bool value)
+{
+    emit newIsUseFieldMask(value);
 }
 
 // Retrieve the list of color slider pointers

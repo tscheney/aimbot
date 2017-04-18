@@ -128,7 +128,7 @@ class Team:
         #print("team side is", self.team_side)
         #print("penalty for away is", self.game_state.away_penalty)
         #update the pathplanner so it knows to use it
-        self.path_planner.use_path_planning(self.game_state.play)
+        #self.path_planner.use_path_planning(self.game_state.play)
 
 
         if(self.pos_in_robot_wheelhouse("attacker", self.positions[self.state["defender"]])): #defender is right in front of attacker
@@ -178,6 +178,8 @@ class Team:
         self.switch_on_defense()
         self.roles[self.state["attacker"]] = roles.SCORE
         self.roles[self.state["defender"]] = roles.DEFEND_GOAL
+        if (self.ball_behind_robot("attacker", constants.ball_behind_thresh)):  # if the ball is not behind the defender
+            self.roles[self.state["attacker"]] = roles.GET_BEHIND_BALL
         if (self.ball_behind_robot("defender", constants.ball_behind_thresh)):  # if the ball is not behind the defender
             self.roles[self.state["defender"]] = roles.GET_BEHIND_BALL
 
@@ -205,36 +207,6 @@ class Team:
                 self.set_roles_defense()
             else:
                 self.set_roles_balanced()
-
-
-
-    # def switch_Roles(self, defender):
-    #     """If defender is close enough to the ball, become the attacker
-    #         and have the attacker go to defense"""
-    #     # Use numpy to create vectors
-    #     if defender == 2:
-    #         ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
-    #         mevec = np.array([[self.positions["ally2"].x], [self.positions["ally2"].y]])
-    #     else:
-    #         ballvec = np.array([[self.positions["ball"].x], [self.positions["ball"].y]])
-    #         mevec = np.array([[self.positions["ally1"].x], [self.positions["ally1"].y]])
-    #     field_width = 3.53
-    #     goalvec = np.array([[field_width / 2], [0]])
-    #
-    #     # unit vector from ball to goal
-    #     uv = goalvec - ballvec
-    #     uv = uv / np.linalg.norm(uv)
-    #
-    #     # compute a position 20cm behind ball, but aligned with goal
-    #     p = ballvec - 0.1 * uv
-    #
-    #     # If I am sufficiently close to the point behind the ball,
-    #     # or in other words, once I am 21cm behind the ball, just
-    #     # drive to the goal.
-    #     if np.linalg.norm(p - mevec) < 0.09:
-    #         return True
-    #     else:
-    #         return False
 
     def switch_roles(self):
         """Switches the attacker to the defender and the defender to the attacker"""

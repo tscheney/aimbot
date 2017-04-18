@@ -21,8 +21,8 @@ private:
     string name;
     bool isHome = true;
 
-    Mat unFiltFrame;
-    Mat preFiltFrame;
+    //Mat unFiltFrame;
+    //Mat preFiltFrame;
 
     // Processing Params
     ColorData colorData;
@@ -32,6 +32,7 @@ private:
     bool isUseEdgeDetect = false;
     bool isUseShape = false;
     bool isUseGray = false;
+    bool isUseFieldMask = false;
     ros::Publisher pub;
     ros::NodeHandle nh;
 
@@ -40,6 +41,7 @@ public slots:
     void newUnfilteredFrame(cv::Mat frame);
     void newPrefiltFrame(cv::Mat frame);
     void newColorData(ColorData newColorData);
+    void newFieldMask(bool value);
     void useBackSub(bool value);
     void useColor(bool value);
     void useEdgeDetect(bool value);
@@ -69,7 +71,7 @@ public:
     Mat applyMask(Mat frame, Mat mask);
     virtual Mat applyBlur(Mat frame) = 0;
     Mat applyBlurBase(Mat frame, int blurSize);
-    Mat maskField(Mat& frame);
+    Mat maskField(Mat frame);
     virtual Mat detectShapes(Mat frame) = 0;
     Mat detectShapesBase(Mat frame, int blurSize, int edgeThresh1, int edgeThresh2, double polyError);
     virtual Mat detectShapeEdges(Mat frame) = 0;

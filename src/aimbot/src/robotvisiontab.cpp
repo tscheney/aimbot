@@ -30,6 +30,7 @@ void RobotVisionTab::setUpVision(string name, bool isHome)
     connect(this, SIGNAL(newIsUseGray(bool)), vision, SLOT(useGray(bool)));
     connect(this, SIGNAL(newIsUseColor(bool)), vision, SLOT(useColor(bool)));
     connect(this, SIGNAL(newShapeData(RobotShapeData)), vision, SLOT(newShapeData(RobotShapeData)));
+    connect(this, SIGNAL(newIsUseFieldMask(bool)), vision, SLOT(newFieldMask(bool)));
     vision->moveToThread(&visionThread);
     visionThread.start();
 }
