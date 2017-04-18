@@ -330,7 +330,7 @@ class Robot(Moving):
             tol = 0.01
             in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
             #if (self.theta_within_error(10) and in_tol):
-            if(in_tol)
+            if(in_tol):
             #if (self.theta_within_error(3)):
                 self.attack_ball()
             else:
