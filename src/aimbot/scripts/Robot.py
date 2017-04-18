@@ -327,11 +327,14 @@ class Robot(Moving):
         if(not intersect.is_empty): # if there is an intersection
             goal_pos = Position()
             goal_pos.update(intersect.x, intersect.y, 0)
-            tol = 0.1
+            tol = 0.01
             in_tol = self.dis_from_point_to_line(self.pos, self.ball_pos, goal_pos) < tol
             if (self.theta_within_error(3) and in_tol):
             #if (self.theta_within_error(3)):
                 self.attack_ball()
+            else:
+                print("theta", self.theta_within_error(3))
+                print("tol", in_tol)
 
     def backup_offense(self):
         """Play a backup role on offense"""
@@ -454,7 +457,7 @@ class Robot(Moving):
         Simply pushes the ball along the "vector" from robot to ball
         """
         theta = self.get_angle_between_points(self.pos.x, self.pos.y, self.ball_pos.x, self.ball_pos.y)
-        kick_dist = 0.5 #0.1524  # (6.0in)
+        kick_dist = 0.5 #0.1524 #0.5 # (6.0in)
         x_c = self.ball_pos.x + kick_dist * np.cos(theta)
         y_c = self.ball_pos.y + kick_dist * np.sin(theta)
         theta_c = np.rad2deg(theta)

@@ -221,7 +221,7 @@ class Team:
         """Determine whether we should switch on offense"""
         attacker_to_ball = self.get_distance_between_points(self.positions[self.state["attacker"]], self.positions['ball'])
         defender_to_ball = self.get_distance_between_points(self.positions[self.state["defender"]], self.positions['ball'])
-        if((attacker_to_ball > defender_to_ball) or self.ball_behind_robot("attacker", constants.ball_behind_thresh)): # defender is the closest opponent, or ball is behind attacker
+        if((attacker_to_ball > defender_to_ball) or self.ball_behind_robot("attacker", constants.ball_behind_thresh) or self.defender_in_pos_to_score()): # defender is the closest opponent, or ball is behind attacker
             self.switch_roles()
 
     def switch_on_balanced(self):
@@ -236,6 +236,17 @@ class Team:
             print("Ball in def wheel")
             self.switch_roles()
 
+    def defender_in_pos_to_score(self):
+        """returns if the defender is in better position to score"""
+        defender_in_pos = abs(self.positions[self.state["defender"]].y) <= constants.goal_y_thresh
+        attacker_not_in_pos = abs(self.positions[self.state["attacker"]].y) >= constants.goal_y_thresh
+        ball_in_pos = abs(self.positions["ball"].y) <= constants.goal_y_thresh
+        print("def", abs(self.positions[self.state["defender"]].y))
+        print("att", abs(self.positions[self.state["attacker"]].y))
+        print("ball", ball_in_pos)
+
+        return defender_in_pos and attacker_not_in_pos and ball_in_pos
+        #return False
 
 
     def pos_in_robot_wheelhouse(self, robot, target_pos):
