@@ -66,7 +66,6 @@ geometry_msgs::Pose2D BallVision::getPos(vector<Moments> mm)
 
     if (mm.size() < 1)
     {
-        cout << "prev pos\n";
         return prevPos;
     }
 

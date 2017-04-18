@@ -5,18 +5,18 @@
 namespace GlobalData
 {
     // Field Points
-    const cv::Point fieldUpperLeft = cv::Point(106, 3);
-    const cv::Point leftGoalUpperRight = cv::Point(105, 187);
-    const cv::Point leftGoalUpperLeft = cv::Point(84, 185);
-    const cv::Point leftGoalLowerLeft = cv::Point(83, 301);
-    const cv::Point leftGoalLowerRight = cv::Point(106, 304);
-    const cv::Point fieldLowerLeft = cv::Point(108, 433);
-    const cv::Point fieldLowerRight = cv::Point(710, 440);
-    const cv::Point rightGoalLowerLeft = cv::Point(710, 311);
-    const cv::Point rightGoalLowerRight = cv::Point(736, 309);
-    const cv::Point rightGoalUpperRight = cv::Point(738, 195);
-    const cv::Point rightGoalUpperLeft = cv::Point(715, 192);
-    const cv::Point fieldUpperRight = cv::Point(725, 13);
+    const cv::Point fieldUpperLeft = cv::Point(148, 37);
+    const cv::Point leftGoalUpperRight = cv::Point(152, 188);
+    const cv::Point leftGoalUpperLeft = cv::Point(130, 190);
+    const cv::Point leftGoalLowerLeft = cv::Point(130, 304);
+    const cv::Point leftGoalLowerRight = cv::Point(153, 306);
+    const cv::Point fieldLowerLeft = cv::Point(155, 453);
+    const cv::Point fieldLowerRight = cv::Point(758, 460);
+    const cv::Point rightGoalLowerLeft = cv::Point(758, 306);
+    const cv::Point rightGoalLowerRight = cv::Point(781, 306);
+    const cv::Point rightGoalUpperRight = cv::Point(781, 183);
+    const cv::Point rightGoalUpperLeft = cv::Point(760, 182);
+    const cv::Point fieldUpperRight = cv::Point(762, 26);
     const std::vector<cv::Point> fieldPoints = {fieldUpperLeft, leftGoalUpperRight, leftGoalUpperLeft, leftGoalLowerLeft,
                                                 leftGoalLowerRight, fieldLowerLeft, fieldLowerRight, rightGoalLowerLeft,
                                                 rightGoalLowerRight, rightGoalUpperRight, rightGoalUpperLeft, fieldUpperRight};
